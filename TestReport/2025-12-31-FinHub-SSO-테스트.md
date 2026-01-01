@@ -38,10 +38,10 @@ const ENV_FILE = path.join(__dirname, '../common/railway-env.md');
 
 **수정:**
 ```javascript
-const ENV_FILE = path.join(__dirname, '../WorkHubShared/railway-env.md');
+const ENV_FILE = path.join(__dirname, '../WHCommon/railway-env.md');
 ```
 
-**이유:** 프로젝트 구조 변경으로 공용 폴더 경로가 `WorkHubShared`로 변경됨
+**이유:** 프로젝트 구조 변경으로 공용 폴더 경로가 `WHCommon`로 변경됨
 
 ---
 

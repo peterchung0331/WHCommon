@@ -214,7 +214,7 @@ const envMatch = content.match(/```env\r?\n([\s\S]*?)\r?\n```/);
 - Port: 4090 (컨테이너) → 14090 (호스트)
 
 **환경변수:**
-- Source: `WorkHubShared/railway-env.md`
+- Source: `WHCommon/railway-env.md`
 - Format: Markdown ```env 블록
 - Variables: 8개 필수 환경변수
 
@@ -338,7 +338,7 @@ git push origin feature/doppler-env-management
 **배포 전 체크리스트:**
 - ✅ Part A 테스트 9/9 통과
 - ✅ Dockerfile 수정사항 커밋 완료
-- ✅ `WorkHubShared/railway-env.md` 최신 상태 확인
+- ✅ `WHCommon/railway-env.md` 최신 상태 확인
 - ⏳ Part B 테스트 (선택 사항)
 
 ---
@@ -374,7 +374,7 @@ git push origin feature/doppler-env-management
 2. Dockerfile 프로덕션 환경 최적화
 3. Windows CRLF 호환성 확보
 4. Part A 9개 정밀 테스트 100% 통과
-5. railway-docker-test.cjs 경로 수정 (`WorkHubShared/railway-env.md`)
+5. railway-docker-test.cjs 경로 수정 (`WHCommon/railway-env.md`)
 
 #### 🚀 권장 조치
 

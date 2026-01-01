@@ -606,7 +606,7 @@ npm run test:deploy:advanced
 
 #### 환경변수 재생성 (필요시)
 ```bash
-# WorkHubShared/railway-env.md 업데이트 후
+# WHCommon/railway-env.md 업데이트 후
 node scripts/prepare-docker-env.cjs
 ```
 
