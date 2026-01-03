@@ -8,6 +8,13 @@ yarn-error.log*
 .env
 .env.local
 .env.*.local
+env/.env.doppler
+
+# SSH Keys and secrets
+SSHkey/
+*.pem
+*.key
+!*.key.pub
 
 # IDE
 .vscode/

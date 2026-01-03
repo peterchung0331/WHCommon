@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# ============================================
+# Git Pre-Commit Hook
+# .env.local → Doppler Development 자동 업로드
+# ============================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SYNC_SCRIPT="$SCRIPT_DIR/sync-doppler.sh"
+
+# sync-doppler.sh 스크립트가 있는지 확인
+if [ ! -f "$SYNC_SCRIPT" ]; then
+  # WHCommon/scripts 경로에서 찾기
+  SYNC_SCRIPT="$(git rev-parse --show-toplevel)/WHCommon/scripts/sync-doppler.sh"
+fi
+
+if [ ! -f "$SYNC_SCRIPT" ]; then
+  echo "⚠️  Warning: sync-doppler.sh not found. Skipping Doppler upload."
+  exit 0
+fi
+
+# .env.local 파일이 있으면 Doppler에 업로드
+if [ -f ".env.local" ]; then
+  echo "📤 Syncing .env.local to Doppler Development..."
+  bash "$SYNC_SCRIPT" upload dev || {
+    echo "⚠️  Warning: Failed to upload to Doppler. Continuing commit..."
+    exit 0
+  }
+fi
+
+exit 0

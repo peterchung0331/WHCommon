@@ -1,0 +1,29 @@
+#!/bin/bash
+
+# ============================================
+# Git Post-Merge Hook (after git pull)
+# Doppler Development → .env.local 자동 다운로드
+# ============================================
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+SYNC_SCRIPT="$SCRIPT_DIR/sync-doppler.sh"
+
+# sync-doppler.sh 스크립트가 있는지 확인
+if [ ! -f "$SYNC_SCRIPT" ]; then
+  # WHCommon/scripts 경로에서 찾기
+  SYNC_SCRIPT="$(git rev-parse --show-toplevel)/WHCommon/scripts/sync-doppler.sh"
+fi
+
+if [ ! -f "$SYNC_SCRIPT" ]; then
+  echo "⚠️  Warning: sync-doppler.sh not found. Skipping Doppler download."
+  exit 0
+fi
+
+# Doppler에서 최신 환경변수 다운로드
+echo "📥 Syncing Doppler Development to .env.local..."
+bash "$SYNC_SCRIPT" download dev || {
+  echo "⚠️  Warning: Failed to download from Doppler."
+  exit 0
+}
+
+exit 0
