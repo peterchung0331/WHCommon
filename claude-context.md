@@ -456,11 +456,16 @@ test('debug page until success', async ({ page }) => {
   - 통합 테스트: `tests/integration-[feature].spec.ts`
   - E2E 테스트: `tests/e2e-[scenario].spec.ts`
 
+### 데이터베이스 Enum 값 규칙
+- ✅ **소문자 사용**: PostgreSQL enum 값과 TypeScript 타입은 모두 소문자로 통일
+- **AccountStatus**: `'pending'`, `'active'`, `'rejected'`, `'inactive'`
+- **AccountRole**: `'admin'`, `'user'`, `'master'`, `'finance'`, `'trading'`, `'executive'`, `'viewer'`
+- 📌 **이유**: PostgreSQL 공식 문서 및 대부분의 Node.js/TypeScript 프로젝트에서 enum 값을 소문자로 사용하는 것이 표준
+- 📌 **적용 범위**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub 모든 허브
+
 ---
 마지막 업데이트: 2026-01-04
 
 **주요 변경 사항**:
-- 전체 허브 리스트 섹션 추가 (WBOnboardingHub 포함)
-- 로컬 DB 연결 정보에 WBOnboardingHub 추가
-- 프로덕션 배포 환경에 WBOnboardingHub 추가
-- HWTestAgent 테스트 대상 프로젝트에 WBOnboardingHub 추가
+- 데이터베이스 Enum 값 규칙 추가 (소문자 통일)
+- AccountStatus, AccountRole 타입 정의 소문자로 변경
