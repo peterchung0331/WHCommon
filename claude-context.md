@@ -5,17 +5,26 @@
 ## 프로젝트 정보
 
 ### 전체 허브 리스트
-WorkHub 프로젝트는 다음 4개의 허브로 구성됩니다:
+WorkHub 프로젝트는 다음 5개의 허브로 구성됩니다:
 
-| 허브 이름 | 경로 | 포트 (F/B) | 설명 |
-|----------|------|------------|------|
-| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 허브 관리 및 SSO 인증 서버 |
-| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 고객 및 미팅 관리 시스템 |
-| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 재무/트랜잭션 관리 시스템 |
-| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 신규 사용자 온보딩 시스템 |
+| 허브 이름 | 경로 | 개발 포트 (F/B) | 스테이징 포트 (B) | 운영 포트 (B) | 설명 |
+|----------|------|----------------|------------------|--------------|------|
+| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4290 | 4490 | 허브 관리 및 SSO 인증 서버 |
+| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4210 | 4410 | 고객 및 미팅 관리 시스템 |
+| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4220 | 4420 | 재무/트랜잭션 관리 시스템 |
+| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4230 | 4430 | 신규 사용자 온보딩 시스템 |
+| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4240 | 4440 | 레퍼런스/문서 관리 시스템 (HubManager 하위) |
+| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4280 | 4480 | 자동화 테스트 시스템 |
+
+**포트 체계**:
+- **개발 환경 (Dev)**: 3000번대 (프론트엔드) / 4000번대 (백엔드)
+- **스테이징 환경 (Docker)**: 4200번대 (백엔드만, 프로덕션 모드)
+- **운영 환경 (Oracle)**: 4400번대 (백엔드만, 프로덕션 모드)
+- 프로덕션 모드에서는 프론트엔드가 정적 파일로 제공되므로 별도 포트 불필요
 
 **참고**:
-- 모든 허브는 독립된 Git 저장소로 관리됨
+- 대부분의 허브는 독립된 Git 저장소로 관리됨
+- WBRefHub는 WBHubManager 저장소 내에 위치
 - 공용 리소스는 WBHubManager 저장소에서 관리
 - 프로덕션 URL: `http://workhub.biz/[hub-name]`
 
@@ -139,6 +148,22 @@ claude mcp list
   - `timeout` 설정 해제 또는 충분히 긴 값으로 설정
   - 개발 중 서버 재시작 최소화
 
+### Docker 환경 원칙 (스테이징)
+- ✅ **Docker는 항상 프로덕션 모드**: 오라클 클라우드와 동일한 환경 유지
+  - `NODE_ENV: production` 설정 필수
+  - dev-login 엔드포인트 비활성화
+  - Google OAuth만 사용
+- ✅ **localhost + 4200번대 포트 사용**: 개발 환경과 포트 충돌 방지
+  - HubManager: http://localhost:4290
+  - SalesHub: http://localhost:4210
+  - FinHub: http://localhost:4220
+  - OnboardingHub: http://localhost:4230
+  - TestAgent: http://localhost:4280
+- ✅ **환경 일관성**:
+  - 로컬 개발 (4000번대): `npm run dev` (개발 모드, dev-login 사용 가능)
+  - Docker 스테이징 (4200번대): 프로덕션 모드 (Google OAuth만)
+  - Oracle 운영 (4400번대): 프로덕션 모드 (Google OAuth만)
+
 ### PRD 문서 관리
 - PRD는 `WHCommon/계획_PRD.md` 규칙에 따라 작성
 - 작성 완료된 PRD는 **기능 PRD 폴더**에 저장: `WHCommon/PRD/prd-[feature-name].md`
@@ -256,12 +281,13 @@ claude mcp list
   - 로컬 개발은 항상 로컬 Docker PostgreSQL 사용
 
 ### 프로덕션 배포 환경
-- **오라클 클라우드**: 메인 프로덕션 환경
-  - WBHubManager: `http://158.180.95.246:3090` / `http://workhub.biz` (Frontend: 3090, Backend: 4090)
-  - WBSalesHub: `http://158.180.95.246:3010` / `http://workhub.biz/saleshub` (Frontend: 3010, Backend: 4010)
-  - WBFinHub: `http://158.180.95.246:3020` / `http://workhub.biz/finhub` (Frontend: 3020, Backend: 4020)
-  - WBOnboardingHub: `http://158.180.95.246:3030` / `http://workhub.biz/onboarding` (Frontend: 3030, Backend: 4030)
-  - HWTestAgent: `http://158.180.95.246:3100` / `http://workhub.biz/testagent` (Frontend: 3100, Backend: 4100)
+- **오라클 클라우드**: 메인 프로덕션 환경 (4400번대 포트 사용)
+  - WBHubManager: `http://workhub.biz` (Backend: 4490)
+  - WBSalesHub: `http://workhub.biz/saleshub` (Backend: 4410)
+  - WBFinHub: `http://workhub.biz/finhub` (Backend: 4420)
+  - WBOnboardingHub: `http://workhub.biz/onboarding` (Backend: 4430)
+  - WBRefHub: `http://workhub.biz/refhub` (Backend: 4440)
+  - HWTestAgent: `http://workhub.biz/testagent` (Backend: 4480)
   - SSH 접속: `ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246`
   - SSH 키 위치: `C:\GitHub\WHCommon\SSHkey\ssh-key-2026-01-01.key` (WSL에서는 `~/.ssh/oracle-cloud.key`로 복사 후 사용)
 - ❌ **Railway 배포 안함**: 오라클 클라우드로 완전 마이그레이션 완료
@@ -391,15 +417,36 @@ test('debug page until success', async ({ page }) => {
 ```
 
 ### SSO 테스트 계정
-- **Google 테스트 계정**: 환경변수 `TEST_GOOGLE_EMAIL`, `TEST_GOOGLE_PASSWORD` 참조
-- **계정 정보**: 각 프로젝트의 `.env.template` 파일에 기록됨
-- **사용처**: WBFinHub - WBHubManager SSO 통합 테스트
+- **Google 테스트 계정**:
+  - Email: biz.dev@wavebridge.com
+  - Password: wave1234!!
+- **환경변수**:
+  - `TEST_GOOGLE_EMAIL=biz.dev@wavebridge.com`
+  - `TEST_GOOGLE_PASSWORD=wave1234!!`
+- **사용처**: WBSalesHub, WBFinHub, WBOnboardingHub SSO 통합 테스트
 - **주의**: SSO 테스트 시 항상 이 테스트 계정을 사용할 것
 - 📌 **테스트 방법**:
   1. 환경변수에서 `TEST_GOOGLE_EMAIL`, `TEST_GOOGLE_PASSWORD` 읽기
   2. Playwright로 Google OAuth 자동 로그인 구현
   3. 토큰 전달 및 인증 상태 검증
   4. 대시보드 접근 확인
+
+### Playwright 테스트 실행 규칙
+- ✅ **HWTestAgent를 통합 테스트 허브로 사용**: 모든 Playwright 테스트는 HWTestAgent에서 실행
+  - 이유: 각 프로젝트마다 독립적인 `node_modules`를 가지므로 Playwright를 매번 설치해야 하는 문제 방지
+  - HWTestAgent에는 이미 Playwright 설치되어 있음
+  - 테스트 스크립트 위치: `/home/peterchung/HWTestAgent/tests/`
+  - 테스트 결과 저장: `/home/peterchung/HWTestAgent/test-results/`
+- ❌ **각 프로젝트에서 직접 Playwright 실행 금지**: WBSalesHub, WBHubManager 등 개별 프로젝트에서 테스트 스크립트를 작성하지 않음
+- 📌 **테스트 실행 방법**:
+  ```bash
+  cd /home/peterchung/HWTestAgent
+  npx playwright test tests/[test-name].spec.ts
+  ```
+- 📌 **테스트 스크립트 명명 규칙**:
+  - 프로젝트별 테스트: `tests/wbsaleshub-[feature].spec.ts`
+  - 통합 테스트: `tests/integration-[feature].spec.ts`
+  - E2E 테스트: `tests/e2e-[scenario].spec.ts`
 
 ---
 마지막 업데이트: 2026-01-04

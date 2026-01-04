@@ -80,13 +80,13 @@ Update the file after completing each sub-task, not just after completing an ent
     - [x] 2.3.2 getLogs(filters) 메서드 - 감사 로그 조회 (필터링, 페이지네이션)
     - [x] 2.3.3 getHubLogs(hubSlug, filters) 메서드 - 특정 허브 감사 로그
 
-- [ ] 3.0 JWT 서비스 수정 (권한 정보 포함)
-  - [ ] 3.1 `server/services/jwt.service.ts` 파일 읽기
-  - [ ] 3.2 AccessTokenPayload 인터페이스에 `hub_permissions` 필드 추가
-  - [ ] 3.3 generateAccessToken() 함수 수정
-    - [ ] 3.3.1 hub_memberships 테이블 조회 쿼리 추가
-    - [ ] 3.3.2 hubPermissions 객체 생성 (허브 슬러그 → 역할/상태 매핑)
-    - [ ] 3.3.3 JWT payload에 hub_permissions 추가
+- [x] 3.0 JWT 서비스 수정 (권한 정보 포함)
+  - [x] 3.1 `server/services/jwt.service.ts` 파일 읽기
+  - [x] 3.2 AccessTokenPayload 인터페이스에 `hub_permissions` 필드 추가
+  - [x] 3.3 generateAccessToken() 함수 수정
+    - [x] 3.3.1 hub_memberships 테이블 조회 쿼리 추가
+    - [x] 3.3.2 hubPermissions 객체 생성 (허브 슬러그 → 역할/상태 매핑)
+    - [x] 3.3.3 JWT payload에 hub_permissions 추가
   - [ ] 3.4 JWT 토큰 생성 테스트 (토큰 디코딩하여 hub_permissions 확인)
 
 - [ ] 4.0 관리자 API 라우트 구현
