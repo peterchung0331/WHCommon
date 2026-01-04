@@ -4,6 +4,21 @@
 
 ## 프로젝트 정보
 
+### 전체 허브 리스트
+WorkHub 프로젝트는 다음 4개의 허브로 구성됩니다:
+
+| 허브 이름 | 경로 | 포트 (F/B) | 설명 |
+|----------|------|------------|------|
+| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 허브 관리 및 SSO 인증 서버 |
+| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 고객 및 미팅 관리 시스템 |
+| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 재무/트랜잭션 관리 시스템 |
+| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 신규 사용자 온보딩 시스템 |
+
+**참고**:
+- 모든 허브는 독립된 Git 저장소로 관리됨
+- 공용 리소스는 WBHubManager 저장소에서 관리
+- 프로덕션 URL: `http://workhub.biz/[hub-name]`
+
 ### 폴더 구조
 - **공용폴더**: `C:\GitHub\WHCommon` - 프로젝트 간 공유되는 문서 및 리소스
 - **테스트에이전트**: `C:\GitHub\HWTestAgent` - 자동화 테스트 시스템
@@ -85,12 +100,21 @@ WBHubManager Git 저장소에서 다음 항목들을 관리합니다:
 
 | MCP 서버 | 용도 | 우선순위 |
 |----------|------|----------|
+| **Sequential Thinking** | 실시간 사고 구조화 및 의사결정 과정 추적 | 최고 |
+| **Obsidian** | PRD, 의사결정 로그, 문서 영구 저장 | 최고 |
 | **Context7** | 라이브러리/프레임워크 최신 문서 조회 | 높음 |
 
 ### MCP 사용 규칙
-- **문서 조회 시**: Context7 MCP를 통해 최신 라이브러리 문서를 먼저 확인하세요
-- **코드 작성 시**: Context7에서 제공하는 최신 API와 베스트 프랙티스를 참고하세요
-- **MCP 도구 우선**: 동일한 기능이 있다면 일반 웹 검색보다 MCP 도구를 우선 사용하세요
+- **사고 과정 시각화**: Sequential Thinking MCP를 사용하여 복잡한 문제 해결 시 단계별 사고 과정을 구조화
+- **문서 영구 저장**: Obsidian MCP를 사용하여 완성된 PRD, 의사결정 로그, 회의록 등을 체계적으로 저장
+- **문서 조회 시**: Context7 MCP를 통해 최신 라이브러리 문서를 먼저 확인
+- **코드 작성 시**: Context7에서 제공하는 최신 API와 베스트 프랙티스를 참고
+- **MCP 도구 우선**: 동일한 기능이 있다면 일반 웹 검색보다 MCP 도구를 우선 사용
+
+### Sequential Thinking + Obsidian 워크플로우
+1. **실시간 사고**: Sequential Thinking으로 문제 분석 및 의사결정 과정 구조화
+2. **영구 저장**: 완성된 문서를 Obsidian에 저장하여 장기 지식 베이스 구축
+3. **검색 및 재사용**: Obsidian에서 과거 의사결정 로그 검색 및 재참조
 
 ### MCP 관련 명령어
 ```bash
@@ -161,7 +185,7 @@ claude mcp list
 세션의 **첫 번째 응답**에서 반드시 다음을 수행:
 
 1. **컨텍스트 로드 확인 메시지** 출력
-2. **현재 로드된 MCP 서버 목록** 출력
+2. **현재 로드된 MCP 서버 목록** 출력 (`/mcp` 명령어 결과를 바탕으로)
 
 ### 출력 형식 예시
 ```
@@ -170,9 +194,12 @@ claude mcp list
   - 프로젝트 규칙 및 폴더 구조 적용됨
 
 ✓ 현재 로드된 MCP 서버:
+  - Sequential Thinking: 실시간 사고 구조화 및 의사결정 과정 추적
+  - Obsidian: PRD, 의사결정 로그, 문서 영구 저장
   - Context7: 라이브러리/프레임워크 최신 문서 조회
-  - [기타 MCP 서버 목록...]
 ```
+
+**주의**: 실제 출력 시에는 `/mcp` 명령어를 통해 현재 세션에서 실제로 로드된 MCP 서버 목록을 확인하여 표시할 것.
 
 ---
 
@@ -222,6 +249,7 @@ claude mcp list
   - **WBHubManager**: `postgresql://postgres:postgres@localhost:5432/hubmanager?schema=public`
   - **WBSalesHub**: `postgresql://postgres:postgres@localhost:5432/saleshub?schema=public`
   - **WBFinHub**: `postgresql://postgres:postgres@localhost:5432/finhub?schema=public`
+  - **WBOnboardingHub**: `postgresql://postgres:postgres@localhost:5432/onboardinghub?schema=public`
   - **HWTestAgent**: `postgresql://postgres:postgres@localhost:5432/hwtestagent`
 - ❌ **로컬에서 오라클 DB 직접 연결 금지**: 로컬 개발 시 오라클 클라우드 DB에 직접 연결하지 않음
   - 이유: 네트워크 레이턴시, 방화벽 설정, 프로덕션 데이터 격리
@@ -232,6 +260,7 @@ claude mcp list
   - WBHubManager: `http://158.180.95.246:3090` / `http://workhub.biz` (Frontend: 3090, Backend: 4090)
   - WBSalesHub: `http://158.180.95.246:3010` / `http://workhub.biz/saleshub` (Frontend: 3010, Backend: 4010)
   - WBFinHub: `http://158.180.95.246:3020` / `http://workhub.biz/finhub` (Frontend: 3020, Backend: 4020)
+  - WBOnboardingHub: `http://158.180.95.246:3030` / `http://workhub.biz/onboarding` (Frontend: 3030, Backend: 4030)
   - HWTestAgent: `http://158.180.95.246:3100` / `http://workhub.biz/testagent` (Frontend: 3100, Backend: 4100)
   - SSH 접속: `ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246`
   - SSH 키 위치: `C:\GitHub\WHCommon\SSHkey\ssh-key-2026-01-01.key` (WSL에서는 `~/.ssh/oracle-cloud.key`로 복사 후 사용)
@@ -292,7 +321,7 @@ claude mcp list
   - Core-API-P0: 시스템 장애 수준 Critical (6시간마다)
   - Core-API-P1: 핵심 기능 오류 수준 High (하루 2회)
   - Core-API-P2: 부가 기능 오류 수준 Medium (매일 정오)
-- **대상 프로젝트**: WBHubManager, WBSalesHub, WBFinHub
+- **대상 프로젝트**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub
 - **지원 환경**: production, development, docker
 
 ### UI 아이콘 렌더링 규칙
@@ -373,8 +402,10 @@ test('debug page until success', async ({ page }) => {
   4. 대시보드 접근 확인
 
 ---
-<<<<<<< HEAD
-마지막 업데이트: 2026-01-02
-=======
 마지막 업데이트: 2026-01-04
->>>>>>> 22b7a6a (Add 스모크테스트 (Smoke Test) skill implementation)
+
+**주요 변경 사항**:
+- 전체 허브 리스트 섹션 추가 (WBOnboardingHub 포함)
+- 로컬 DB 연결 정보에 WBOnboardingHub 추가
+- 프로덕션 배포 환경에 WBOnboardingHub 추가
+- HWTestAgent 테스트 대상 프로젝트에 WBOnboardingHub 추가
