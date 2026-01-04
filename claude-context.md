@@ -9,17 +9,17 @@ WorkHub 프로젝트는 다음 5개의 허브로 구성됩니다:
 
 | 허브 이름 | 경로 | 개발 포트 (F/B) | 스테이징 포트 (B) | 운영 포트 (B) | 설명 |
 |----------|------|----------------|------------------|--------------|------|
-| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4290 | 4490 | 허브 관리 및 SSO 인증 서버 |
-| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4210 | 4410 | 고객 및 미팅 관리 시스템 |
-| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4220 | 4420 | 재무/트랜잭션 관리 시스템 |
-| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4230 | 4430 | 신규 사용자 온보딩 시스템 |
-| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4240 | 4440 | 레퍼런스/문서 관리 시스템 (HubManager 하위) |
-| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4280 | 4480 | 자동화 테스트 시스템 |
+| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4400 | 4500 | 허브 관리 및 SSO 인증 서버 |
+| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4400 | 4500 | 고객 및 미팅 관리 시스템 |
+| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4400 | 4500 | 재무/트랜잭션 관리 시스템 |
+| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4400 | 4500 | 신규 사용자 온보딩 시스템 |
+| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4400 | 4500 | 레퍼런스/문서 관리 시스템 (HubManager 하위) |
+| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4400 | 4500 | 자동화 테스트 시스템 |
 
 **포트 체계**:
-- **개발 환경 (Dev)**: 3000번대 (프론트엔드) / 4000번대 (백엔드)
-- **스테이징 환경 (Docker)**: 4200번대 (백엔드만, 프로덕션 모드)
-- **운영 환경 (Oracle)**: 4400번대 (백엔드만, 프로덕션 모드)
+- **개발 환경 (Dev)**: 3000번대 (프론트엔드) / 4000번대 (백엔드, 각 허브별 개별 포트)
+- **스테이징 환경 (Docker)**: 4400 (모든 허브 공유, Nginx 리버스 프록시로 라우팅)
+- **운영 환경 (Oracle)**: 4500 (모든 허브 공유, Nginx 리버스 프록시로 라우팅)
 - 프로덕션 모드에서는 프론트엔드가 정적 파일로 제공되므로 별도 포트 불필요
 
 **참고**:
@@ -153,16 +153,13 @@ claude mcp list
   - `NODE_ENV: production` 설정 필수
   - dev-login 엔드포인트 비활성화
   - Google OAuth만 사용
-- ✅ **localhost + 4200번대 포트 사용**: 개발 환경과 포트 충돌 방지
-  - HubManager: http://localhost:4290
-  - SalesHub: http://localhost:4210
-  - FinHub: http://localhost:4220
-  - OnboardingHub: http://localhost:4230
-  - TestAgent: http://localhost:4280
+- ✅ **localhost + 단일 포트 사용**: 스테이징/운영 환경은 Nginx 리버스 프록시로 라우팅
+  - 스테이징: http://localhost:4400 (모든 허브)
+  - 운영: http://localhost:4500 (모든 허브)
 - ✅ **환경 일관성**:
-  - 로컬 개발 (4000번대): `npm run dev` (개발 모드, dev-login 사용 가능)
-  - Docker 스테이징 (4200번대): 프로덕션 모드 (Google OAuth만)
-  - Oracle 운영 (4400번대): 프로덕션 모드 (Google OAuth만)
+  - 로컬 개발 (4000번대): `npm run dev` (개발 모드, dev-login 사용 가능, 각 허브별 개별 포트)
+  - Docker 스테이징 (4400): 프로덕션 모드 (Google OAuth만, 모든 허브 공유)
+  - Oracle 운영 (4500): 프로덕션 모드 (Google OAuth만, 모든 허브 공유)
 
 ### PRD 문서 관리
 - PRD는 `WHCommon/계획_PRD.md` 규칙에 따라 작성
@@ -248,8 +245,13 @@ claude mcp list
   - 로컬 개발 시 애플리케이션이 `.env.local` 파일에서 환경변수 로드
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 필수 항목(*) 표시된 환경변수는 반드시 값 입력 필요
+- ✅ **스테이징 환경**: `.env` 파일 사용
+  - Docker 스테이징 환경에서 `.env` 파일에서 환경변수 로드
+  - `DOCKER_PORT=4400` 설정
+  - Git에 커밋되지 않음 (`.gitignore`에 포함)
 - ✅ **프로덕션 배포**: `.env.prd` 파일 사용
   - 프로덕션 배포 시 애플리케이션이 `.env.prd` 파일에서 환경변수 로드
+  - `DOCKER_PORT=4500` 설정
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 오라클 서버 배포 시 Git Hook이 자동으로 Doppler에서 `.env.prd` 생성
 - ✅ **Doppler 동기화**: `.env` 및 `.env.prd` 파일 동기화
@@ -259,6 +261,10 @@ claude mcp list
   - **수동 푸시**: `WHCommon/scripts/push-all-to-doppler.sh` 스크립트 실행
   - Git Hook을 통한 자동 동기화는 현재 비활성화됨
 - ❌ **실시간 Doppler 연동 금지**: 애플리케이션 실행 시 Doppler API를 직접 호출하지 않음
+- 📌 **Docker 포트 환경변수**: `DOCKER_PORT` 하나로 통일
+  - 스테이징: `DOCKER_PORT=4400` (.env 파일)
+  - 운영: `DOCKER_PORT=4500` (.env.prd 파일)
+  - 개별 허브별 포트 변수(DOCKER_HUBMANAGER_PORT 등)는 사용하지 않음
 - 📌 **Doppler 토큰 파일 위치**: `/home/peterchung/WHCommon/env.doppler`
   - 모든 프로젝트의 Development/Production Doppler 토큰이 저장됨
   - 스크립트가 이 파일에서 토큰을 읽어 사용
@@ -283,13 +289,13 @@ claude mcp list
   - 로컬 개발은 항상 로컬 Docker PostgreSQL 사용
 
 ### 프로덕션 배포 환경
-- **오라클 클라우드**: 메인 프로덕션 환경 (4400번대 포트 사용)
-  - WBHubManager: `http://workhub.biz` (Backend: 4490)
-  - WBSalesHub: `http://workhub.biz/saleshub` (Backend: 4410)
-  - WBFinHub: `http://workhub.biz/finhub` (Backend: 4420)
-  - WBOnboardingHub: `http://workhub.biz/onboarding` (Backend: 4430)
-  - WBRefHub: `http://workhub.biz/refhub` (Backend: 4440)
-  - HWTestAgent: `http://workhub.biz/testagent` (Backend: 4480)
+- **오라클 클라우드**: 메인 프로덕션 환경 (포트 4500, Nginx 리버스 프록시)
+  - WBHubManager: `http://workhub.biz` (Backend: 4500)
+  - WBSalesHub: `http://workhub.biz/saleshub` (Backend: 4500)
+  - WBFinHub: `http://workhub.biz/finhub` (Backend: 4500)
+  - WBOnboardingHub: `http://workhub.biz/onboarding` (Backend: 4500)
+  - WBRefHub: `http://workhub.biz/refhub` (Backend: 4500)
+  - HWTestAgent: `http://workhub.biz/testagent` (Backend: 4500)
   - SSH 접속: `ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246`
   - SSH 키 위치: `C:\GitHub\WHCommon\SSHkey\ssh-key-2026-01-01.key` (WSL에서는 `~/.ssh/oracle-cloud.key`로 복사 후 사용)
 - ❌ **Railway 배포 안함**: 오라클 클라우드로 완전 마이그레이션 완료
