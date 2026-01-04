@@ -252,14 +252,16 @@ claude mcp list
   - 프로덕션 배포 시 애플리케이션이 `.env.prd` 파일에서 환경변수 로드
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 오라클 서버 배포 시 Git Hook이 자동으로 Doppler에서 `.env.prd` 생성
-- ✅ **Doppler 동기화**: Git Hook을 통한 자동 동기화
-  - **커밋 전** (`pre-commit`): `.env.local`의 환경변수를 Doppler Development 설정에 업로드
-  - **Pull 후** (`post-merge`): Doppler에서 최신 환경변수를 다운로드하여 `.env.local` 업데이트
-  - **배포 전** (`pre-push`): Doppler Production 설정에서 `.env.prd` 생성
+- ✅ **Doppler 동기화**: `.env` 및 `.env.prd` 파일 동기화
+  - **중요**: Doppler는 `.env` 파일을 사용하며, `.env.local`은 동기화하지 않음
+  - **Development 환경**: `.env` 파일을 Doppler Development 설정과 동기화
+  - **Production 환경**: `.env.prd` 파일을 Doppler Production 설정과 동기화
+  - **수동 푸시**: `WHCommon/scripts/push-all-to-doppler.sh` 스크립트 실행
+  - Git Hook을 통한 자동 동기화는 현재 비활성화됨
 - ❌ **실시간 Doppler 연동 금지**: 애플리케이션 실행 시 Doppler API를 직접 호출하지 않음
-- 📌 **Doppler 토큰 파일 위치**: `C:\GitHub\WHCommon\env\.env.doppler`
+- 📌 **Doppler 토큰 파일 위치**: `/home/peterchung/WHCommon/env.doppler`
   - 모든 프로젝트의 Development/Production Doppler 토큰이 저장됨
-  - Git Hook 스크립트가 이 파일에서 토큰을 읽어 사용
+  - 스크립트가 이 파일에서 토큰을 읽어 사용
   - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
 - 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
 
