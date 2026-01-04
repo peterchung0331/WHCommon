@@ -7,7 +7,7 @@ To guide an AI assistant in creating a detailed Product Requirements Document (P
 ## Process
 
 1.  **Receive Initial Prompt:** The user provides a brief description or request for a new feature or functionality.
-2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask only the most essential clarifying questions needed to write a clear PRD. Limit questions to 3-5 critical gaps in understanding. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out). Make sure to provide options in letter/number lists so I can respond easily with my selections.
+2.  **Ask Clarifying Questions:** Before writing the PRD, the AI *must* ask clarifying questions needed to write a clear PRD. Aim for 8-12 questions covering critical gaps in understanding. The goal is to understand the "what" and "why" of the feature, not necessarily the "how" (which the developer will figure out). Use the AskUserQuestion tool to present questions in an interactive format (split into multiple rounds of 4 questions each if needed).
 3.  **Generate PRD:** Based on the initial prompt and the user's answers to the clarifying questions, generate a PRD using the structure outlined below.
 4.  **Save PRD:** Save the generated document as `prd-[feature-name].md` inside the `/기능 PRD/` directory.
 
@@ -22,14 +22,51 @@ Ask only the most critical questions needed to write a clear PRD. Focus on areas
 
 **Important:** Only ask questions when the answer isn't reasonably inferable from the initial prompt. Prioritize questions that would significantly impact the PRD's clarity.
 
-### Formatting Requirements
+### Question Format Options
 
+#### Option 1: AskUserQuestion Tool (Recommended for Claude Code)
+Use the `AskUserQuestion` tool to present questions as interactive popups in the Claude Code interface:
+
+**장점:**
+- 사용자 친화적인 UI (버튼 클릭으로 응답)
+- 명확한 선택지 제시
+- 다중 선택 가능 (multiSelect 옵션)
+- 응답 자동 수집
+
+**사용 방법:**
+```typescript
+AskUserQuestion({
+  questions: [
+    {
+      question: "What is the primary goal of this feature?",
+      header: "Goal",  // 최대 12자
+      multiSelect: false,
+      options: [
+        { label: "Onboarding", description: "Improve user onboarding experience" },
+        { label: "Retention", description: "Increase user retention" },
+        { label: "Support", description: "Reduce support burden" },
+        { label: "Revenue", description: "Generate additional revenue" }
+      ]
+    }
+  ]
+})
+```
+
+**제약사항:**
+- 한 번에 1-4개 질문까지
+- 각 질문당 2-4개 옵션
+- header는 최대 12자
+- "Other" 옵션은 자동 추가됨 (명시하지 말 것)
+
+#### Option 2: Text-Based Questions (Legacy)
+텍스트로 질문을 나열하는 기존 방식:
+
+**Formatting Requirements:**
 - **Number all questions** (1, 2, 3, etc.)
 - **List options for each question as A, B, C, D, etc.** for easy reference
 - Make it simple for the user to respond with selections like "1A, 2C, 3B"
 
-### Example Format
-
+**Example Format:**
 ```
 1. What is the primary goal of this feature?
    A. Improve user onboarding experience
@@ -42,13 +79,10 @@ Ask only the most critical questions needed to write a clear PRD. Focus on areas
    B. Existing users only
    C. All users
    D. Admin users only
-
-3. What is the expected timeline for this feature?
-   A. Urgent (1-2 weeks)
-   B. High priority (3-4 weeks)
-   C. Standard (1-2 months)
-   D. Future consideration (3+ months)
 ```
+
+### Recommendation
+**Claude Code 환경에서는 Option 1 (AskUserQuestion 툴)을 우선 사용**하세요. 단, 5개 이상의 질문이 필요하거나 복잡한 설명이 필요한 경우 Option 2를 사용할 수 있습니다.
 
 ## PRD Structure
 

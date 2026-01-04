@@ -1,0 +1,119 @@
+---
+name: 스킬테스터-단위
+description: Jest/Vitest 기반 단위 테스트 실행 및 자동 수정
+---
+
+# 스킬테스터-단위 (Unit Test)
+
+## 개요
+Jest 또는 Vitest를 사용하여 단위 테스트를 실행하고,
+실패 시 자동으로 코드를 수정합니다.
+
+## 특징
+| 항목 | 값 |
+|------|-----|
+| 브라우저 | ❌ 불필요 |
+| Google 로그인 | ❌ 불필요 |
+| 스크린샷 | ❌ 없음 |
+| 속도 | 매우 빠름 (5~30초) |
+| 도구 | Jest, Vitest, Mocha |
+| 대상 | 함수, 컴포넌트, 유틸리티 |
+
+## 작업 순서
+
+### 1단계: 프로젝트 확인
+```
+├─ 프로젝트 디렉토리 이동
+├─ package.json에서 test 스크립트 확인
+├─ jest.config.js / vitest.config.ts 확인
+└─ 테스트 파일 패턴 확인 (**/*.test.ts, **/*.spec.ts)
+```
+
+### 2단계: 테스트 실행
+```bash
+# Jest
+npm test -- --coverage --json --outputFile=test-results.json
+
+# Vitest
+npx vitest run --coverage --reporter=json
+
+# 특정 파일만
+npm test -- path/to/file.test.ts
+```
+
+### 3단계: 결과 분석
+- 성공/실패 테스트 분류
+- 실패 원인 분석:
+  - Assertion 오류
+  - Type 오류
+  - Import 오류
+  - Timeout 오류
+- 커버리지 리포트 파싱
+
+### 4단계: 반복 디버깅 (최대 3회)
+```
+❌ 실패 시:
+  ├─ 에러 메시지 분석
+  ├─ 관련 소스 코드 확인
+  ├─ 🔧 코드 수정 적용
+  ├─ ⏳ 2초 대기
+  └─ 🔁 재시도
+
+❌ 재시도 1 실패:
+  ├─ 다른 접근법으로 수정
+  ├─ ⏳ 4초 대기
+  └─ 🔁 재시도
+
+❌ 재시도 2 실패:
+  ├─ 근본 원인 분석
+  ├─ ⏳ 6초 대기
+  └─ 🔁 최종 재시도
+
+❌ 최종 실패 → 상세 리포트 생성
+✅ 성공 → 수정사항 기록 + 리포트 생성
+```
+
+### 5단계: 리포트 생성
+```
+템플릿: /home/peterchung/WHCommon/TestReport/테스트-리포트-템플릿.md
+
+리포트 구조:
+├─ 📊 테스트 결과 요약 (테이블)
+├─ 📁 테스트 파일 목록
+├─ ❌ 실패 케이스 상세
+├─ 🔧 수정사항 (있을 경우)
+├─ 📈 커버리지 분석
+└─ 📝 결론 및 권장사항
+```
+
+### 6단계: 리포트 저장
+```
+경로: /home/peterchung/HWTestAgent/test-results/MyTester/reports/
+파일명: YYYY-MM-DD-[프로젝트명]-단위-테스트.md
+```
+
+## 자동 수정 대상
+| 오류 유형 | 수정 방법 |
+|----------|----------|
+| expect 불일치 | 예상값/실제값 비교 후 로직 수정 |
+| undefined/null | 옵셔널 체이닝 또는 기본값 추가 |
+| import 오류 | 경로 수정 또는 export 추가 |
+| type 오류 | 타입 정의 수정 |
+| mock 오류 | mock 함수 설정 수정 |
+
+## 사용 예시
+```
+/스킬테스터 세일즈허브 단위 테스트
+/스킬테스터 WBFinHub 단위
+/스킬테스터 unit test
+```
+
+## 파싱 정보 (메인에서 전달)
+```typescript
+interface UnitTestConfig {
+  project: string;      // 프로젝트명
+  projectPath: string;  // 프로젝트 경로
+  testPattern?: string; // 특정 테스트 패턴 (선택)
+  maxRetries: number;   // 최대 재시도 횟수 (기본: 3)
+}
+```

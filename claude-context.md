@@ -10,6 +10,15 @@
 - **테스트리포트폴더**: `C:\GitHub\HWTestAgent\TestReport` - 테스트 결과 및 리포트 저장
 - **작업중폴더**: `C:\GitHub\WHCommon\OnProgress` - 진행 중인 작업 상태 기록
 
+### 테스트 관련 폴더 (HWTestAgent)
+- **TestAgent**: `/home/peterchung/HWTestAgent` - 통합 테스트 에이전트
+  - `test-results/reports/` - 테스트 리포트 저장
+  - `test-results/guides/` - 테스트 가이드 모음
+  - `test-results/guides/docker/` - Docker 테스트 가이드
+  - `test-results/logs/` - 테스트 로그
+  - `test-plans/templates/` - 테스트 템플릿
+  - `scenarios/` - YAML 테스트 시나리오
+
 ### 중요 문서
 - **기능 리스트**: `C:\GitHub\WHCommon\기능-리스트.md` - 모든 WorkHub 프로젝트의 상세 기능 목록 (도입일 포함)
 - **테스트리포트포맷**: `C:\GitHub\HWTestAgent\TestReport\테스트-리포트-템플릿.md` - 테스트 리포트 작성 시 사용하는 표준 템플릿
@@ -46,6 +55,124 @@ WBHubManager Git 저장소에서 다음 항목들을 관리합니다:
 
 ### 정리
 모든 공용/공유 자원은 **WBHubManager 저장소 하나로 집중 관리**하고, 각 Hub는 자신의 코드만 관리하는 구조입니다.
+
+---
+
+## 스킬 (Skills)
+
+### 스킬테스터
+테스트 자동화를 위한 Claude Code 스킬입니다. "스킬테스터"라고 하면 이 스킬을 사용합니다.
+
+- **위치**: `~/.claude/skills/스킬테스터/`
+- **호출**: `/스킬테스터 [명령]`
+- **서브 스킬**:
+  | 스킬 | 용도 | 예시 |
+  |------|------|------|
+  | 스킬테스터-단위 | Jest/Vitest 단위 테스트 | `/스킬테스터 세일즈허브 단위` |
+  | 스킬테스터-통합 | API 통합 테스트 | `/스킬테스터 허브매니저->핀허브 통합` |
+  | 스킬테스터-E2E | Playwright E2E 테스트 | `/스킬테스터 오라클에서 E2E` |
+
+- **자연어 지원**: "스킬테스터 허브매니저 단위 테스트 해줘" 형태로 사용 가능
+- **결과 저장**: `HWTestAgent/test-results/MyTester/`
+- **기본 테스트 도구**: 특별한 언급 없이 "테스트 해줘"라고 요청하면 스킬테스터를 사용
+
+---
+
+## MCP (Model Context Protocol) 서버 설정
+
+### 필수 MCP 서버
+다음 MCP 서버를 항상 로드하고 우선적으로 사용합니다:
+
+| MCP 서버 | 용도 | 우선순위 |
+|----------|------|----------|
+| **Context7** | 라이브러리/프레임워크 최신 문서 조회 | 높음 |
+
+### MCP 사용 규칙
+- **문서 조회 시**: Context7 MCP를 통해 최신 라이브러리 문서를 먼저 확인하세요
+- **코드 작성 시**: Context7에서 제공하는 최신 API와 베스트 프랙티스를 참고하세요
+- **MCP 도구 우선**: 동일한 기능이 있다면 일반 웹 검색보다 MCP 도구를 우선 사용하세요
+
+### MCP 관련 명령어
+```bash
+# 현재 연결된 MCP 서버 확인
+/mcp
+
+# MCP 서버 목록 보기
+claude mcp list
+```
+
+---
+
+## 개발 및 문서 관리 규칙
+
+### 빌드 환경
+- **모든 로컬/운영 빌드는 Docker Compose 사용**
+  - 개발 환경: `docker-compose.dev.yml`
+  - 운영 환경: `docker-compose.prod.yml`
+
+### 로컬 서버 설정
+- **로컬 서버 장시간 유지**: 서버 띄운 후 일정 시간이 지나도 자동 종료되지 않도록 설정
+  - `timeout` 설정 해제 또는 충분히 긴 값으로 설정
+  - 개발 중 서버 재시작 최소화
+
+### PRD 문서 관리
+- PRD는 `WHCommon/계획_PRD.md` 규칙에 따라 작성
+- 작성 완료된 PRD는 **기능 PRD 폴더**에 저장: `WHCommon/PRD/prd-[feature-name].md`
+- **사용 시 알림**: `계획_PRD.md` 사용하여 작업 시작할 때 사용자에게 알려주기
+
+### 테스크 및 커밋 규칙
+- `WHCommon/계획_테스크.md`로 작성된 테스크는 **중간중간 커밋 진행**
+- 각 주요 마일스톤 완료 시 커밋하여 작업 이력 관리
+- **사용 시 알림**: `계획_테스크.md` 사용하여 작업 시작할 때 사용자에게 알려주기
+
+### 마크다운 문서 Git 관리
+- **로컬에서 작성된 모든 `.md` 파일은 Git에서 관리**
+- 특히 **WHCommon 폴더**의 모든 마크다운은 반드시 Git 추적
+- `.gitignore`에서 `.md` 파일 제외하지 않도록 주의
+
+### Docker 리소스 자동 관리
+- **자동 정리 스크립트**: `WBHubManager/scripts/docker-cleanup.sh`
+- **정리 조건**:
+  1. Exit 상태 컨테이너 즉시 삭제
+  2. 30일 이상 사용하지 않은 이미지 삭제
+  3. 빌드 캐시 50GB 초과 시 오래된 캐시 정리
+  4. Dangling 이미지 및 볼륨 자동 정리
+
+- **사용 방법**:
+  ```bash
+  # docker-compose로 빌드 + 자동 정리
+  docker-compose --profile cleanup up -d
+
+  # Makefile 사용 (권장)
+  make build-clean   # 빌드 + 정리
+  make up-clean      # 실행 + 정리
+  make clean-docker  # 수동 정리
+  ```
+
+- **정리 주기**:
+  - 매 빌드 후 자동 (--profile cleanup 사용 시)
+  - 개발자 판단에 따라 수동 실행 가능
+  - WSL 안정성을 위해 주기적 실행 권장
+
+---
+
+## 세션 시작 시 필수 동작
+
+세션의 **첫 번째 응답**에서 반드시 다음을 수행:
+
+1. **컨텍스트 로드 확인 메시지** 출력
+2. **현재 로드된 MCP 서버 목록** 출력
+
+### 출력 형식 예시
+```
+✓ 컨텍스트 파일 로드 완료 (WHCommon/claude-context.md)
+  - 기본 언어: 한국어
+  - 프로젝트 규칙 및 폴더 구조 적용됨
+
+✓ 현재 로드된 MCP 서버:
+  - Context7: 라이브러리/프레임워크 최신 문서 조회
+  - [기타 MCP 서버 목록...]
+```
 
 ---
 
@@ -246,4 +373,8 @@ test('debug page until success', async ({ page }) => {
   4. 대시보드 접근 확인
 
 ---
+<<<<<<< HEAD
 마지막 업데이트: 2026-01-02
+=======
+마지막 업데이트: 2026-01-04
+>>>>>>> 22b7a6a (Add 스모크테스트 (Smoke Test) skill implementation)
