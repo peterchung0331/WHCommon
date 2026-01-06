@@ -7,20 +7,19 @@
 ### 전체 허브 리스트
 WorkHub 프로젝트는 다음 5개의 허브로 구성됩니다:
 
-| 허브 이름 | 경로 | 개발 포트 (F/B) | 스테이징 포트 (B) | 운영 포트 (B) | 설명 |
-|----------|------|----------------|------------------|--------------|------|
-| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4400 | 4500 | 허브 관리 및 SSO 인증 서버 |
-| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4400 | 4500 | 고객 및 미팅 관리 시스템 |
-| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4400 | 4500 | 재무/트랜잭션 관리 시스템 |
-| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4400 | 4500 | 신규 사용자 온보딩 시스템 |
-| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4400 | 4500 | 레퍼런스/문서 관리 시스템 (HubManager 하위) |
-| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4400 | 4500 | 자동화 테스트 시스템 |
+| 허브 이름 | 경로 | 개발 포트 (F/B) | 운영 포트 (B) | 설명 |
+|----------|------|----------------|--------------|------|
+| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4090 | 허브 관리 및 SSO 인증 서버 |
+| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4010 | 고객 및 미팅 관리 시스템 |
+| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4020 | 재무/트랜잭션 관리 시스템 |
+| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4030 | 신규 사용자 온보딩 시스템 |
+| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4040 | 레퍼런스/문서 관리 시스템 (HubManager 하위) |
+| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4100 | 자동화 테스트 시스템 |
 
 **포트 체계**:
 - **개발 환경 (Dev)**: 3000번대 (프론트엔드) / 4000번대 (백엔드, 각 허브별 개별 포트)
-- **스테이징 환경 (Docker)**: 4400 (모든 허브 공유, Nginx 리버스 프록시로 라우팅)
-- **운영 환경 (Oracle)**: 4500 (모든 허브 공유, Nginx 리버스 프록시로 라우팅)
-- 프로덕션 모드에서는 프론트엔드가 정적 파일로 제공되므로 별도 포트 불필요
+- **운영 환경 (Oracle)**: 각 허브별 개별 포트 (4090, 4010, 4020 등), Nginx가 경로별로 프록시
+- 프로덕션 모드에서는 프론트엔드가 정적 파일로 백엔드와 동일 포트에서 서빙
 
 **참고**:
 - 대부분의 허브는 독립된 Git 저장소로 관리됨
@@ -289,25 +288,28 @@ claude mcp list
   - 로컬 개발은 항상 로컬 Docker PostgreSQL 사용
 
 ### 프로덕션 배포 환경
-- **오라클 클라우드**: 메인 프로덕션 환경 (포트 4500, Nginx 리버스 프록시)
-  - WBHubManager: `http://workhub.biz` (Backend: 4500)
-  - WBSalesHub: `http://workhub.biz/saleshub` (Backend: 4500)
-  - WBFinHub: `http://workhub.biz/finhub` (Backend: 4500)
-  - WBOnboardingHub: `http://workhub.biz/onboarding` (Backend: 4500)
-  - WBRefHub: `http://workhub.biz/refhub` (Backend: 4500)
-  - HWTestAgent: `http://workhub.biz/testagent` (Backend: 4500)
+- **오라클 클라우드**: 메인 프로덕션 환경 (각 허브별 개별 포트, Nginx 리버스 프록시)
+  - WBHubManager: `http://workhub.biz` (Backend: 4090)
+  - WBSalesHub: `http://workhub.biz/saleshub` (Backend: 4010)
+  - WBFinHub: `http://workhub.biz/finhub` (Backend: 4020)
+  - WBOnboardingHub: `http://workhub.biz/onboarding` (Backend: 4030)
+  - WBRefHub: `http://workhub.biz/refhub` (Backend: 4040)
+  - HWTestAgent: `http://workhub.biz/testagent` (Backend: 4100)
   - SSH 접속: `ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246`
   - SSH 키 위치: `C:\GitHub\WHCommon\SSHkey\ssh-key-2026-01-01.key` (WSL에서는 `~/.ssh/oracle-cloud.key`로 복사 후 사용)
 - ❌ **Railway 배포 안함**: 오라클 클라우드로 완전 마이그레이션 완료
 
 ### 오라클 클라우드 배포 원칙
-- ❌ **로컬 Docker 빌드 금지**: 로컬에서 Docker 이미지를 빌드하지 않음
-- ✅ **오라클에서 직접 빌드**: 오라클 클라우드 서버에서 GitHub에서 코드를 받아 빌드
-- ✅ **GitHub SSH 키 공유**: 로컬 WSL의 GitHub SSH 키(`~/.ssh/github_key`)를 오라클 서버에 복사하여 사용
+- ✅ **로컬에서 Docker 빌드**: WSL에서 Docker 이미지를 빌드
+- ✅ **이미지 전송**: `docker save/load`를 통해 오라클 서버로 이미지 전송
+- ❌ **오라클에서 빌드 금지**: 오라클 서버 리소스 절약, 빌드 시간 단축
 - 📌 **배포 방법**:
-  1. 각 프로젝트의 `deploy-oracle.sh` 스크립트 실행
-  2. 스크립트가 자동으로 코드를 GitHub에 푸시
-  3. 오라클 서버에서 Git pull 후 Docker 빌드 및 배포
+  1. 로컬에서 Docker 이미지 빌드: `docker build -t [이미지명]:latest .`
+  2. 이미지 저장: `docker save [이미지명]:latest | gzip > [이미지명].tar.gz`
+  3. 오라클로 전송: `scp -i ~/.ssh/oracle-cloud.key [이미지명].tar.gz ubuntu@158.180.95.246:/home/ubuntu/`
+  4. 오라클에서 이미지 로드: `docker load < [이미지명].tar.gz`
+  5. 컨테이너 실행: `docker run -d --name [컨테이너명] ...`
+- 📌 **빠른 배포 스크립트**: 각 프로젝트의 `deploy-oracle.sh` 스크립트가 위 과정을 자동화
 - 📌 **배포 가이드**: `C:\GitHub\WHCommon\배포-가이드-오라클.md` 참조
 - 📌 **신규 프로젝트**: 배포 가이드의 "신규 프로젝트 생성 시 체크리스트" 따라 설정
 
@@ -464,8 +466,9 @@ test('debug page until success', async ({ page }) => {
 - 📌 **적용 범위**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub 모든 허브
 
 ---
-마지막 업데이트: 2026-01-04
+마지막 업데이트: 2026-01-06
 
 **주요 변경 사항**:
+- 오라클 클라우드 배포 원칙 변경: 로컬 빌드 → 이미지 전송 방식으로 전환
 - 데이터베이스 Enum 값 규칙 추가 (소문자 통일)
 - AccountStatus, AccountRole 타입 정의 소문자로 변경
