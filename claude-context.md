@@ -192,9 +192,27 @@ claude mcp list
 - **특징**: 병렬 실행 그룹 식별, 템플릿 기반 생성, 복잡도 자동 경고 (150개 초과 시)
 - **커밋 규칙**: 테스크 작업 시 중간중간 커밋 진행, 주요 마일스톤 완료 시 커밋
 
+#### 작업 완료 후 결과 기록 규칙 (필수)
+- **기능 구현 완료 시**: `WHCommon/기능 PRD/` 폴더에 작업 결과 기록
+  - 파일명: `prd-[feature-name].md`
+  - 내용: 실행_기획.md 템플릿 기반 PRD
+  - 시점: 기능 개발 완료 및 테스트 통과 후
+
+- **작업(Task) 완료 시**: `WHCommon/tasks/` 폴더에 작업 결과 기록
+  - 파일명: `tasks-[feature-name].md`
+  - 내용: 실행_작업.md 템플릿 기반 Task 목록 및 완료 상태
+  - 시점: 모든 Task 완료 후
+
+- **필수 작업 흐름**:
+  1. 작업 시작: PRD/Task 파일 생성
+  2. 작업 진행: TodoWrite로 진행 상태 추적
+  3. **작업 완료: 결과를 해당 폴더에 저장** ⬅️ 필수!
+  4. Git 커밋: 결과 파일 포함하여 커밋
+
 #### 중요 알림
 - **사용자 알림 필수**: `실행_기획.md` 또는 `실행_작업.md` 사용 시 작업 시작할 때 사용자에게 알려주기
 - **기본 동작**: 사용자가 PRD 또는 Task 생성을 요청할 때 별도 언급이 없으면 자동으로 해당 문서를 참조하여 작업
+- **완료 시 기록**: 작업 완료 후 반드시 결과를 기능 PRD 또는 tasks 폴더에 저장
 
 ### 마크다운 문서 Git 관리
 - **로컬에서 작성된 모든 `.md` 파일은 Git에서 관리**
@@ -296,22 +314,28 @@ claude mcp list
   - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
 - 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
 
-### 로컬 개발 데이터베이스 환경
-- ✅ **Docker PostgreSQL 사용**: 모든 로컬 개발 환경은 Docker로 실행된 PostgreSQL 사용
-  - 컨테이너 이름: `hwtestagent-postgres`
-  - 이미지: `postgres:15`
-  - 포트: `5432`
-  - 사용자/비밀번호: `postgres/postgres`
-  - 실행 명령어: `sudo docker run -d --name hwtestagent-postgres -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=hwtestagent -p 5432:5432 postgres:15`
-- ✅ **로컬 DB 연결 정보**:
-  - **WBHubManager**: `postgresql://postgres:postgres@localhost:5432/hubmanager?schema=public`
-  - **WBSalesHub**: `postgresql://postgres:postgres@localhost:5432/saleshub?schema=public`
-  - **WBFinHub**: `postgresql://postgres:postgres@localhost:5432/finhub?schema=public`
-  - **WBOnboardingHub**: `postgresql://postgres:postgres@localhost:5432/onboardinghub?schema=public`
-  - **HWTestAgent**: `postgresql://postgres:postgres@localhost:5432/hwtestagent`
-- ❌ **로컬에서 오라클 DB 직접 연결 금지**: 로컬 개발 시 오라클 클라우드 DB에 직접 연결하지 않음
-  - 이유: 네트워크 레이턴시, 방화벽 설정, 프로덕션 데이터 격리
-  - 로컬 개발은 항상 로컬 Docker PostgreSQL 사용
+### 로컬 개발 데이터베이스 환경 (2026-01-12 업데이트)
+- ✅ **오라클 개발 DB 사용** (SSH 터널링):
+  - 오라클 서버 IP: `158.180.95.246`
+  - SSH 터널링: `localhost:5432` → 오라클 `5432`
+  - 사용자/비밀번호: `workhub/[Doppler 관리]`
+  - 개발 DB: `dev-hubmanager`, `dev-saleshub`, `dev-finhub`, `dev-onboardinghub`
+- ✅ **SSH 터널링 스크립트**: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-db.sh`
+  - 포그라운드 실행: `./ssh-tunnel-oracle-db.sh`
+  - 백그라운드 실행: `nohup ./ssh-tunnel-oracle-db.sh > /tmp/ssh-tunnel.log 2>&1 &`
+  - 터널링 확인: `ps aux | grep "ssh.*5432"`
+  - 종료: `pkill -f "ssh.*5432:localhost:5432"`
+- ✅ **로컬 DB 연결 정보** (SSH 터널링 필수):
+  - **WBHubManager**: `postgresql://workhub:[password]@localhost:5432/dev-hubmanager?connection_limit=3&pool_timeout=20`
+  - **WBSalesHub**: `postgresql://workhub:[password]@localhost:5432/dev-saleshub?connection_limit=3&pool_timeout=20`
+  - **WBFinHub**: `postgresql://workhub:[password]@localhost:5432/dev-finhub?connection_limit=3&pool_timeout=20`
+  - **WBOnboardingHub**: `postgresql://workhub:[password]@localhost:5432/dev-onboardinghub?connection_limit=3&pool_timeout=20`
+- ✅ **운영 DB 격리**: 개발 DB(`dev-*`)와 운영 DB(`hubmanager`, `saleshub` 등) 완전 분리
+- ✅ **연결 풀 최적화**: 각 허브 최대 3개 연결 (총 12개), PostgreSQL 여유 88개
+- ⚠️ **주의사항**:
+  - 로컬 서버 실행 전 SSH 터널링 필수 실행
+  - 네트워크 레이턴시 증가 (10-100ms)
+  - 터널링 종료 시 DB 연결 끊김
 
 ### 프로덕션 배포 환경
 - **오라클 클라우드**: 메인 프로덕션 환경 (각 허브별 개별 포트, Nginx 리버스 프록시)
