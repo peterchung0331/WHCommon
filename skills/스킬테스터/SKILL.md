@@ -19,6 +19,25 @@ description: 테스트 유형을 자동 분류하고 적절한 서브 스킬을 
 | 스킬테스터-통합 | `스킬테스터-통합.md` | API/Supertest 통합 테스트 |
 | 스킬테스터-E2E | `스킬테스터-E2E.md` | Playwright E2E 테스트 |
 
+## E2E 테스트 가이드
+E2E 테스트 작성 시 다음 가이드 문서를 참조하세요:
+- **파일**: `E2E-테스트-가이드.md`
+- **내용**: Google OAuth 자동 로그인, 크로스 허브 네비게이션, JWT 토큰 전달, 스크린샷 캡처 등
+- **헬퍼 함수**: `/home/peterchung/HWTestAgent/tests/helpers/google-oauth-helper.ts`
+- **테스트 계정**: `biz.dev@wavebridge.com` / `wave1234!!`
+- **사용 예시**:
+  ```typescript
+  import { loginWithGoogle, getTestGoogleCredentials } from './helpers/google-oauth-helper';
+
+  const { email, password } = getTestGoogleCredentials();
+  await loginWithGoogle(page, {
+    email,
+    password,
+    loginUrl: 'http://158.180.95.246:4400',
+    redirectPath: '/hubs'
+  });
+  ```
+
 ## 자연어 파싱 규칙
 
 ### 테스트 유형 키워드

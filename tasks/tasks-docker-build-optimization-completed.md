@@ -125,6 +125,84 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
 
 ---
 
+---
+
+## 추가 최적화: 상대 경로 패턴 (2026-01-12)
+
+### 배경
+- BUILD ARG로 `NEXT_PUBLIC_API_URL`을 주입하면 환경별로 캐시가 무효화됨
+- 스테이징 → 프로덕션 승격 시 전체 재빌드 필요 (3-5분 소요)
+
+### 해결 방안: 상대 경로 패턴
+- **빌드 시**: `NEXT_PUBLIC_API_URL` 환경변수를 완전히 제거
+- **런타임 시**: 모든 API 호출은 상대 경로 (`/api/*`) 사용
+- **라우팅**: Nginx가 `/api/*` 요청을 백엔드로 프록시
+
+### 변경 사항
+
+#### 1. next.config.js
+```javascript
+// ❌ 이전
+const nextConfig = {
+  env: {
+    NEXT_PUBLIC_API_URL: process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4090',
+  },
+};
+
+// ✅ 이후
+const nextConfig = {
+  // env 객체 제거
+  async rewrites() {
+    // 개발 환경에서만 rewrites 사용
+    if (process.env.NODE_ENV === 'development') {
+      return [{ source: '/api/:path*', destination: 'http://localhost:4090/api/:path*' }];
+    }
+    return [];
+  },
+};
+```
+
+#### 2. API 클라이언트
+```typescript
+// ❌ 이전
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4090';
+
+// ✅ 이후
+const API_BASE_URL = '';  // 빈 문자열 (상대 경로)
+```
+
+#### 3. Dockerfile
+```dockerfile
+# ❌ 이전
+ARG NEXT_PUBLIC_API_URL
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+RUN npm run build
+
+# ✅ 이후 (ARG/ENV 제거)
+RUN npm run build  # 환경 독립적
+```
+
+### 예상 효과
+| 항목 | 변경 전 | 변경 후 | 개선율 |
+|------|---------|---------|-------|
+| 스테이징 빌드 | 3-5분 | 3-5분 | - |
+| 프로덕션 승격 | 3-5분 (재빌드) | **0초** (태그만 변경) | **100%** |
+| 총 배포 시간 | 6-10분 | 3-5분 | **50%** |
+| 캐시 활용도 | 0% | 100% | ∞ |
+
+### 적용 허브
+- ✅ **WBSalesHub**: 이미 적용됨 (검증 완료)
+- 🔄 **WBHubManager**: 적용 예정
+- 🔄 **WBFinHub**: 적용 예정 (basePath 제거)
+- 🔄 **WBOnboardingHub**: 적용 예정
+
+### 참고 문서
+- 계획서: `/home/peterchung/.claude/plans/robust-waddling-swan.md`
+- 검증 사례: WBSalesHub (http://workhub.biz/saleshub)
+
+---
+
 ## 작성자
-- Claude Opus 4.5
+- Claude Sonnet 4.5
 - 작성일: 2026-01-12
+- 업데이트: 2026-01-12 (상대 경로 패턴 추가)

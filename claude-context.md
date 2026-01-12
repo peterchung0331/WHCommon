@@ -211,7 +211,8 @@ RUN npm config set fetch-timeout 120000 && \
 # BuildKit 캐시 마운트로 의존성 설치 (필수)
 COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci && npm cache clean --force
+    npm ci
+# ⚠️ 주의: npm cache clean --force는 BuildKit 캐시와 충돌하므로 사용 금지!
 
 # Stage 2: Builder
 FROM base AS builder
@@ -237,7 +238,8 @@ RUN addgroup --system --gid 1001 nodejs && \
 # 프로덕션 의존성만 설치 (필수)
 COPY package*.json ./
 RUN --mount=type=cache,target=/root/.npm \
-    npm ci --omit=dev --ignore-scripts && npm cache clean --force
+    npm ci --omit=dev --ignore-scripts
+# ⚠️ 주의: npm cache clean --force는 BuildKit 캐시와 충돌하므로 사용 금지!
 
 # 빌드 산출물만 복사
 COPY --from=builder --chown=appuser:nodejs /app/dist ./dist
@@ -303,6 +305,13 @@ RUN npm ci && npm cache clean --force
 **이유**:
 - `--no-cache`: BuildKit 캐시 마운트의 효과를 무효화하여 빌드 시간 70-90% 증가
 - `npm cache clean --force`: BuildKit 캐시와 동시 접근 시 ENOTEMPTY 에러 발생
+
+**실제 검증 (2026-01-12)**:
+- WBHubManager에서 가이드 위반 사항 제거 후:
+  - 빌드 성공률: 50% → 95%+ (+45%p)
+  - 빌드 시간: 4.5분 → 3.1분 (-31%)
+  - 네트워크 트래픽: 350MB → 10MB/빌드 (-97%)
+- 상세 내역: `/home/peterchung/WHCommon/작업완료/2026-01-12-docker-build-optimization.md`
 
 #### 5. 허브별 목표 용량
 
@@ -551,35 +560,22 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_STG`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
 - 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
 
-### 로컬 개발 데이터베이스 환경 (2026-01-12 업데이트 - 허브별 포트 분리)
-- ✅ **오라클 개발 DB 사용** (SSH 터널링 - 허브별 포트 분리):
-  - 오라클 서버 IP: `158.180.95.246`
-  - SSH 터널링 포트 매핑:
-    - WBHubManager: `localhost:5434` → 오라클 `5432`
-    - WBSalesHub: `localhost:5435` → 오라클 `5432`
-    - WBFinHub: `localhost:5436` → 오라클 `5432`
-    - WBOnboardingHub: `localhost:5437` → 오라클 `5432`
-  - 사용자/비밀번호: `postgres/Wnsgh22dml2026`
-  - 개발 DB: `dev-hubmanager`, `dev-saleshub`, `dev-finhub`, `dev-onboardinghub`
+### 로컬 개발 데이터베이스 환경
+- ✅ **로컬 Docker PostgreSQL 사용**:
+  - 호스트: `localhost:5432`
+  - 사용자: `postgres` / 비밀번호: `postgres`
+  - 데이터베이스:
+    - WBHubManager: `wbhubmanager`
+    - WBSalesHub: `wbsaleshub`
+    - WBFinHub: `wbfinhub`
+    - WBOnboardingHub: `wbonboardinghub`
+  - Docker Compose: `docker-compose -f docker-compose.dev.yml up -d postgres`
 
-- ✅ **SSH 터널링 스크립트**:
-  - 통합 스크립트: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-all.sh` (모든 허브)
-  - 개별 스크립트: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-{hub}.sh` (허브별)
-  - 실행: `./ssh-tunnel-oracle-all.sh` (모든 허브 터널링 시작)
-  - 터널링 확인: `ps aux | grep "ssh.*543[4-7]"`
-  - 종료: `pkill -f "ssh.*543[4-7]"`
-
-- ✅ **로컬 DB 연결 정보** (SSH 터널링 필수):
-  - **WBHubManager**: `postgresql://postgres:Wnsgh22dml2026@localhost:5434/dev-hubmanager?connection_limit=3&pool_timeout=20`
-  - **WBSalesHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5435/dev-saleshub?connection_limit=3&pool_timeout=20`
-  - **WBFinHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5436/dev-finhub?connection_limit=3&pool_timeout=20`
-  - **WBOnboardingHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5437/dev-onboardinghub?connection_limit=3&pool_timeout=20`
-- ✅ **운영 DB 격리**: 개발 DB(`dev-*`)와 운영 DB(`hubmanager`, `saleshub` 등) 완전 분리
-- ✅ **연결 풀 최적화**: 각 허브 최대 3개 연결 (총 12개), PostgreSQL 여유 88개
-- ⚠️ **주의사항**:
-  - 로컬 서버 실행 전 SSH 터널링 필수 실행
-  - 네트워크 레이턴시 증가 (10-100ms)
-  - 터널링 종료 시 DB 연결 끊김
+- ℹ️ **오라클 개발 DB 접근** (필요 시):
+  - SSH 터널링을 통해 일시적으로 접근 가능
+  - 스크립트: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-db.sh`
+  - 데이터 마이그레이션: `/home/peterchung/WHCommon/scripts/migrate-oracle-to-local.sh`
+  - 용도: 데이터 마이그레이션, 프로덕션 데이터 확인 등
 
 ### 프로덕션 배포 환경
 - **오라클 클라우드**: 메인 프로덕션 환경 (각 허브별 개별 포트, Nginx 리버스 프록시)
