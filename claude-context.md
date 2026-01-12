@@ -534,10 +534,10 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - `DOCKER_PORT=4500` 설정
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 오라클 서버 배포 시 Git Hook이 자동으로 Doppler에서 `.env.prd` 생성
-- ✅ **Doppler 동기화**: `.env` 및 `.env.prd` 파일 동기화
-  - **중요**: Doppler는 `.env` 파일을 사용하며, `.env.local`은 동기화하지 않음
-  - **Development 환경**: `.env` 파일을 Doppler Development 설정과 동기화
-  - **Production 환경**: `.env.prd` 파일을 Doppler Production 설정과 동기화
+- ✅ **Doppler 동기화**: 3개 환경에 각각 동기화
+  - **Development 환경**: `.env.local` 파일을 Doppler Development 설정과 동기화 (로컬 개발용)
+  - **Staging 환경**: `.env` 파일을 Doppler Staging 설정과 동기화 (Docker 스테이징용)
+  - **Production 환경**: `.env.prd` 파일을 Doppler Production 설정과 동기화 (오라클 운영용)
   - **수동 푸시**: `WHCommon/scripts/push-all-to-doppler.sh` 스크립트 실행
   - Git Hook을 통한 자동 동기화는 현재 비활성화됨
 - ❌ **실시간 Doppler 연동 금지**: 애플리케이션 실행 시 Doppler API를 직접 호출하지 않음
@@ -546,27 +546,34 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 운영: `DOCKER_PORT=4500` (.env.prd 파일)
   - 개별 허브별 포트 변수(DOCKER_HUBMANAGER_PORT 등)는 사용하지 않음
 - 📌 **Doppler 토큰 파일 위치**: `/home/peterchung/WHCommon/env.doppler`
-  - 모든 프로젝트의 Development/Production Doppler 토큰이 저장됨
+  - 모든 프로젝트의 Development/Staging/Production Doppler 토큰이 저장됨
   - 스크립트가 이 파일에서 토큰을 읽어 사용
-  - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
+  - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_STG`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
 - 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
 
-### 로컬 개발 데이터베이스 환경 (2026-01-12 업데이트)
-- ✅ **오라클 개발 DB 사용** (SSH 터널링):
+### 로컬 개발 데이터베이스 환경 (2026-01-12 업데이트 - 허브별 포트 분리)
+- ✅ **오라클 개발 DB 사용** (SSH 터널링 - 허브별 포트 분리):
   - 오라클 서버 IP: `158.180.95.246`
-  - SSH 터널링: `localhost:5432` → 오라클 `5432`
-  - 사용자/비밀번호: `workhub/[Doppler 관리]`
+  - SSH 터널링 포트 매핑:
+    - WBHubManager: `localhost:5434` → 오라클 `5432`
+    - WBSalesHub: `localhost:5435` → 오라클 `5432`
+    - WBFinHub: `localhost:5436` → 오라클 `5432`
+    - WBOnboardingHub: `localhost:5437` → 오라클 `5432`
+  - 사용자/비밀번호: `postgres/Wnsgh22dml2026`
   - 개발 DB: `dev-hubmanager`, `dev-saleshub`, `dev-finhub`, `dev-onboardinghub`
-- ✅ **SSH 터널링 스크립트**: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-db.sh`
-  - 포그라운드 실행: `./ssh-tunnel-oracle-db.sh`
-  - 백그라운드 실행: `nohup ./ssh-tunnel-oracle-db.sh > /tmp/ssh-tunnel.log 2>&1 &`
-  - 터널링 확인: `ps aux | grep "ssh.*5432"`
-  - 종료: `pkill -f "ssh.*5432:localhost:5432"`
+
+- ✅ **SSH 터널링 스크립트**:
+  - 통합 스크립트: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-all.sh` (모든 허브)
+  - 개별 스크립트: `/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-{hub}.sh` (허브별)
+  - 실행: `./ssh-tunnel-oracle-all.sh` (모든 허브 터널링 시작)
+  - 터널링 확인: `ps aux | grep "ssh.*543[4-7]"`
+  - 종료: `pkill -f "ssh.*543[4-7]"`
+
 - ✅ **로컬 DB 연결 정보** (SSH 터널링 필수):
-  - **WBHubManager**: `postgresql://workhub:[password]@localhost:5432/dev-hubmanager?connection_limit=3&pool_timeout=20`
-  - **WBSalesHub**: `postgresql://workhub:[password]@localhost:5432/dev-saleshub?connection_limit=3&pool_timeout=20`
-  - **WBFinHub**: `postgresql://workhub:[password]@localhost:5432/dev-finhub?connection_limit=3&pool_timeout=20`
-  - **WBOnboardingHub**: `postgresql://workhub:[password]@localhost:5432/dev-onboardinghub?connection_limit=3&pool_timeout=20`
+  - **WBHubManager**: `postgresql://postgres:Wnsgh22dml2026@localhost:5434/dev-hubmanager?connection_limit=3&pool_timeout=20`
+  - **WBSalesHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5435/dev-saleshub?connection_limit=3&pool_timeout=20`
+  - **WBFinHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5436/dev-finhub?connection_limit=3&pool_timeout=20`
+  - **WBOnboardingHub**: `postgresql://postgres:Wnsgh22dml2026@localhost:5437/dev-onboardinghub?connection_limit=3&pool_timeout=20`
 - ✅ **운영 DB 격리**: 개발 DB(`dev-*`)와 운영 DB(`hubmanager`, `saleshub` 등) 완전 분리
 - ✅ **연결 풀 최적화**: 각 허브 최대 3개 연결 (총 12개), PostgreSQL 여유 88개
 - ⚠️ **주의사항**:
@@ -753,6 +760,7 @@ test('debug page until success', async ({ page }) => {
   - HWTestAgent에는 이미 Playwright 설치되어 있음
   - 테스트 스크립트 위치: `/home/peterchung/HWTestAgent/tests/`
   - 테스트 결과 저장: `/home/peterchung/HWTestAgent/test-results/`
+  - **E2E 테스트 가이드**: `~/.claude/skills/스킬테스터/E2E-테스트-가이드.md` (Google OAuth 자동 로그인, 크로스 허브 네비게이션 등)
 - ❌ **각 프로젝트에서 직접 Playwright 실행 금지**: WBSalesHub, WBHubManager 등 개별 프로젝트에서 테스트 스크립트를 작성하지 않음
 - 📌 **테스트 실행 방법**:
   ```bash
@@ -760,9 +768,25 @@ test('debug page until success', async ({ page }) => {
   npx playwright test tests/[test-name].spec.ts
   ```
 - 📌 **테스트 스크립트 명명 규칙**:
+  - 환경별 E2E 테스트: `tests/e2e-[환경]-[프로젝트]-[기능].spec.ts`
+    - 예: `e2e-oracle-staging-authenticated.spec.ts`
   - 프로젝트별 테스트: `tests/wbsaleshub-[feature].spec.ts`
   - 통합 테스트: `tests/integration-[feature].spec.ts`
-  - E2E 테스트: `tests/e2e-[scenario].spec.ts`
+- 📌 **Google OAuth 자동 로그인**:
+  - 헬퍼 위치: `tests/helpers/google-oauth-helper.ts`
+  - 테스트 계정: `biz.dev@wavebridge.com` / `wave1234!!`
+  - 사용 예시:
+    ```typescript
+    import { loginWithGoogle, getTestGoogleCredentials } from './helpers/google-oauth-helper';
+
+    const { email, password } = getTestGoogleCredentials();
+    await loginWithGoogle(page, {
+      email,
+      password,
+      loginUrl: 'http://158.180.95.246:4400',
+      redirectPath: '/hubs'
+    });
+    ```
 
 ### 데이터베이스 Enum 값 규칙
 - ✅ **소문자 사용**: PostgreSQL enum 값과 TypeScript 타입은 모두 소문자로 통일

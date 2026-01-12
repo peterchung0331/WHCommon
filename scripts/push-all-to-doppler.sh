@@ -1,8 +1,9 @@
 #!/bin/bash
 
 # Doppler 환경변수 일괄 푸시 스크립트
-# .env → Development 환경
-# .env.prd → Production 환경
+# .env.local → Development 환경 (로컬 개발용)
+# .env → Staging 환경 (Docker 스테이징용)
+# .env.prd → Production 환경 (오라클 운영용)
 
 set -e
 
@@ -79,10 +80,13 @@ for project in "${!PROJECTS[@]}"; do
 
     echo -e "${GREEN}=== $project ===${NC}"
 
-    # Development 환경 (.env)
-    push_to_doppler "$project" "$project_key" ".env" "dev"
+    # Development 환경 (.env.local → dev)
+    push_to_doppler "$project" "$project_key" ".env.local" "dev"
 
-    # Production 환경 (.env.prd)
+    # Staging 환경 (.env → stg)
+    push_to_doppler "$project" "$project_key" ".env" "stg"
+
+    # Production 환경 (.env.prd → prd)
     push_to_doppler "$project" "$project_key" ".env.prd" "prd"
 done
 
