@@ -188,6 +188,231 @@ claude mcp list
   - Docker 스테이징 (4400): 프로덕션 모드 (Google OAuth만, 모든 허브 공유)
   - Oracle 운영 (4500): 프로덕션 모드 (Google OAuth만, 모든 허브 공유)
 
+### Docker 빌드 최적화 가이드 (필수)
+
+Docker 이미지 빌드 시 반드시 다음 체크리스트를 확인하세요.
+
+#### 1. Dockerfile 필수 요소
+
+**기본 구조** (멀티스테이지 빌드):
+```dockerfile
+# syntax=docker/dockerfile:1.4
+FROM node:20-alpine AS base
+
+# Stage 1: Dependencies
+FROM base AS deps
+WORKDIR /app
+
+# npm 타임아웃 설정 (필수)
+RUN npm config set fetch-timeout 120000 && \
+    npm config set fetch-retry-mintimeout 20000 && \
+    npm config set fetch-retry-maxtimeout 120000
+
+# BuildKit 캐시 마운트로 의존성 설치 (필수)
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci && npm cache clean --force
+
+# Stage 2: Builder
+FROM base AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# 메모리 제한 설정 (권장)
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+
+RUN npm run build:server
+RUN npm run build:frontend
+
+# Stage 3: Runner (프로덕션)
+FROM base AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+
+# 비root 사용자 생성 (보안)
+RUN addgroup --system --gid 1001 nodejs && \
+    adduser --system --uid 1001 appuser
+
+# 프로덕션 의존성만 설치 (필수)
+COPY package*.json ./
+RUN --mount=type=cache,target=/root/.npm \
+    npm ci --omit=dev --ignore-scripts && npm cache clean --force
+
+# 빌드 산출물만 복사
+COPY --from=builder --chown=appuser:nodejs /app/dist ./dist
+COPY --from=builder --chown=appuser:nodejs /app/frontend/out ./frontend/out
+
+USER appuser
+
+# 헬스체크 (권장)
+HEALTHCHECK --interval=30s --timeout=10s --start-period=40s --retries=3 \
+  CMD wget -q --spider http://localhost:${PORT}/api/health || exit 1
+
+EXPOSE ${PORT}
+CMD ["node", "dist/server/index.js"]
+```
+
+#### 2. package.json 의존성 분리 규칙
+
+**dependencies (프로덕션에 포함)**:
+- express, cors, dotenv (서버 런타임)
+- pg, @prisma/client (데이터베이스)
+- jsonwebtoken, bcryptjs (인증)
+- @anthropic-ai/sdk, @slack/bolt (외부 API)
+- zod (런타임 검증)
+
+**devDependencies (빌드 시에만)**:
+- 모든 `@types/*` 패키지
+- typescript, tsx, esbuild
+- next, react, react-dom (Static Export 모드일 때)
+- tailwindcss, postcss, autoprefixer
+- eslint, prettier, jest, playwright
+- nodemon, concurrently
+
+#### 3. 빌드 전 체크리스트
+
+Docker 빌드 전 다음을 확인:
+
+- [ ] **package.json 검증**: `@types/*`가 devDependencies에 있는가?
+- [ ] **Dockerfile 검증**: BuildKit 캐시 마운트 사용하는가?
+- [ ] **Dockerfile 검증**: `npm ci --omit=dev` 사용하는가?
+- [ ] **npm 타임아웃**: 타임아웃 설정이 있는가?
+- [ ] **용량 목표**: 허브별 목표 용량 이내인가?
+
+#### 4. 빌드 명령어 규칙
+
+**올바른 빌드 명령어**:
+```bash
+# 표준 빌드 (BuildKit 캐시 활용)
+DOCKER_BUILDKIT=1 docker build -t <hub-name>:<tag> .
+
+# 스테이징 배포 빌드
+DOCKER_BUILDKIT=1 docker build -t <hub-name>:staging .
+```
+
+**금지된 빌드 명령어**:
+```bash
+# ❌ --no-cache 사용 금지 (BuildKit 캐시 무효화)
+docker build --no-cache -t <hub-name>:<tag> .
+
+# ❌ npm cache clean --force 금지 (BuildKit 캐시와 충돌)
+RUN npm ci && npm cache clean --force
+```
+
+**이유**:
+- `--no-cache`: BuildKit 캐시 마운트의 효과를 무효화하여 빌드 시간 70-90% 증가
+- `npm cache clean --force`: BuildKit 캐시와 동시 접근 시 ENOTEMPTY 에러 발생
+
+#### 5. 허브별 목표 용량
+
+| 허브 | 목표 용량 | 경고 임계값 | 비고 |
+|------|----------|-----------|------|
+| WBHubManager | 300-350MB | 400MB | SSO 인증 서버 |
+| WBSalesHub | 250-300MB | 350MB | CRM (이미 최적화됨) |
+| WBFinHub | 300-350MB | 400MB | 재무 관리 |
+| WBOnboardingHub | 350-400MB | 450MB | 온보딩 + Vision API |
+
+**참고**: 300MB 내외는 업계 표준 상위 30% 수준 (Next.js + Express 기준)
+
+#### 5. 용량 확인 명령어
+
+```bash
+# 이미지 용량 확인
+docker images --format "table {{.Repository}}\t{{.Tag}}\t{{.Size}}"
+
+# 레이어별 분석
+docker history <image-name>
+
+# 빌드 후 용량 검증
+DOCKER_BUILDKIT=1 docker build -t <hub-name>:test .
+docker images <hub-name>:test --format "{{.Size}}"
+```
+
+#### 6. 메모리 최적화
+
+**빌드 시 메모리 제한** (Dockerfile):
+```dockerfile
+ENV NODE_OPTIONS="--max-old-space-size=2048"
+```
+
+**런타임 메모리 제한** (docker-compose.yml):
+```yaml
+services:
+  app:
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+        reservations:
+          memory: 256M
+```
+
+**Next.js 빌드 메모리 최적화** (next.config.ts/js - 안전한 옵션만):
+```typescript
+const nextConfig: NextConfig = {
+  // 1. 프로덕션 소스맵 비활성화 (메모리 30-40% 감소, 부작용 없음)
+  productionBrowserSourceMaps: false,
+
+  // 2. Webpack 메모리 최적화 (Next.js 15+ 공식 기능)
+  experimental: {
+    webpackMemoryOptimizations: true,
+    // 기존 설정 유지...
+  },
+};
+```
+
+**안전한 최적화 vs 위험한 최적화**:
+| 설정 | 효과 | 부작용 | 권장 |
+|------|------|--------|------|
+| `productionBrowserSourceMaps: false` | 메모리 30-40% 감소 | 없음 | ✅ 적용 |
+| `webpackMemoryOptimizations: true` | 메모리 20-30% 감소 | 없음 | ✅ 적용 |
+| `NODE_OPTIONS="--max-old-space-size=2048"` | OOM 방지 | 없음 | ✅ 적용 |
+| `config.cache = false` | 메모리 감소 | 빌드 시간 2-3배 증가 | ❌ 비권장 |
+| `ignoreBuildErrors: true` | 빌드 성공률 증가 | 타입 에러 미검출 | ❌ 비권장 |
+
+**예상 효과**: 안전한 최적화만으로 빌드 메모리 ~40% 감소 (3GB → 1.8GB)
+
+#### 7. 프론트엔드 빌드 모드
+
+| 모드 | 설정 | 용량 영향 | 사용 허브 |
+|------|------|----------|----------|
+| **Static Export** | `output: 'export'` | ~300MB (out/) | HubManager, **SalesHub**, FinHub, OnboardingHub |
+| **Standalone** | `output: 'standalone'` | ~500MB | - |
+| **Server Mode** | `output: undefined` | ~1.3GB (.next/) | ❌ 사용 금지 (프론트엔드 node_modules 포함) |
+
+**Static Export 필수 (권장)**:
+- Nginx가 API 프록시 담당 (`/saleshub/api/*` → `localhost:4010/api/*`)
+- 프론트엔드는 정적 파일만 서빙 (out/ 폴더)
+- Docker 이미지 크기 70% 이상 감소 (1.3GB → 300MB)
+
+**Static Export 설정 방법**:
+```typescript
+// next.config.ts
+const nextConfig: NextConfig = {
+  output: 'export',  // Static Export 모드 (필수)
+  // rewrites 제거 - Nginx가 API 프록시 담당
+};
+```
+
+**Dockerfile 수정** (Static Export용):
+```dockerfile
+# ❌ Server Mode (프론트엔드 node_modules 포함 - 600MB+)
+COPY --from=frontend-builder /app/frontend/.next ./frontend/.next
+RUN npm --prefix frontend ci --omit=dev  # 이 줄이 600MB 추가!
+
+# ✅ Static Export (out/ 폴더만 복사 - 2MB)
+COPY --from=frontend-builder /app/frontend/out ./frontend/out
+COPY --from=frontend-builder /app/frontend/public ./frontend/public
+# node_modules 설치 불필요!
+```
+
+**Static Export 불가능한 경우** (피해야 할 기능):
+- `getServerSideProps` 사용
+- API rewrites/redirects (Next.js 내장)
+- Dynamic routes with `fallback: true`
+- Middleware 사용
+
 ### PRD 및 Task 생성 규칙 (중요)
 
 #### PRD 생성 규칙
