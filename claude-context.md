@@ -63,21 +63,33 @@ WorkHub 프로젝트는 다음 5개의 허브로 구성됩니다:
 
 ## 저장소 관리 규칙
 
+### WHCommon 저장소 (독립 저장소)
+WHCommon은 **독립된 Git 저장소**로 관리됩니다:
+- 저장소: `git@github.com:peterchung0331/WHCommon.git`
+- 경로: `/home/peterchung/WHCommon`
+- 관리 항목:
+  - ✅ **프로젝트 공용 문서** (배포 가이드, 온보딩 가이드 등)
+  - ✅ **컨텍스트 설정 파일** (`claude-context.md`, `.claude/CLAUDE.md`)
+  - ✅ **공용 규칙 파일** (`실행_기획.md`, `실행_작업.md` 등)
+  - ✅ **공용 스크립트** (Doppler 동기화, SSH 터널링 등)
+  - ✅ **공용 환경변수 파일** (`env.doppler`, SSH 키 등)
+  - ✅ **테스트 문서 및 PRD** (`기능 PRD/`, `tasks/` 등)
+
 ### WBHubManager 저장소 관리 항목
-WBHubManager Git 저장소에서 다음 항목들을 관리합니다:
-- ✅ **워크스페이스 설정 파일** (`.code-workspace` 등)
-- ✅ **WHCommon 공용 폴더** 전체
-  - Docker 테스트 가이드 (`WHCommon/Docker/*.md`)
-  - 공용 규칙 파일 (`WHCommon/ppPrd.md`, `ppTask.md`, `claude-context.md` 등)
-  - 기타 프로젝트 간 공유 문서 및 설정
+WBHubManager Git 저장소에서 관리하는 항목:
 - ✅ **WBHubManager 프로젝트 코드** (서버, 프론트엔드 등)
+- ✅ **WBRefHub 코드** (하위 프로젝트)
+- ❌ ~~WHCommon 폴더~~ (독립 저장소로 분리됨)
+- ❌ ~~워크스페이스 설정 파일~~ (존재하지 않음)
 
 ### 각 Hub 저장소 관리 항목 (WBFinHub, WBSalesHub 등)
 - ✅ 각 Hub의 **고유 프로젝트 코드만** 관리
-- ❌ 워크스페이스 설정이나 공용 폴더는 관리하지 않음
+- ❌ 공용 문서나 설정은 관리하지 않음 (WHCommon에서 관리)
 
 ### 정리
-모든 공용/공유 자원은 **WBHubManager 저장소 하나로 집중 관리**하고, 각 Hub는 자신의 코드만 관리하는 구조입니다.
+- **WHCommon**: 모든 프로젝트 간 공유되는 문서, 설정, 스크립트 관리 (독립 저장소)
+- **각 Hub**: 각자의 프로젝트 코드만 관리 (독립 저장소)
+- **신규 PC 설정 시**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub, **WHCommon**을 모두 별도로 클론 필요
 
 ---
 
