@@ -540,11 +540,17 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 각 프로젝트(WBHubManager, WBSalesHub, WBFinHub)에 `.env.staging` 파일 존재
   - Docker 실행 시: `docker run --env-file .env.staging ...`
+  - **⚠️ 오라클 환경은 항상 HTTPS 사용**: 모든 URL은 `https://staging.workhub.biz` 형태 (포트 번호 없음)
+  - SSL 인증서: Let's Encrypt (staging.workhub.biz)
+  - nginx-staging이 포트 443(HTTPS)으로 SSL 터미네이션 수행
 - ✅ **프로덕션 배포**: `.env.prd` 파일 사용
   - 프로덕션 배포 시 애플리케이션이 `.env.prd` 파일에서 환경변수 로드
   - `DOCKER_PORT=4500` 설정
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 오라클 서버 배포 시 Git Hook이 자동으로 Doppler에서 `.env.prd` 생성
+  - **⚠️ 오라클 환경은 항상 HTTPS 사용**: 모든 URL은 `https://workhub.biz` 형태 (포트 번호 없음)
+  - SSL 인증서: Let's Encrypt (workhub.biz, *.workhub.biz)
+  - nginx-prod가 포트 443(HTTPS)으로 SSL 터미네이션 수행
 - ✅ **Doppler 동기화**: 3개 환경에 각각 동기화
   - **Development 환경**: `.env.local` 파일을 Doppler Development 설정과 동기화 (로컬 개발용)
   - **Staging 환경**: `.env.staging` 파일을 Doppler Staging 설정과 동기화 (Docker 스테이징용)
