@@ -534,10 +534,12 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 로컬 개발 시 애플리케이션이 `.env.local` 파일에서 환경변수 로드
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
   - 필수 항목(*) 표시된 환경변수는 반드시 값 입력 필요
-- ✅ **스테이징 환경**: `.env` 파일 사용
-  - Docker 스테이징 환경에서 `.env` 파일에서 환경변수 로드
+- ✅ **스테이징 환경**: `.env.staging` 파일 사용
+  - Docker 스테이징 환경에서 `.env.staging` 파일에서 환경변수 로드
   - `DOCKER_PORT=4400` 설정
   - Git에 커밋되지 않음 (`.gitignore`에 포함)
+  - 각 프로젝트(WBHubManager, WBSalesHub, WBFinHub)에 `.env.staging` 파일 존재
+  - Docker 실행 시: `docker run --env-file .env.staging ...`
 - ✅ **프로덕션 배포**: `.env.prd` 파일 사용
   - 프로덕션 배포 시 애플리케이션이 `.env.prd` 파일에서 환경변수 로드
   - `DOCKER_PORT=4500` 설정
@@ -545,13 +547,17 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 오라클 서버 배포 시 Git Hook이 자동으로 Doppler에서 `.env.prd` 생성
 - ✅ **Doppler 동기화**: 3개 환경에 각각 동기화
   - **Development 환경**: `.env.local` 파일을 Doppler Development 설정과 동기화 (로컬 개발용)
-  - **Staging 환경**: `.env` 파일을 Doppler Staging 설정과 동기화 (Docker 스테이징용)
+  - **Staging 환경**: `.env.staging` 파일을 Doppler Staging 설정과 동기화 (Docker 스테이징용)
   - **Production 환경**: `.env.prd` 파일을 Doppler Production 설정과 동기화 (오라클 운영용)
   - **수동 푸시**: `WHCommon/scripts/push-all-to-doppler.sh` 스크립트 실행
   - Git Hook을 통한 자동 동기화는 현재 비활성화됨
+  - **Doppler Config 명명 규칙**:
+    - Development: `dev_wbhubmanager`, `dev_wbsaleshub`, `dev_wbfinhub`
+    - Staging: `stg_wbhubmanager`, `stg_wbsaleshub`, `stg_wbfinhub`
+    - Production: `prd_wbhubmanager`, `prd_wbsaleshub`, `prd_wbfinhub`
 - ❌ **실시간 Doppler 연동 금지**: 애플리케이션 실행 시 Doppler API를 직접 호출하지 않음
 - 📌 **Docker 포트 환경변수**: `DOCKER_PORT` 하나로 통일
-  - 스테이징: `DOCKER_PORT=4400` (.env 파일)
+  - 스테이징: `DOCKER_PORT=4400` (.env.staging 파일)
   - 운영: `DOCKER_PORT=4500` (.env.prd 파일)
   - 개별 허브별 포트 변수(DOCKER_HUBMANAGER_PORT 등)는 사용하지 않음
 - 📌 **Doppler 토큰 파일 위치**: `/home/peterchung/WHCommon/env.doppler`
