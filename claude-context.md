@@ -94,7 +94,7 @@ WHCommon은 **독립된 Git 저장소**로 관리됩니다:
 - 저장소: `git@github.com:peterchung0331/WHCommon.git`
 - 경로: `/home/peterchung/WHCommon`
 - 관리 항목:
-  - ✅ **프로젝트 공용 문서** (배포 가이드, 온보딩 가이드 등)
+  - ✅ **프로젝트 공용 문서** (배포 가이드, 로컬 환경 세팅 가이드 등)
   - ✅ **컨텍스트 설정 파일** (`claude-context.md`, `.claude/CLAUDE.md`)
   - ✅ **공용 규칙 파일** (`실행_기획.md`, `실행_작업.md` 등)
   - ✅ **공용 스크립트** (Doppler 동기화, SSH 터널링 등)
@@ -703,7 +703,7 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 모든 프로젝트의 Development/Staging/Production Doppler 토큰이 저장됨
   - 스크립트가 이 파일에서 토큰을 읽어 사용
   - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_STG`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
-- 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
+- 📌 **신규 PC 세팅**: `/home/peterchung/WHCommon/문서/가이드/로컬-환경-세팅-가이드.md` 참조 (14단계 전체 세팅 가이드)
 
 ### 환경변수 추가 규칙 (중요)
 
