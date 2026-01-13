@@ -143,21 +143,73 @@ WBHubManager Git 저장소에서 관리하는 항목:
 
 ## MCP (Model Context Protocol) 서버 설정
 
-### 필수 MCP 서버
-다음 MCP 서버를 항상 로드하고 우선적으로 사용합니다:
+### 도입된 MCP 서버
 
-| MCP 서버 | 용도 | 우선순위 |
-|----------|------|----------|
-| **Sequential Thinking** | 실시간 사고 구조화 및 의사결정 과정 추적 | 최고 |
-| **Obsidian** | PRD, 의사결정 로그, 문서 영구 저장 | 최고 |
-| **Context7** | 라이브러리/프레임워크 최신 문서 조회 | 높음 |
+#### 핵심 MCP 서버 (설치 완료)
+| MCP 서버 | 용도 | 우선순위 | 설치 날짜 |
+|----------|------|----------|----------|
+| **Sequential Thinking** | 실시간 사고 구조화 및 의사결정 과정 추적 | 최고 | 2026-01-14 ✅ |
+| **Obsidian** | PRD, 의사결정 로그, 문서 영구 저장 (WHCommon vault) | 최고 | 2026-01-14 ✅ |
+| **Context7** | 라이브러리/프레임워크 최신 문서 조회 | 높음 | 2026-01-14 ✅ |
+| **Filesystem** | 안전한 파일 시스템 작업 (6개 프로젝트 디렉토리) | 높음 | 2026-01-14 ✅ |
+| **GitHub** | GitHub 저장소 관리 (Issue/PR/커밋) | 높음 | 2026-01-14 ✅ |
+| **PostgreSQL** | 데이터베이스 쿼리 (4개 로컬 DB) | 높음 | 2026-01-14 ✅ |
+| **Playwright** | 브라우저 자동화 및 E2E 테스트 | 높음 | 2026-01-14 ✅ |
+
+**총 7개 MCP 서버 설치 완료**
+
+### MCP 서버별 상세 정보
+
+#### 1. Filesystem MCP
+- **기능**: 파일 읽기, 쓰기, 편집, 검색, 디렉토리 관리
+- **장점**: Bash의 cat/echo 대체, gitignore 패턴 자동 적용, 경로 검증
+- **허용 디렉토리**:
+  - `/home/peterchung/WBHubManager`
+  - `/home/peterchung/WBSalesHub`
+  - `/home/peterchung/WBFinHub`
+  - `/home/peterchung/WBOnboardingHub`
+  - `/home/peterchung/WHCommon`
+  - `/home/peterchung/HWTestAgent`
+
+#### 2. GitHub MCP
+- **기능**: Issue 조회/생성, PR 관리, 커밋 분석, CI/CD 트리거
+- **인증**: GitHub Personal Access Token 필요
+- **권한**: repo, workflow, write:packages
+- **사용 예시**: "GitHub MCP로 WBHubManager의 최근 Issue 10개 조회해줘"
+
+#### 3. PostgreSQL MCP
+- **기능**: DB 쿼리, 스키마 조회, 테이블 분석, 마이그레이션 검증
+- **연결 대상**:
+  - 로컬 DB: localhost:5432 (wbhubmanager, wbsaleshub, wbfinhub, wbonboardinghub)
+  - 스테이징 DB: localhost:5433 (SSH 터널링)
+  - 프로덕션 DB: localhost:5434 (SSH 터널링, 읽기 전용)
+- **사용 예시**: "PostgreSQL MCP로 local-hubmanager의 accounts 테이블 스키마 보여줘"
+
+#### 4. Playwright MCP
+- **기능**: 브라우저 자동화, 웹 스크래핑, E2E 테스트 실행
+- **지원 브라우저**: Chromium, Firefox, WebKit
+- **특징**: 접근성 트리 기반 상호작용 (스크린샷 불필요, 빠르고 경량)
+- **사용 예시**: "Playwright로 http://localhost:3090 접속해서 로그인 폼 확인해줘"
 
 ### MCP 사용 규칙
-- **사고 과정 시각화**: Sequential Thinking MCP를 사용하여 복잡한 문제 해결 시 단계별 사고 과정을 구조화
-- **문서 영구 저장**: Obsidian MCP를 사용하여 완성된 PRD, 의사결정 로그, 회의록 등을 체계적으로 저장
-- **문서 조회 시**: Context7 MCP를 통해 최신 라이브러리 문서를 먼저 확인
-- **코드 작성 시**: Context7에서 제공하는 최신 API와 베스트 프랙티스를 참고
-- **MCP 도구 우선**: 동일한 기능이 있다면 일반 웹 검색보다 MCP 도구를 우선 사용
+
+#### 파일 작업
+- **Filesystem MCP 우선**: 파일 읽기/쓰기는 Filesystem MCP 사용
+- **Bash는 보조**: 시스템 명령(git, docker, npm)은 Bash 사용
+
+#### Git/GitHub 작업
+- **GitHub MCP 우선**: Issue/PR 관리는 GitHub MCP 사용
+- **Bash는 로컬 Git**: 로컬 git 명령은 Bash 사용
+
+#### DB 작업
+- **PostgreSQL MCP 필수**: 모든 DB 쿼리는 PostgreSQL MCP 사용
+- **쿼리 최적화**: 큰 결과셋은 LIMIT 절 사용 (토큰 절약)
+
+#### 토큰 관리
+- **모니터링**: `/context` 명령어로 주기적 확인
+- **예상 오버헤드**: 14,000-30,000 tokens/세션 (7개 MCP 기준)
+- **남은 여유**: 170,000-186,000 tokens (200K 윈도우 기준)
+- **컨텍스트 소비율**: 7-15% (허용 가능 범위)
 
 ### Sequential Thinking + Obsidian 워크플로우
 1. **실시간 사고**: Sequential Thinking으로 문제 분석 및 의사결정 과정 구조화
@@ -169,8 +221,27 @@ WBHubManager Git 저장소에서 관리하는 항목:
 # 현재 연결된 MCP 서버 확인
 /mcp
 
-# MCP 서버 목록 보기
+# 컨텍스트 사용량 확인
+/context
+
+# MCP 서버 목록 보기 (CLI)
 claude mcp list
+```
+
+### MCP 설정 파일 위치
+- **설정 파일**: VSCode 명령 팔레트 → "MCP: Open User Configuration"
+- **상세 가이드**: `/home/peterchung/WHCommon/문서/가이드/MCP-설정-가이드.md`
+
+### 오라클 DB 접근 (SSH 터널링 필요)
+```bash
+# 스테이징 DB 터널링
+ssh -L 5433:localhost:5432 -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246 -N &
+
+# 프로덕션 DB 터널링
+ssh -L 5434:localhost:5432 -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246 -N &
+
+# 또는 자동화 스크립트 사용
+/home/peterchung/WHCommon/scripts/ssh-tunnel-oracle-db.sh
 ```
 
 ---
@@ -689,16 +760,49 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
 | **기능 플래그** | `ENABLE_*`, `USE_*` | ❌ 금지 (코드로 처리) |
 | **디버깅** | `DEBUG_*`, `LOG_*` | ❌ 금지 (`NODE_ENV`로 판단) |
 
-### 로컬 개발 데이터베이스 환경
-- ✅ **로컬 Docker PostgreSQL 사용**:
+### 데이터베이스 환경변수 규칙 (2026-01-14 통일)
+
+#### 환경변수 명명 규칙
+모든 WorkHub 프로젝트에서 다음 환경변수만 사용:
+
+```bash
+# 메인 데이터베이스 (각 허브의 DB)
+DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/[database]
+
+# HubManager 데이터베이스 (SSO 인증용, WBHubManager 제외한 모든 허브)
+HUBMANAGER_DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/wbhubmanager
+```
+
+#### ❌ 제거된 환경변수
+다음 환경변수는 더 이상 사용하지 않음:
+- `ORACLE_DATABASE_URL`, `AWS_DATABASE_URL`, `RAILWAY_DATABASE_URL`
+- `FINHUB_DATABASE_URL`, `SALESHUB_DATABASE_URL`, `ONBOARDINGHUB_DATABASE_URL`
+- `DB_HOST`, `DB_USER`, `DB_PASSWORD` (이미 DATABASE_URL에 포함)
+- `DB_PROVIDER` (Oracle/AWS/Railway 선택 로직 제거)
+- Connection pool URL 파라미터 (`?connection_limit=3&pool_timeout=20`)
+
+#### 로컬 개발 데이터베이스 환경
+- ✅ **로컬 Docker PostgreSQL 사용** (포트 5432로 통일):
   - 호스트: `localhost:5432`
-  - 사용자: `postgres` / 비밀번호: `postgres`
+  - 사용자: `workhub` / 비밀번호: `workhub`
   - 데이터베이스:
     - WBHubManager: `wbhubmanager`
     - WBSalesHub: `wbsaleshub`
     - WBFinHub: `wbfinhub`
     - WBOnboardingHub: `wbonboardinghub`
   - Docker Compose: `docker-compose -f docker-compose.dev.yml up -d postgres`
+
+- 📌 **환경별 DATABASE_URL 형식**:
+  ```bash
+  # 로컬 개발 (.env.local)
+  DATABASE_URL=postgresql://workhub:workhub@localhost:5432/[db_name]
+
+  # 스테이징 (.env.staging)
+  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@host.docker.internal:5432/[db_name]
+
+  # 프로덕션 (.env.prd)
+  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@158.180.95.246:5432/[db_name]
+  ```
 
 - ℹ️ **오라클 개발 DB 접근** (필요 시):
   - SSH 터널링을 통해 일시적으로 접근 가능
@@ -920,6 +1024,80 @@ test('debug page until success', async ({ page }) => {
 - 📌 **이유**: PostgreSQL 공식 문서 및 대부분의 Node.js/TypeScript 프로젝트에서 enum 값을 소문자로 사용하는 것이 표준
 - 📌 **적용 범위**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub 모든 허브
 
+### API 엔드포인트 Trailing Slash 규칙
+
+#### 원칙
+- ✅ **모든 API 엔드포인트는 trailing slash 없이 정의** (RESTful API 표준)
+- ✅ **프론트엔드는 trailing slash 없이 호출** (일관성)
+- ✅ **Next.js는 trailingSlash: false 명시** (모든 허브)
+
+#### 백엔드 (Express)
+```typescript
+// ✅ 올바른 방식 (trailing slash 없음)
+router.get('/api/customers', handler)
+router.get('/api/customers/:id', handler)
+router.post('/api/customers', handler)
+
+// ❌ 잘못된 방식 (trailing slash 사용)
+router.get('/api/customers/', handler)
+```
+
+#### 프론트엔드 (API 호출)
+```typescript
+// ✅ 올바른 방식
+api.get('/customers')
+api.get(`/customers/${id}`)
+fetch('/api/auth/me')
+
+// ❌ 잘못된 방식
+api.get('/customers/')
+fetch('/api/auth/me/')
+```
+
+#### Next.js 설정 (필수)
+```typescript
+// next.config.ts - 모든 허브에서 명시적 설정
+const nextConfig: NextConfig = {
+  trailingSlash: false,  // 명시적으로 false 설정
+  // ...
+};
+```
+
+#### API URL 경로 구성
+```bash
+# 환경변수 (.env.local)
+NEXT_PUBLIC_API_URL=/api      # ✅ 절대 경로 (슬래시로 시작)
+
+# 프론트엔드 API 클라이언트
+const apiUrl = process.env.NEXT_PUBLIC_API_URL || ''
+
+// ✅ 올바른 호출
+fetch(`${apiUrl}/auth/me`)  # → /api/auth/me
+
+// ❌ 잘못된 호출 (중복 /api)
+fetch(`${apiUrl}/api/auth/me`)  # → /api/api/auth/me
+```
+
+#### Nginx 설정
+```nginx
+# HubManager nginx.conf - trailing slash 정규화
+location /saleshub {
+    rewrite ^/saleshub/?(.*)$ /$1 break;  # trailing slash 선택적 제거
+    proxy_pass http://saleshub;
+}
+
+# API는 정확히 매칭
+location /api/ {
+    proxy_pass http://hubmanager;
+}
+```
+
+#### 체크리스트 (신규 API 추가 시)
+- [ ] 엔드포인트 경로에 trailing slash 없는가?
+- [ ] 프론트엔드 호출 시 trailing slash 없는가?
+- [ ] `${apiUrl}/api/*` 중복 경로 아닌가?
+- [ ] RESTful 규칙 준수하는가? (`/customers` not `/customers/`)
+
 ---
 마지막 업데이트: 2026-01-14
 
@@ -928,3 +1106,4 @@ test('debug page until success', async ({ page }) => {
 - 오라클 클라우드 배포 원칙 변경: 로컬 빌드 → 이미지 전송 방식으로 전환
 - 데이터베이스 Enum 값 규칙 추가 (소문자 통일)
 - AccountStatus, AccountRole 타입 정의 소문자로 변경
+- **API 엔드포인트 Trailing Slash 규칙 추가 (2026-01-14)**
