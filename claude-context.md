@@ -27,34 +27,60 @@ WorkHub 프로젝트는 다음 5개의 허브로 구성됩니다:
 - 공용 리소스는 WBHubManager 저장소에서 관리
 - 프로덕션 URL: `http://workhub.biz/[hub-name]`
 
-### 폴더 구조
-- **공용폴더**: `C:\GitHub\WHCommon` - 프로젝트 간 공유되는 문서 및 리소스
-- **테스트에이전트**: `C:\GitHub\HWTestAgent` - 자동화 테스트 시스템
-- **테스트리포트폴더**: `C:\GitHub\HWTestAgent\TestReport` - 테스트 결과 및 리포트 저장
-- **작업중폴더**: `C:\GitHub\WHCommon\OnProgress` - 진행 중인 작업 상태 기록
+### 문서 폴더 구조 (통합)
+
+| 폴더 | 용도 | 파일명 규칙 |
+|------|------|------------|
+| `문서/가이드/` | 온보딩, 배포, 환경변수 등 가이드 | `[topic]-가이드.md` |
+| `문서/테스트/` | 테스트 관련 가이드 및 로그 | `[test-type]-guide.md` |
+| `문서/참고자료/` | 기능 리스트, 참고 자료 | 자유 형식 |
+| `기획/진행중/` | 구현 진행중인 PRD | `prd-[feature-name].md` |
+| `기획/완료/` | 구현 완료된 PRD | `prd-[feature-name].md` |
+| `작업/진행중/` | 진행중인 Task | `tasks-[feature-name].md` |
+| `작업/완료/` | 완료된 Task | `tasks-[feature-name].md` |
+| `작업기록/진행중/` | 진행중 작업 로그 | `YYYY-MM-DD-[description].md` |
+| `작업기록/완료/` | 완료된 작업 로그 | `YYYY-MM-DD-[description].md` |
+| `작업기록/보류/` | 보류된 작업 | `YYYY-MM-DD-[description].md` |
+| `테스트결과/` | 테스트 실행 결과 리포트 | `YYYY-MM-DD-[type]-[target].md` |
+| `규칙/` | 실행 규칙 (실행_기획, 실행_작업) | 고정 파일명 |
+
+### 기록 필수 시점 (자동 준수)
+
+| 작업 단계 | 기록 동작 | 저장 위치 |
+|----------|----------|----------|
+| 기능 기획 시작 | PRD 파일 생성 | `기획/진행중/` |
+| 기능 구현 완료 | PRD 파일 이동 | `기획/완료/` |
+| Task 생성 | Task 파일 생성 | `작업/진행중/` |
+| Task 완료 | Task 파일 이동 | `작업/완료/` |
+| 작업 시작 | 작업 로그 생성 | `작업기록/진행중/` |
+| 작업 보류 | 작업 로그 이동 | `작업기록/보류/` |
+| 작업 완료 | 작업 로그 이동 | `작업기록/완료/` |
+| 테스트 실행 후 | 리포트 생성 | `테스트결과/` |
 
 ### 테스트 관련 폴더 (HWTestAgent)
 - **TestAgent**: `/home/peterchung/HWTestAgent` - 통합 테스트 에이전트
   - `test-results/reports/` - 테스트 리포트 저장
   - `test-results/guides/` - 테스트 가이드 모음
-  - `test-results/guides/docker/` - Docker 테스트 가이드
   - `test-results/logs/` - 테스트 로그
-  - `test-plans/templates/` - 테스트 템플릿
   - `scenarios/` - YAML 테스트 시나리오
 
 ### 중요 문서
-- **기능 리스트**: `C:\GitHub\WHCommon\기능-리스트.md` - 모든 WorkHub 프로젝트의 상세 기능 목록 (도입일 포함)
-- **테스트리포트포맷**: `C:\GitHub\HWTestAgent\TestReport\테스트-리포트-템플릿.md` - 테스트 리포트 작성 시 사용하는 표준 템플릿
-- **테스트PRD폴더**: `C:\GitHub\HWTestAgent\테스트_작성` - 테스트 시나리오 PRD 문서
-- **기능PRD폴더**: `C:\GitHub\WHCommon\기능 PRD` - 기능 개발 PRD 문서
+- **기능 리스트**: `/home/peterchung/WHCommon/문서/참고자료/기능-리스트.md` - 모든 WorkHub 프로젝트의 상세 기능 목록
+- **실행 규칙**: `/home/peterchung/WHCommon/규칙/` - PRD 및 Task 생성 규칙
 
 ## 폴더 참조 규칙
 - 사용자가 **폴더 이름을 명시하지 않고** 경로를 언급하면 **WHCommon 폴더**를 의미함
-- 예: `/기능 PRD/` → `C:\GitHub\WHCommon\기능 PRD/`
-- 예: `/tasks/` → `C:\GitHub\WHCommon\tasks/`
+- 예: `/기획/진행중/` → `/home/peterchung/WHCommon/기획/진행중/`
+- 예: `/작업/진행중/` → `/home/peterchung/WHCommon/작업/진행중/`
 
 ## 언어 설정
 - 새 채팅이나 대화 압축 후 **한국어**를 기본 언어로 사용
+
+## 작업 실행 규칙
+- ✅ **모든 구현 작업은 병렬로 진행**: 특별한 언급이 없으면 겹치지 않는 작업은 동시에 병렬 수행
+- **긴 태스크**: `실행_작업.md` 참고하여 병렬 실행 그룹 식별 후 진행
+- **짧은 태스크**: 의존성이 없는 작업은 즉시 병렬로 수행
+- 📌 **예외**: 순차적 의존성이 있는 작업(예: DB 마이그레이션 후 API 구현)은 순서대로 진행
 
 ## 세션 시작 규칙
 - 새 세션에서 사용자가 처음 입력하는 단어는 **세션 제목용**임
@@ -73,7 +99,9 @@ WHCommon은 **독립된 Git 저장소**로 관리됩니다:
   - ✅ **공용 규칙 파일** (`실행_기획.md`, `실행_작업.md` 등)
   - ✅ **공용 스크립트** (Doppler 동기화, SSH 터널링 등)
   - ✅ **공용 환경변수 파일** (`env.doppler`, SSH 키 등)
-  - ✅ **테스트 문서 및 PRD** (`기능 PRD/`, `tasks/` 등)
+  - ✅ **기획 문서** (`기획/진행중/`, `기획/완료/`)
+  - ✅ **작업 문서** (`작업/진행중/`, `작업/완료/`)
+  - ✅ **작업기록** (`작업기록/진행중/`, `작업기록/완료/`, `작업기록/보류/`)
 
 ### WBHubManager 저장소 관리 항목
 WBHubManager Git 저장소에서 관리하는 항목:
@@ -424,41 +452,75 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
 
 ### PRD 및 Task 생성 규칙 (중요)
 
-#### PRD 생성 규칙
-- **참조 문서**: `WHCommon/실행_기획.md` (계획_PRD.md에서 실행_기획.md로 변경됨)
-- **적용 시점**: PRD 생성 관련 작업 시 **따로 언급이 없으면 항상** 실행_기획.md를 참고
-- **저장 위치**: 작성 완료된 PRD는 `WHCommon/기능 PRD/prd-[feature-name].md`에 저장
-- **구조**: 14개 섹션 포함 (NFR, Security Requirements, Test Strategy 등 신규 섹션 포함)
+#### PRD 생성 규칙 (실행_기획.md 자동 로드)
+- **참조 문서**: `WHCommon/규칙/실행_기획.md`
+- **저장 위치**: `WHCommon/기획/진행중/prd-[feature-name].md`
+- **완료 시**: `WHCommon/기획/완료/`로 이동
+- **구조**: 14개 섹션 포함 (NFR, Security Requirements, Test Strategy 등)
 - **WorkHub 특화**: Appendix에 환경별 구성, 허브 간 통신, 보안 체크리스트 포함
 
-#### Task 생성 규칙
-- **참조 문서**: `WHCommon/실행_작업.md` (계획_테스크.md에서 실행_작업.md로 변경됨)
-- **적용 시점**: PRD 구현 전 Task 생성 시 **따로 언급이 없으면 항상** 실행_작업.md를 참고
-- **저장 위치**: 생성된 Task는 `WHCommon/tasks/tasks-[feature-name].md`에 저장
+**트리거 키워드** (다음 단어 감지 시 자동 참조):
+- PRD, 기획, 설계, 요구사항, 스펙
+- "새 기능 만들어줘", "기능 추가해줘"
+- "어떻게 구현할지 계획해줘"
+- "요구사항 정리해줘", "기획서 작성해줘"
+
+**상황 기반 자동 로드** (키워드 없이도 적용):
+- 사용자가 "왜", "목적", "요구사항"을 묻는 경우
+- 새로운 기능/시스템 설계가 필요한 작업
+- User Story, 성공 기준, 테스트 전략 정의가 필요한 경우
+- 여러 허브에 걸친 변경 작업
+
+#### Task 생성 규칙 (실행_작업.md 자동 로드)
+- **참조 문서**: `WHCommon/규칙/실행_작업.md`
+- **저장 위치**: `WHCommon/작업/진행중/tasks-[feature-name].md`
+- **완료 시**: `WHCommon/작업/완료/`로 이동
 - **특징**: 병렬 실행 그룹 식별, 템플릿 기반 생성, 복잡도 자동 경고 (150개 초과 시)
 - **커밋 규칙**: 테스크 작업 시 중간중간 커밋 진행, 주요 마일스톤 완료 시 커밋
 
+**트리거 키워드** (다음 단어 감지 시 자동 참조):
+- Task, 태스크, 작업 목록, 할 일, 체크리스트
+- "이거 구현해줘", "개발해줘", "만들어줘"
+- "작업 순서 정리해줘", "단계별로 진행해줘"
+- PRD 작성 완료 후 구현 단계 진입 시
+
+**상황 기반 자동 로드** (키워드 없이도 적용):
+- 3개 이상 파일 수정이 예상되는 작업
+- 순차적/병렬 실행 판단이 필요한 작업
+- 데이터베이스 마이그레이션 포함 작업
+- Docker 빌드/배포 관련 작업
+- 여러 단계로 나눠 진행해야 하는 작업
+
 #### 작업 완료 후 결과 기록 규칙 (필수)
-- **기능 구현 완료 시**: `WHCommon/기능 PRD/` 폴더에 작업 결과 기록
+- **기능 구현 완료 시**: PRD 파일을 `기획/완료/`로 이동
   - 파일명: `prd-[feature-name].md`
-  - 내용: 실행_기획.md 템플릿 기반 PRD
   - 시점: 기능 개발 완료 및 테스트 통과 후
 
-- **작업(Task) 완료 시**: `WHCommon/tasks/` 폴더에 작업 결과 기록
+- **작업(Task) 완료 시**: Task 파일을 `작업/완료/`로 이동
   - 파일명: `tasks-[feature-name].md`
-  - 내용: 실행_작업.md 템플릿 기반 Task 목록 및 완료 상태
   - 시점: 모든 Task 완료 후
 
+- **작업기록 저장**:
+  - 작업 시작 시: `작업기록/진행중/YYYY-MM-DD-[description].md` 생성
+  - 작업 보류 시: `작업기록/보류/`로 이동
+  - 작업 완료 시: `작업기록/완료/`로 이동
+
 - **필수 작업 흐름**:
-  1. 작업 시작: PRD/Task 파일 생성
+  1. 작업 시작: PRD/Task 파일 생성 → `기획/진행중/` 또는 `작업/진행중/`
   2. 작업 진행: TodoWrite로 진행 상태 추적
-  3. **작업 완료: 결과를 해당 폴더에 저장** ⬅️ 필수!
+  3. **작업 완료: 파일을 `완료/` 폴더로 이동**
   4. Git 커밋: 결과 파일 포함하여 커밋
 
-#### 중요 알림
-- **사용자 알림 필수**: `실행_기획.md` 또는 `실행_작업.md` 사용 시 작업 시작할 때 사용자에게 알려주기
-- **기본 동작**: 사용자가 PRD 또는 Task 생성을 요청할 때 별도 언급이 없으면 자동으로 해당 문서를 참조하여 작업
-- **완료 시 기록**: 작업 완료 후 반드시 결과를 기능 PRD 또는 tasks 폴더에 저장
+#### 자동 감지 및 알림 규칙 (필수 준수)
+- **트리거 감지 시**: 작업 시작 **전** 다음 메시지 출력:
+  ```
+  📋 실행_기획.md / 실행_작업.md 규칙을 적용합니다.
+  ```
+- **복잡도 평가**: 수정 예상 파일 수, 영향 범위 기준
+  - 복잡도 Medium 이상 (3개+ 파일) → 실행_작업.md 자동 참조 제안
+  - 새 기능 요청 → 실행_기획.md 자동 참조 제안
+- **대규모 구현 작업**: 자동으로 Task 파일 생성 제안
+- **완료 시 기록**: 작업 완료 후 반드시 파일을 `완료/` 폴더로 이동
 
 ### 마크다운 문서 Git 관리
 - **로컬에서 작성된 모든 `.md` 파일은 Git에서 관리**
@@ -571,6 +633,61 @@ COPY --from=frontend-builder /app/frontend/public ./frontend/public
   - 스크립트가 이 파일에서 토큰을 읽어 사용
   - 예시: `DOPPLER_TOKEN_HUBMANAGER_DEV`, `DOPPLER_TOKEN_HUBMANAGER_STG`, `DOPPLER_TOKEN_HUBMANAGER_PRD`
 - 📌 **신규 개발자 온보딩**: `C:\GitHub\WHCommon\온보딩-가이드.md` 참조
+
+### 환경변수 추가 규칙 (중요)
+
+#### 1. NEXT_PUBLIC_* 사용 금지
+- ❌ **금지**: `NEXT_PUBLIC_API_URL`, `NEXT_PUBLIC_HUB_MANAGER_URL` 등
+- ✅ **대안**: 상대경로 `/api` + Nginx 프록시
+- **이유**:
+  - 빌드 시점 하드코딩 → 환경별 재빌드 필요
+  - Docker 캐시 재활용 불가
+  - 디버깅 시 재빌드 필요 (5-10분 vs 환경변수 수정 10초)
+
+#### 2. 개발/프로덕션 모드 구분
+- ✅ **NODE_ENV 사용** (표준):
+  ```typescript
+  const isDev = process.env.NODE_ENV === 'development';
+  const isProd = process.env.NODE_ENV === 'production';
+  ```
+- ✅ **DEPLOY_ENV 사용** (환경 구분 필요 시):
+  ```bash
+  DEPLOY_ENV=local      # 로컬 개발
+  DEPLOY_ENV=staging    # Docker 스테이징
+  DEPLOY_ENV=production # 오라클 프로덕션
+  ```
+- ❌ **금지된 방식**:
+  - `AUTH_ENABLED=true/false` → `NODE_ENV`로 대체
+  - `DEBUG_LOGGING=true` → `NODE_ENV === 'development'`로 대체
+  - `USE_JWT_AUTH=true` → 항상 true (삭제)
+  - `NEXT_PUBLIC_AUTO_AUTH` → `NODE_ENV`로 대체
+
+#### 3. 디버깅용 환경변수 금지
+- ❌ **원칙**: 디버깅을 위해 새 환경변수를 만들지 않는다
+- **잘못된 방식 vs 올바른 방식**:
+  | 상황 | ❌ 잘못된 방식 | ✅ 올바른 방식 |
+  |------|---------------|---------------|
+  | API URL 변경 | `DEBUG_API_URL` 추가 | Nginx 설정 변경 또는 상대경로 |
+  | 기능 ON/OFF | `ENABLE_NEW_FEATURE` 추가 | 코드 조건문 후 제거 |
+  | 로깅 활성화 | `DEBUG_LOGGING=true` 추가 | `NODE_ENV === 'development'` |
+  | 인증 우회 | `AUTH_ENABLED=false` 추가 | dev-login 엔드포인트 사용 |
+
+#### 4. 환경변수 추가 전 체크리스트
+새 환경변수 추가 시 반드시 확인:
+- [ ] 기존 변수로 해결 가능한가? (`NODE_ENV`, `PORT` 등)
+- [ ] 코드 로직으로 해결 가능한가?
+- [ ] 3개 이상의 허브에서 필요한가? (아니면 하드코딩)
+- [ ] 프로덕션에서도 필요한가? (아니면 추가하지 않음)
+- [ ] `.env.template`에 문서화했는가?
+
+#### 5. 허용되는 환경변수 카테고리
+| 카테고리 | 예시 | 허용 |
+|----------|------|------|
+| **인프라** | `DATABASE_URL`, `PORT` | ✅ 필수 |
+| **보안** | `JWT_SECRET`, `SESSION_SECRET` | ✅ 필수 |
+| **외부 서비스** | `SLACK_BOT_TOKEN`, `ANTHROPIC_API_KEY` | ✅ 허용 |
+| **기능 플래그** | `ENABLE_*`, `USE_*` | ❌ 금지 (코드로 처리) |
+| **디버깅** | `DEBUG_*`, `LOG_*` | ❌ 금지 (`NODE_ENV`로 판단) |
 
 ### 로컬 개발 데이터베이스 환경
 - ✅ **로컬 Docker PostgreSQL 사용**:
@@ -804,9 +921,10 @@ test('debug page until success', async ({ page }) => {
 - 📌 **적용 범위**: WBHubManager, WBSalesHub, WBFinHub, WBOnboardingHub 모든 허브
 
 ---
-마지막 업데이트: 2026-01-06
+마지막 업데이트: 2026-01-14
 
 **주요 변경 사항**:
+- 작업 실행 규칙 추가: 모든 구현 작업 병렬 진행 원칙
 - 오라클 클라우드 배포 원칙 변경: 로컬 빌드 → 이미지 전송 방식으로 전환
 - 데이터베이스 Enum 값 규칙 추가 (소문자 통일)
 - AccountStatus, AccountRole 타입 정의 소문자로 변경
