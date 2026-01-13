@@ -1,0 +1,121 @@
+{
+  "mcpServers": {
+    "sequential-thinking": {
+      "command": "/home/peterchung/.nvm/versions/node/v24.12.0/bin/node",
+      "args": [
+        "/home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/@modelcontextprotocol/server-sequential-thinking/dist/index.js"
+      ],
+      "disabled": false,
+      "alwaysAllow": [
+        "create_artifact",
+        "update_artifact"
+      ]
+    },
+    "obsidian": {
+      "command": "/home/peterchung/.nvm/versions/node/v24.12.0/bin/node",
+      "args": [
+        "/home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/obsidian-mcp/build/main.js"
+      ],
+      "config": {
+        "vaultPath": "/home/peterchung/WHCommon"
+      },
+      "disabled": false,
+      "alwaysAllow": [
+        "create_note",
+        "read_note",
+        "update_note",
+        "search_notes"
+      ]
+    },
+    "context7": {
+      "command": "/home/peterchung/.nvm/versions/node/v24.12.0/bin/node",
+      "args": [
+        "/home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/@upstash/context7-mcp/dist/index.js"
+      ],
+      "disabled": false,
+      "alwaysAllow": [
+        "search_documentation",
+        "get_library_info"
+      ]
+    },
+    "filesystem": {
+      "command": "/home/peterchung/.nvm/versions/node/v24.12.0/bin/node",
+      "args": [
+        "/home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/@modelcontextprotocol/server-filesystem/dist/index.js"
+      ],
+      "env": {},
+      "disabled": false,
+      "alwaysAllow": [
+        "read_file",
+        "write_file",
+        "edit_file",
+        "create_directory",
+        "list_directory",
+        "search_files"
+      ],
+      "config": {
+        "allowedDirectories": [
+          "/home/peterchung/WBHubManager",
+          "/home/peterchung/WBSalesHub",
+          "/home/peterchung/WBFinHub",
+          "/home/peterchung/WBOnboardingHub",
+          "/home/peterchung/WHCommon",
+          "/home/peterchung/HWTestAgent"
+        ]
+      }
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_TOKEN": "your_github_token_here"
+      },
+      "disabled": false,
+      "alwaysAllow": [
+        "list_issues",
+        "search_repositories",
+        "get_file_contents",
+        "create_issue",
+        "list_pull_requests"
+      ]
+    },
+    "postgres": {
+      "command": "/home/peterchung/.nvm/versions/node/v24.12.0/bin/node",
+      "args": [
+        "/home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/@tejasanik/postgres-mcp-server/dist/index.js"
+      ],
+      "env": {
+        "POSTGRES_PASSWORD": "postgres"
+      },
+      "disabled": false,
+      "alwaysAllow": [
+        "query",
+        "list_tables",
+        "describe_table"
+      ],
+      "config": {
+        "connections": [
+          {
+            "name": "local-hubmanager",
+            "connectionString": "postgresql://postgres:postgres@localhost:5432/wbhubmanager"
+          },
+          {
+            "name": "local-saleshub",
+            "connectionString": "postgresql://postgres:postgres@localhost:5432/wbsaleshub"
+          },
+          {
+            "name": "local-finhub",
+            "connectionString": "postgresql://postgres:postgres@localhost:5432/wbfinhub"
+          },
+          {
+            "name": "local-onboardinghub",
+            "connectionString": "postgresql://postgres:postgres@localhost:5432/wbonboardinghub"
+          }
+        ]
+      }
+    }
+  }
+}
