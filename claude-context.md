@@ -1255,12 +1255,17 @@ HUBMANAGER_DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/wbhubmanage
   # 로컬 개발 (.env.local)
   DATABASE_URL=postgresql://workhub:workhub@localhost:5432/[db_name]
 
-  # 스테이징 (.env.staging)
-  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@host.docker.internal:5432/[db_name]
+  # 오라클 스테이징 (오라클 서버에서만 사용)
+  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@host.docker.internal:5432/hubmanager
 
-  # 프로덕션 (.env.prd)
-  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@158.180.95.246:5432/[db_name]
+  # 오라클 프로덕션 (오라클 서버에서만 사용)
+  DATABASE_URL=postgresql://workhub:Wnsgh22dml2026@host.docker.internal:5432/hubmanager
   ```
+
+- ⚠️ **로컬 스테이징 환경 사용 안함**:
+  - 로컬에서는 `npm run dev`로만 개발 진행
+  - 스테이징 환경은 **오라클 서버에서만 운영**
+  - 오라클: 스테이징 (4400) → 테스트 → 프로덕션 승격 (4500)
 
 - ℹ️ **오라클 개발 DB 접근** (필요 시):
   - SSH 터널링을 통해 일시적으로 접근 가능
@@ -1280,19 +1285,22 @@ HUBMANAGER_DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/wbhubmanage
   - SSH 키 위치: `C:\GitHub\WHCommon\SSHkey\ssh-key-2026-01-01.key` (WSL에서는 `~/.ssh/oracle-cloud.key`로 복사 후 사용)
 - ❌ **Railway 배포 안함**: 오라클 클라우드로 완전 마이그레이션 완료
 
-### 오라클 클라우드 배포 원칙 (2026-01-11 변경)
+### 오라클 클라우드 배포 원칙 (2026-01-14 업데이트)
 - ✅ **오라클 서버에서 빌드**: Git pull 후 Docker Compose로 직접 빌드
 - ✅ **스테이징/프로덕션 동시 운영**: 4400(스테이징), 4500(프로덕션)
 - ✅ **이미지 태그 관리**: staging, production, rollback
+- ✅ **단일 통합 DB 사용**: 모든 허브가 `hubmanager` 데이터베이스 공유 (24개 테이블)
 - ❌ **로컬 빌드 후 전송**: 더 이상 사용하지 않음
+- ❌ **로컬 스테이징 환경**: 사용하지 않음 (오라클에서만 스테이징 운영)
 
 - 📌 **배포 방법**:
   1. 로컬에서 코드 수정 후 Git push
   2. 오라클 서버 SSH 접속: `ssh oracle-cloud`
   3. 스테이징 배포: `./scripts/deploy-staging.sh`
-  4. 스테이징 테스트: `http://158.180.95.246:4400`
+  4. 스테이징 테스트: `http://158.180.95.246:4400` 또는 `https://staging.workhub.biz`
   5. 프로덕션 승격: `./scripts/promote-production.sh`
-  6. 롤백 (필요시): `./scripts/rollback-production.sh`
+  6. 프로덕션 확인: `https://workhub.biz`
+  7. 롤백 (필요시): `./scripts/rollback-production.sh`
 
 - 📌 **오라클 서버 디렉토리 구조**:
   ```
@@ -1311,7 +1319,15 @@ HUBMANAGER_DATABASE_URL=postgresql://[user]:[password]@[host]:[port]/wbhubmanage
   └── scripts/                # 배포 스크립트
   ```
 
-- 📌 **배포 가이드**: `C:\GitHub\WHCommon\배포-가이드-오라클.md` 참조
+- 📌 **오라클 PostgreSQL 아키텍처** (2026-01-14 확인):
+  - PostgreSQL 18.1이 호스트 시스템에 직접 설치 (localhost:5432)
+  - **단일 `hubmanager` 데이터베이스**에 모든 허브 스키마 통합
+  - 스테이징/프로덕션 모두 동일한 DB 인스턴스 사용
+  - 24개 테이블 포함 (HubManager + SalesHub + FinHub 통합)
+  - 실제 데이터: accounts(1), users(15), hubs(5)
+  - `wbsaleshub` DB는 존재하지만 미사용 (accounts 테이블만 있음)
+
+- 📌 **배포 가이드**: `/home/peterchung/WHCommon/문서/가이드/배포-가이드-오라클.md` 참조
 
 ### GitHub SSH 설정 (WSL)
 - **등록된 SSH 키**: `WSL Ubuntu_Home` (GitHub에 등록됨)
@@ -1573,3 +1589,5 @@ location /api/ {
 - AccountStatus, AccountRole 타입 정의 소문자로 변경
 - **API 엔드포인트 Trailing Slash 규칙 추가 (2026-01-14)**
 - **스테이징 환경 접근 포트 규칙 추가 (2026-01-14)**: 4400 포트 필수
+- **로컬 스테이징 환경 폐지 (2026-01-14)**: 오라클 서버에서만 스테이징 운영
+- **오라클 PostgreSQL 아키텍처 확인 (2026-01-14)**: 단일 `hubmanager` DB에 모든 허브 통합 (24개 테이블)
