@@ -10,6 +10,36 @@
 - ISO 8601 형식 사용 시: `new Date(date.getTime() + (9 * 60 * 60 * 1000))`
 - 표시 형식: `YYYY. MM. DD. HH:MM` (24시간 형식)
 
+### 모던 CLI 도구 사용 규칙 (필수)
+Bash 명령 실행 시 기존 명령어 대신 **모던 CLI 도구를 우선 사용**합니다.
+
+| 기존 명령 | 모던 대안 | Ubuntu 명령어 | 사용 시점 |
+|----------|----------|--------------|----------|
+| `grep` | **ripgrep** | `rg` | 텍스트/코드 검색 |
+| `cat` | **bat** | `batcat` | 파일 내용 읽기 |
+| `find` | **fd** | `fdfind` | 파일 검색 |
+| `ls` | **eza** | `eza` | 디렉토리 목록 |
+| `git diff` | **delta** | `delta` | Git diff 보기 (자동 연동됨) |
+
+**사용 예시**:
+```bash
+# 텍스트 검색 (grep 대신)
+rg "searchTerm" --type ts
+
+# 파일 내용 보기 (cat 대신)
+batcat src/index.ts
+
+# 파일 검색 (find 대신)
+fdfind "component" --type f
+
+# 디렉토리 목록 (ls 대신)
+eza -la --git
+```
+
+**주의사항**:
+- Ubuntu/WSL에서는 `bat` → `batcat`, `fd` → `fdfind`로 실행
+- 설치 가이드: `/home/peterchung/WHCommon/문서/가이드/로컬-환경-세팅-가이드.md` 섹션 2.6, 2.7
+
 ## 프로젝트 정보
 
 ### 전체 허브 리스트
@@ -178,7 +208,7 @@ WBHubManager Git 저장소에서 관리하는 항목:
 
 ## 스킬 (Skills)
 
-### 스킬테스터
+### 스킬테스터 (에러 패턴 DB 연동)
 테스트 자동화를 위한 Claude Code 스킬입니다. "스킬테스터"라고 하면 이 스킬을 사용합니다.
 
 - **위치**: `~/.claude/skills/스킬테스터/`
@@ -193,6 +223,170 @@ WBHubManager Git 저장소에서 관리하는 항목:
 - **자연어 지원**: "스킬테스터 허브매니저 단위 테스트 해줘" 형태로 사용 가능
 - **결과 저장**: `HWTestAgent/test-results/MyTester/`
 - **기본 테스트 도구**: 특별한 언급 없이 "테스트 해줘"라고 요청하면 스킬테스터를 사용
+- **에러 DB 연동**: 테스트 실패 시 에러 패턴 DB에 자동 기록 및 유사 솔루션 제안
+
+#### 자동 트리거 키워드 (20+ 키워드)
+
+스킬테스터는 다음 키워드가 감지되면 **자동으로 호출**됩니다:
+
+| 카테고리 | 트리거 키워드 |
+|----------|---------------|
+| **테스트 관련** | "테스트", "테스트 실패", "테스트 에러", "Jest 실패", "Playwright 실패", "Vitest 에러" |
+| **빌드 관련** | "빌드 실패", "빌드 에러", "npm run build 에러", "TypeScript 에러", "tsc 에러", "컴파일 에러" |
+| **Docker 관련** | "Docker 빌드 에러", "Docker Compose 실패", "OOM 에러", "메모리 부족", "이미지 빌드 실패" |
+| **API 관련** | "API 에러", "404 에러", "500 에러", "CORS 에러", "네트워크 타임아웃", "ECONNREFUSED" |
+| **인증 관련** | "Google OAuth 실패", "SSO 인증 실패", "세션 만료", "토큰 유효하지 않음", "401 에러", "403 에러" |
+| **DB 관련** | "데이터베이스 연결 실패", "Prisma 에러", "마이그레이션 실패", "PostgreSQL 에러" |
+| **환경 관련** | "환경변수 없음", "포트 충돌", "EADDRINUSE", "npm install 실패", "ETIMEDOUT" |
+
+#### 상황 기반 자동 로드 조건 (10+ 상황)
+
+키워드 없이도 다음 상황에서 스킬테스터가 **자동으로 활성화**됩니다:
+
+1. **빌드 실패 시**: `npm run build` 명령 실행 후 에러 발생
+2. **테스트 실패 시**: Jest/Playwright/Vitest 테스트 실행 후 실패
+3. **Docker 빌드 실패 시**: `docker build` 또는 `docker-compose up` 에러
+4. **API 호출 실패 시**: HTTP 4xx/5xx 응답 또는 타임아웃
+5. **환경변수 누락 시**: `undefined` 변수 에러 또는 `.env` 파일 관련 에러
+6. **데이터베이스 연결 실패 시**: `ECONNREFUSED` 또는 PostgreSQL 연결 에러
+7. **포트 충돌 시**: `EADDRINUSE` 에러 발생
+8. **메모리 부족 시**: `JavaScript heap out of memory` 에러
+9. **npm 설치 실패 시**: `ETIMEDOUT`, `ENOTFOUND` 에러
+10. **Google OAuth 실패 시**: `invalid_grant`, `access_denied` 에러
+11. **TypeScript 타입 에러 시**: `tsc --noEmit` 실패
+12. **ESLint 에러 시**: `npm run lint` 실패
+
+#### 에러 발생 시 워크플로우
+
+스킬테스터가 에러를 감지하면 다음 워크플로우가 자동 실행됩니다:
+
+```
+1. 에러 메시지 전체 캡처
+   ↓
+2. 에러 해시 생성 (중복 방지)
+   ↓
+3. HWTestAgent 에러 DB 검색 (유사 패턴)
+   ↓
+4. 유사 패턴 발견?
+   ├─ YES → 솔루션 제안 (성공률 순 정렬)
+   │         ↓
+   │         솔루션 적용 및 재테스트
+   │         ↓
+   │         해결 시 → ErrorOccurrence 업데이트 (resolved: true)
+   │
+   └─ NO → 새 에러 패턴 기록
+            ↓
+            수동 해결 후 솔루션 등록
+```
+
+#### 20+ 사용 예시 (실제 사례 기반)
+
+| # | 에러 상황 | 스킬테스터 대응 | 솔루션 |
+|---|----------|----------------|--------|
+| 1 | Docker 빌드 OOM | 에러 DB 검색 → 유사 패턴 발견 | BuildKit 캐시 + `NODE_OPTIONS="--max-old-space-size=2048"` |
+| 2 | npm ETIMEDOUT | 에러 DB 검색 → 유사 패턴 발견 | `npm config set fetch-timeout 120000` |
+| 3 | Google OAuth invalid_grant | 에러 DB 검색 → 유사 패턴 발견 | 테스트 계정 재로그인 (biz.dev@wavebridge.com) |
+| 4 | Playwright timeout | 에러 DB 검색 → 유사 패턴 발견 | `waitForSelector` 타임아웃 증가 (30s → 60s) |
+| 5 | Jest async 에러 | 에러 DB 검색 → 유사 패턴 발견 | `done()` 콜백 추가 또는 `async/await` 사용 |
+| 6 | TypeScript 타입 에러 | 에러 DB 검색 → 유사 패턴 발견 | 인터페이스 수정 또는 타입 단언 추가 |
+| 7 | API 404 에러 | 에러 DB 검색 → 유사 패턴 발견 | 라우트 경로 수정 (trailing slash 확인) |
+| 8 | PostgreSQL ECONNREFUSED | 에러 DB 검색 → 유사 패턴 발견 | `DATABASE_URL` 수정 또는 DB 서버 시작 |
+| 9 | Port 4090 in use | 에러 DB 검색 → 유사 패턴 발견 | `netstat -tulpn \| grep 4090` + `kill -9 <PID>` |
+| 10 | Docker dangling images | 에러 DB 검색 → 유사 패턴 발견 | `docker image prune -f` |
+| 11 | .env.local 누락 | 에러 DB 검색 → 유사 패턴 발견 | `cp .env.template .env.local` |
+| 12 | Prisma migration failed | 에러 DB 검색 → 유사 패턴 발견 | `schema.prisma` 수정 후 `npx prisma migrate dev` |
+| 13 | Next.js hydration error | 에러 DB 검색 → 유사 패턴 발견 | `'use client'` 지시문 추가 |
+| 14 | CORS 에러 | 에러 DB 검색 → 유사 패턴 발견 | `cors` 미들웨어 추가 또는 Nginx 설정 |
+| 15 | JWT expired | 에러 DB 검색 → 유사 패턴 발견 | refreshToken 로직 추가 |
+| 16 | Slack API rate limit | 에러 DB 검색 → 유사 패턴 발견 | retry 로직 추가 (exponential backoff) |
+| 17 | GitHub API 403 | 에러 DB 검색 → 유사 패턴 발견 | PAT 권한 확인 (repo, workflow 스코프) |
+| 18 | npm ci 실패 | 에러 DB 검색 → 유사 패턴 발견 | `package-lock.json` 삭제 후 `npm install` |
+| 19 | ESLint parsing error | 에러 DB 검색 → 유사 패턴 발견 | `.eslintrc` 파서 설정 확인 |
+| 20 | Nginx 502 Bad Gateway | 에러 DB 검색 → 유사 패턴 발견 | 백엔드 서버 실행 상태 확인 |
+| 21 | Redis connection failed | 에러 DB 검색 → 유사 패턴 발견 | Redis 서버 시작 (`redis-server`) |
+| 22 | S3 upload failed | 에러 DB 검색 → 유사 패턴 발견 | AWS credentials 확인 (`~/.aws/credentials`) |
+
+#### 배포 전 체크리스트 (스킬테스터 활용)
+
+스킬테스터는 배포 전 다음 항목을 자동으로 검증합니다:
+
+**빌드 검증** (자동)
+- [ ] 로컬 빌드 성공 (`npm run build`)
+- [ ] Docker 빌드 성공 (`DOCKER_BUILDKIT=1 docker build`)
+- [ ] TypeScript 타입 에러 없음 (`tsc --noEmit`)
+- [ ] ESLint 에러 없음 (`npm run lint`)
+
+**테스트 검증** (자동)
+- [ ] 단위 테스트 통과 (`npm test`)
+- [ ] E2E 테스트 통과 (`npx playwright test`)
+- [ ] 통합 테스트 통과 (`/스킬테스터 허브매니저->세일즈허브 통합`)
+
+**환경 검증** (자동)
+- [ ] 환경변수 모두 설정 (`.env.local`, `.env.staging`, `.env.prd`)
+- [ ] 데이터베이스 마이그레이션 완료 (`npx prisma migrate deploy`)
+- [ ] Docker 이미지 용량 확인 (< 400MB)
+
+**인프라 검증** (자동)
+- [ ] Nginx 설정 검증 (`nginx -t`)
+- [ ] Health check 엔드포인트 정상 (`curl /api/health`)
+- [ ] 포트 충돌 없음 (`netstat -tulpn`)
+
+**인증 검증** (자동)
+- [ ] Google OAuth 테스트 계정 로그인 성공
+- [ ] 크로스 허브 네비게이션 동작 확인
+- [ ] SSO 세션 유지 확인
+
+**최종 검증** (자동)
+- [ ] 오라클 스테이징 배포 테스트 (`https://staging.workhub.biz:4400`)
+- [ ] 에러 패턴 DB에 신규 에러 없음 확인
+
+#### HWTestAgent API 연동
+
+스킬테스터는 HWTestAgent API를 통해 에러 패턴 DB와 연동됩니다:
+
+```typescript
+// 에러 기록 (자동)
+POST /api/error-patterns/record
+{
+  "project_name": "WBHubManager",
+  "error_message": "Connection refused",
+  "error_category": "NETWORK",
+  "error_hash": "md5_hash",
+  "environment": "local"
+}
+
+// 유사 에러 검색 (자동)
+GET /api/error-patterns?query=Connection%20refused&project=WBHubManager&limit=5
+
+// 솔루션 조회 (자동)
+GET /api/error-patterns/{id}
+```
+
+**API 엔드포인트**: `http://localhost:4100/api` (HWTestAgent)
+
+#### 에러 리포터 유틸리티
+
+스킬테스터 서브 스킬에서 사용하는 에러 리포터:
+
+```typescript
+// 위치: HWTestAgent/src/utils/errorReporter.ts
+
+// Playwright 에러 기록
+import { reportPlaywrightError } from './errorReporter';
+await reportPlaywrightError('WBSalesHub', error, 'staging', testRunId);
+
+// Jest 에러 기록
+import { reportJestError } from './errorReporter';
+await reportJestError('WBHubManager', error, testRunId);
+
+// API 에러 기록
+import { reportApiError } from './errorReporter';
+await reportApiError('WBFinHub', error, 'POST', '/api/customers', 500, 'local');
+
+// 유사 에러 검색
+import { searchSimilarErrors } from './errorReporter';
+const similar = await searchSimilarErrors('Connection refused', 'WBHubManager');
+```
 
 ---
 
@@ -302,6 +496,74 @@ ssh -L 5434:localhost:5432 -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246 -N &
 ---
 
 ## 개발 및 문서 관리 규칙
+
+### 장시간 작업 경과 시간 알림 (timed-build.sh) - 자동 적용
+
+장시간 실행되는 명령에 대해 경과 시간을 주기적으로 표시합니다.
+
+**위치**: `/home/peterchung/WHCommon/scripts/timed-build.sh`
+
+#### ⚠️ Claude 세션 자동 적용 규칙 (필수)
+
+**다음 명령 실행 시 Claude는 반드시 `timed-build.sh`를 앞에 붙여서 실행합니다:**
+
+| 명령 유형 | 예시 | 권장 간격 |
+|----------|------|----------|
+| **Docker 빌드** | `docker build`, `docker-compose up --build` | 30초 (기본) |
+| **npm 빌드** | `npm run build`, `npm run build:server` | 30초 |
+| **테스트 실행** | `npm test`, `npx playwright test`, `npx jest` | 30초 |
+| **의존성 설치** | `npm ci`, `npm install` (대규모) | 30초 |
+| **배포 스크립트** | `deploy-staging.sh`, `promote-production.sh` | 60초 |
+
+**예외 (timed-build.sh 사용 안함)**:
+- 즉시 완료되는 명령 (git status, ls, cat 등)
+- 대화형 명령 (npm init, git rebase -i 등)
+- 백그라운드 실행 명령 (`&` 사용)
+
+**실행 예시**:
+```bash
+# Claude가 자동으로 이렇게 실행
+timed-build.sh docker build -t wbhubmanager:staging .
+timed-build.sh npm run build
+timed-build.sh -i 60 npx playwright test
+```
+
+#### 수동 사용법
+
+```bash
+# 기본 30초 간격
+timed-build.sh npm run build
+
+# 10초 간격 (짧은 작업)
+timed-build.sh -i 10 npm run build
+
+# 60초 간격 (긴 작업)
+timed-build.sh -i 60 npm test
+```
+
+**권장 간격**:
+| 작업 시간 | 권장 간격 |
+|----------|----------|
+| 1-3분 | 10초 |
+| 3-10분 | 30초 (기본) |
+| 10분+ | 60초 |
+
+**출력 예시**:
+```
+🚀 빌드 시작: 2026-01-14 15:30:00 (KST)
+📋 명령: docker build -t wbhubmanager:staging .
+⏱️  알림 간격: 30초
+---
+[빌드 출력...]
+⏱️  경과 시간: 0분 30초
+[빌드 출력...]
+⏱️  경과 시간: 1분 0초
+---
+✅ 빌드 완료! 총 소요 시간: 2분 15초
+🏁 종료 시간: 2026-01-14 15:32:15 (KST)
+```
+
+**토큰 영향**: 30초 간격 시 빌드 출력 대비 3-5% 추가 (무시 가능)
 
 ### 빌드 환경
 - **모든 로컬/운영 빌드는 Docker Compose 사용**

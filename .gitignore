@@ -42,3 +42,4 @@ temp/
 dist/
 build/
 out/
+.env.doppler

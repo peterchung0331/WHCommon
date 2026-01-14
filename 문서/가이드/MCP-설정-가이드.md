@@ -74,8 +74,19 @@ npm install -g obsidian-mcp
 ```
 
 **추가 설정**: Obsidian vault 초기화
+
+⚠️ **WSL 환경 주의**: Obsidian MCP는 `/mnt/c/` 마운트 경로를 지원하지 않습니다.
+WSL 네이티브 경로에 별도 vault를 생성해야 합니다.
+
 ```bash
-mkdir -p /home/peterchung/WHCommon/.obsidian
+# WSL 네이티브 경로에 vault 생성
+mkdir -p /home/peterchung/WHCommon-vault/.obsidian
+cat > /home/peterchung/WHCommon-vault/.obsidian/app.json <<EOF
+{
+  "livePreview": true,
+  "showLineNumber": true
+}
+EOF
 ```
 
 ### 3. Context7 MCP (라이브러리 문서 조회)
@@ -102,6 +113,84 @@ npm install -g @tejasanik/postgres-mcp-server
 npm install -g @playwright/mcp
 ```
 
+### 7. Code Search MCP (시맨틱 코드 검색)
+
+로컬에서 실행되는 시맨틱 코드 검색 MCP입니다. HuggingFace의 EmbeddingGemma 모델을 사용합니다.
+
+**사전 요구사항**:
+- Python 3.10+
+- uv (Python 패키지 매니저)
+
+```bash
+# uv 설치 (없는 경우)
+curl -LsSf https://astral.sh/uv/install.sh | sh
+
+# Claude Context Local 클론
+cd ~/.local/share
+git clone https://github.com/FarhanAliRaza/claude-context-local.git
+
+# 의존성 설치
+cd claude-context-local
+uv sync
+
+# HuggingFace 로그인 (EmbeddingGemma 모델 접근용)
+source .venv/bin/activate
+huggingface-cli login --token $HUGGINGFACE_TOKEN
+```
+
+### 8. Sentry MCP (에러 모니터링)
+
+Sentry의 이슈와 이벤트를 조회하고 분석하는 MCP입니다.
+
+```bash
+npm install -g @sentry/mcp-server
+```
+
+#### Sentry Auth Token 발급 방법
+
+1. **Sentry 로그인**: [sentry.io](https://sentry.io) 접속
+
+2. **Auth Token 페이지 이동**:
+   - Settings → Auth Tokens
+   - 또는 직접 접속: https://sentry.io/settings/account/api/auth-tokens/
+
+3. **새 토큰 생성**:
+   - "Create New Token" 클릭
+   - **Name**: `Claude Code MCP`
+   - **Scopes** 선택 (필수):
+     - `project:read` - 프로젝트 조회
+     - `org:read` - 조직 조회
+     - `event:read` - 이벤트/이슈 조회
+     - `member:read` - 멤버 조회
+   - "Create Token" 클릭
+
+4. **토큰 저장**:
+   - 생성된 토큰을 복사 (한 번만 표시됨)
+   - `WHCommon/.env.doppler` 파일의 `SENTRY_ACCESS_TOKEN`에 저장
+
+### 9. Docker MCP (컨테이너 관리)
+
+Docker 컨테이너, 이미지, 로그를 관리하는 MCP입니다.
+
+```bash
+# npx로 자동 다운로드되므로 별도 설치 불필요
+```
+
+**참고**: Docker Desktop이 실행 중이어야 합니다.
+
+### 10. Fetch MCP (HTTP 요청)
+
+웹 콘텐츠를 가져와 HTML, JSON, Markdown 등으로 변환하는 MCP입니다.
+
+```bash
+# uv로 가상환경 생성 및 설치
+cd ~/.local/share
+mkdir -p mcp-server-fetch && cd mcp-server-fetch
+uv venv
+source .venv/bin/activate
+uv pip install mcp-server-fetch
+```
+
 **참고**: GitHub MCP는 npx로 자동 다운로드되므로 별도 설치 불필요
 
 ---
@@ -120,11 +209,13 @@ claude mcp add --scope user sequential-thinking -- \
 
 ### 2. Obsidian
 
+⚠️ **WSL 환경**: `/mnt/c/` 경로 대신 WSL 네이티브 경로 사용 필수
+
 ```bash
 claude mcp add --scope user obsidian -- \
   /home/peterchung/.nvm/versions/node/v24.12.0/bin/node \
   /home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/obsidian-mcp/build/main.js \
-  /home/peterchung/WHCommon
+  /home/peterchung/WHCommon-vault
 ```
 
 ### 3. Context7
@@ -177,6 +268,44 @@ claude mcp add --scope user playwright -- \
   npx -y @playwright/mcp@latest
 ```
 
+### 8. Code Search (시맨틱 코드 검색)
+
+```bash
+claude mcp add --scope user code-search -- \
+  /home/peterchung/.local/bin/uv run \
+  --directory /home/peterchung/.local/share/claude-context-local \
+  python mcp_server/server.py
+```
+
+### 9. Sentry (에러 모니터링) - 선택사항
+
+⚠️ **Sentry 인증 토큰 필요**: 위 "8. Sentry MCP" 설치 섹션의 토큰 발급 방법 참조
+
+```bash
+# 토큰을 환경변수로 설정 후 추가
+export SENTRY_ACCESS_TOKEN=$(grep "^SENTRY_ACCESS_TOKEN=" /home/peterchung/WHCommon/.env.doppler | cut -d'=' -f2)
+
+claude mcp add --scope user sentry \
+  -e SENTRY_ACCESS_TOKEN=$SENTRY_ACCESS_TOKEN -- \
+  /home/peterchung/.nvm/versions/node/v24.12.0/bin/node \
+  /home/peterchung/.nvm/versions/node/v24.12.0/lib/node_modules/@sentry/mcp-server/dist/index.js
+```
+
+### 10. Docker (컨테이너 관리)
+
+```bash
+claude mcp add --scope user docker -- \
+  npx -y @expertvagabond/claude-code-docker-mcp
+```
+
+### 11. Fetch (HTTP 요청)
+
+```bash
+claude mcp add --scope user fetch -- \
+  /home/peterchung/.local/share/mcp-server-fetch/.venv/bin/python \
+  -m mcp_server_fetch
+```
+
 ---
 
 ## 설정 확인
@@ -198,6 +327,10 @@ filesystem: ... - ✓ Connected
 github: ... - ✓ Connected
 postgres: ... - ✓ Connected
 playwright: ... - ✓ Connected
+code-search: ... - ✓ Connected
+docker: ... - ✓ Connected
+fetch: ... - ✓ Connected
+sentry: ... - ✓ Connected
 ```
 
 ### 설정 파일 위치
@@ -232,18 +365,21 @@ MCP 설정은 다음 파일에 저장됩니다:
 
 ### 2. Obsidian MCP 연결 실패
 
-**원인**: Obsidian vault가 초기화되지 않음
+**원인 1**: Obsidian vault가 초기화되지 않음
+**원인 2**: WSL에서 `/mnt/c/` 마운트 경로 사용 (지원 안됨)
 
-**해결**:
+**해결** (WSL 네이티브 경로 사용):
 ```bash
-mkdir -p /home/peterchung/WHCommon/.obsidian
-cat > /home/peterchung/WHCommon/.obsidian/app.json <<EOF
+mkdir -p /home/peterchung/WHCommon-vault/.obsidian
+cat > /home/peterchung/WHCommon-vault/.obsidian/app.json <<EOF
 {
   "livePreview": true,
   "showLineNumber": true
 }
 EOF
 ```
+
+**참고**: Obsidian MCP는 보안상 네트워크/원격 파일시스템과 심볼릭 링크를 지원하지 않습니다.
 
 ### 3. PostgreSQL 연결 문자열 오류
 
@@ -301,22 +437,26 @@ claude mcp remove playwright
 
 ## 정리
 
-### 설치된 MCP 서버 (7개)
+### 설치된 MCP 서버 (11개)
 
-| MCP 서버 | 용도 | 패키지 |
-|----------|------|--------|
-| Sequential Thinking | 사고 구조화 | `@modelcontextprotocol/server-sequential-thinking` |
-| Obsidian | 문서 저장 | `obsidian-mcp` |
-| Context7 | 라이브러리 문서 | `@upstash/context7-mcp` |
-| Filesystem | 파일 작업 | `@modelcontextprotocol/server-filesystem` |
-| GitHub | Git 관리 | `@modelcontextprotocol/server-github` |
-| PostgreSQL | DB 쿼리 | `@tejasanik/postgres-mcp-server` |
-| Playwright | 브라우저 자동화 | `@playwright/mcp` |
+| MCP 서버 | 용도 | 패키지 | 상태 |
+|----------|------|--------|------|
+| Sequential Thinking | 사고 구조화 | `@modelcontextprotocol/server-sequential-thinking` | ✅ |
+| Obsidian | 문서 저장 | `obsidian-mcp` | ✅ |
+| Context7 | 라이브러리 문서 | `@upstash/context7-mcp` | ✅ |
+| Filesystem | 파일 작업 | `@modelcontextprotocol/server-filesystem` | ✅ |
+| GitHub | Git 관리 | `@modelcontextprotocol/server-github` | ✅ |
+| PostgreSQL | DB 쿼리 | `@tejasanik/postgres-mcp-server` | ✅ |
+| Playwright | 브라우저 자동화 | `@playwright/mcp` | ✅ |
+| Code Search | 시맨틱 코드 검색 | `claude-context-local` (Python) | ✅ |
+| Docker | 컨테이너 관리 | `@expertvagabond/claude-code-docker-mcp` | ✅ |
+| Fetch | HTTP 요청 | `mcp-server-fetch` (Python) | ✅ |
+| Sentry | 에러 모니터링 | `@sentry/mcp-server` | ✅ |
 
 ### 토큰 사용량
 
-- **예상 오버헤드**: 14,000-30,000 tokens/세션 (7-15%)
-- **남은 컨텍스트**: 170,000-186,000 tokens (200K 중)
+- **예상 오버헤드**: 23,000-47,000 tokens/세션 (12-24%)
+- **남은 컨텍스트**: 153,000-177,000 tokens (200K 중)
 
 ---
 
