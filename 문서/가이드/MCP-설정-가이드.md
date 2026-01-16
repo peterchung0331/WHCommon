@@ -461,3 +461,62 @@ claude mcp remove playwright
 ---
 
 **문의**: 문제가 발생하면 이 가이드를 참조하거나 설정 파일(`~/.claude.json`)을 확인하세요.
+
+---
+
+## 🗑️ 제거된 MCP 서버 (2026-01-16 토큰 최적화)
+
+**제거 이유**: 세션 토큰 사용량 최적화 (77% 감소 목표)
+
+### 제거된 MCP 서버 목록 (6개)
+
+| MCP 서버 | 토큰 절약 | 사용 빈도 | 대안 | 재설치 명령어 |
+|----------|-----------|-----------|------|---------------|
+| **Playwright** | ~20,000 | 0% | HWTestAgent 직접 사용 | 위 "7. Playwright" 섹션 참조 |
+| **PostgreSQL (로컬)** | ~12,000 | - | `psql` 명령어 | 위 "6. PostgreSQL" 섹션 참조 |
+| **Obsidian** | ~12,000 | 0% | WHCommon 마크다운 직접 편집 | 위 "2. Obsidian" 섹션 참조 |
+| **Filesystem** | ~18,000 | 1.9% | Read/Write/Edit 기본 도구 | 위 "4. Filesystem" 섹션 참조 |
+| **GitHub** | ~8,000 | 3% | `gh` CLI + Bash git 명령 | 위 "5. GitHub" 섹션 참조 |
+| **Context7** | ~5,000-8,000 | 0% | WebSearch + 공식 문서 | 위 "3. Context7" 섹션 참조 |
+
+**총 절약**: 75,000-78,000 tokens (77% 감소)
+
+### 유지된 MCP 서버 (6개)
+
+| MCP 서버 | 용도 | 유지 이유 |
+|----------|------|----------|
+| **Sequential Thinking** | 사고 구조화 | 복잡한 분석 필수, 토큰 오버헤드 최소 (1개 도구) |
+| **Code Search** | 시맨틱 코드 검색 | 대규모 코드베이스 검색 필수 |
+| **PostgreSQL (오라클)** | 프로덕션 DB 조회 | 오라클 서버 DB 접근 필요 |
+| **Docker** | 컨테이너 관리 | Docker 작업 빈번 |
+| **Fetch** | HTTP 요청 | 웹 콘텐츠 조회 필수 |
+| **Sentry** | 에러 모니터링 | 프로덕션 에러 분석 필수 |
+
+### 재설치 방법
+
+필요 시 위 섹션의 설치 명령어를 참조하여 재설치할 수 있습니다:
+- **Playwright**: "7. Playwright" 섹션
+- **PostgreSQL**: "6. PostgreSQL" 섹션
+- **Obsidian**: "2. Obsidian" 섹션
+- **Filesystem**: "4. Filesystem" 섹션
+- **GitHub**: "5. GitHub" 섹션
+- **Context7**: "3. Context7" 섹션
+
+### 백업 파일 위치
+
+```bash
+/home/peterchung/.claude.json.backup-20260116-XXXXXX
+```
+
+복원 방법:
+```bash
+cp /home/peterchung/.claude.json.backup-20260116-XXXXXX /home/peterchung/.claude.json
+```
+
+### 예상 효과
+
+- **세션 토큰 사용량**: 97,757 → 22,000-25,000 tokens (77% 감소)
+- **세션 수명**: ~100회 → ~400회 상호작용 (4배 증가)
+- **컴팩트 후 여유**: 50-70% → 89-90%
+
+**상세 분석**: [radiant-zooming-zephyr.md](../../작업완료/2026-01-16-MCP-token-optimization.md)

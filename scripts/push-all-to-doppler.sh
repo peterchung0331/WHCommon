@@ -30,6 +30,7 @@ declare -A PROJECTS=(
     ["WBSalesHub"]="SALESHUB"
     ["WBFinHub"]="FINHUB"
     ["WBOnboardingHub"]="ONBOARDINGHUB"
+    ["HWTestAgent"]="HWTEST"
 )
 
 # 함수: .env 파일을 Doppler에 푸시
@@ -39,7 +40,12 @@ push_to_doppler() {
     local env_file=$3
     local doppler_env=$4  # dev 또는 prd
 
-    local project_path="/home/peterchung/$project_name"
+    # 프로젝트별 경로 설정
+    if [ "$project_name" = "HWTestAgent" ]; then
+        local project_path="/home/peterchung/$project_name"
+    else
+        local project_path="/mnt/c/GitHub/$project_name"
+    fi
     local env_file_path="$project_path/$env_file"
 
     if [ ! -f "$env_file_path" ]; then
