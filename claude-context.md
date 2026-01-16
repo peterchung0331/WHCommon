@@ -90,6 +90,57 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 - ✅ **모든 구현 작업은 병렬로 진행**: 겹치지 않는 작업은 동시에 병렬 수행
 - 📌 **예외**: 순차적 의존성이 있는 작업은 순서대로 진행
 
+### 🔴 에러 패턴 DB 기록 규칙 (CRITICAL)
+
+**HWTestAgent 에러 패턴 DB**: http://workhub.biz/testagent/api/error-patterns
+
+#### 트리거 키워드
+사용자가 다음 키워드를 말하면 에러 패턴 DB에 기록:
+- "에러 패턴 기록해줘", "에러 케이스 기록해줘", "이 에러 저장해줘"
+- "디버깅 완료", "버그 수정 완료", "에러 해결했어"
+
+#### 기록 프로세스
+1. **중복 체크 (필수)**: 기록 전 기존 DB 검색
+   ```bash
+   curl -s "http://workhub.biz/testagent/api/error-patterns?query=에러키워드"
+   ```
+   - 유사한 에러가 이미 존재하면: "이미 등록된 에러 패턴입니다 (ID: X)" 출력 후 스킵
+   - 솔루션만 다르면: 기존 패턴에 새 솔루션 추가
+
+2. **에러 패턴 등록** (오라클 서버 PostgreSQL 직접 INSERT)
+   ```bash
+   ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246 "sudo -u postgres psql -d testagent << 'EOSQL'
+   INSERT INTO error_patterns (project_name, error_hash, error_message, error_category, confidence, occurrence_count)
+   VALUES ('프로젝트명', md5('에러식별키'), '에러 메시지 설명', '카테고리', 0.9, 1)
+   ON CONFLICT (project_name, error_hash) DO UPDATE SET occurrence_count = error_patterns.occurrence_count + 1
+   RETURNING id;
+   EOSQL"
+   ```
+
+3. **솔루션 등록**
+   ```bash
+   ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246 "sudo -u postgres psql -d testagent << 'EOSQL'
+   INSERT INTO error_solutions (error_pattern_id, solution_title, solution_description, solution_steps, files_modified, success_rate)
+   VALUES (패턴ID, '솔루션 제목', '상세 설명', ARRAY['단계1', '단계2'], ARRAY['파일1', '파일2'], 100.0)
+   RETURNING id;
+   EOSQL"
+   ```
+
+#### 카테고리 목록
+- `database`: DB 연결, 쿼리, 마이그레이션 에러
+- `git`: Git 명령어, 브랜치, 병합 에러
+- `docker`: Docker 빌드, 네트워크, 컨테이너 에러
+- `nginx`: Nginx 설정, 프록시, 라우팅 에러
+- `api`: API 호출, 인증, 응답 에러
+- `build`: 빌드, 컴파일, 타입 에러
+- `test`: 테스트 실행, 단언 에러
+
+#### 작업 완료 시 자동 기록
+디버깅 또는 구현 작업이 완료되면:
+1. ❌ 테스트 리포트 파일 생성 **금지**
+2. ✅ 발생한 에러와 해결 방법을 에러 패턴 DB에 기록
+3. 사용자에게 등록된 에러 패턴 ID 알림
+
 ## 세션 시작 규칙
 - 새 세션에서 사용자가 처음 입력하는 단어는 **세션 제목용**
 - 첫 입력에 대해 제목으로만 인식하고 간단히 인사만 할 것
@@ -268,9 +319,8 @@ fetch('/api/auth/me/')
 
 ---
 
-마지막 업데이트: 2026-01-16
+마지막 업데이트: 2026-01-17
 
 **주요 변경 사항**:
-- 토큰 사용량 최적화를 위해 파일 크기 50% 축소
-- 스킬테스터, MCP 상세 정보를 별도 문서로 분리
-- 핵심 규칙과 가이드 참조 링크 중심으로 재구성
+- 에러 패턴 DB 기록 규칙 추가 (HWTestAgent 연동)
+- 디버깅/구현 완료 시 테스트 리포트 대신 에러 패턴 DB 기록으로 변경
