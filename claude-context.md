@@ -90,9 +90,36 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 - ✅ **모든 구현 작업은 병렬로 진행**: 겹치지 않는 작업은 동시에 병렬 수행
 - 📌 **예외**: 순차적 의존성이 있는 작업은 순서대로 진행
 
-### 🔴 에러 패턴 DB 기록 규칙 (CRITICAL)
+### 🔴 에러 패턴 DB 활용 규칙 (CRITICAL)
 
 **HWTestAgent 에러 패턴 DB**: http://workhub.biz/testagent/api/error-patterns
+
+#### 에러 발생 시 자동 솔루션 검색 (최우선)
+**모든 에러 발생 시 가장 먼저 실행**:
+- 빌드 에러, 테스트 실패, Docker 에러, API 에러 등 **모든 에러**
+- 스킬테스터 사용 중 또는 일반 빌드/테스트 환경에서 에러 발생 시
+- **에러 메시지가 출력되는 즉시** 다음 프로세스 자동 실행
+
+**자동 실행 프로세스**:
+1. **에러 패턴 검색** (필수 첫 단계)
+   ```bash
+   curl -s "http://workhub.biz/testagent/api/error-patterns?query=에러키워드"
+   ```
+2. **매칭된 패턴이 있으면**:
+   - 솔루션 상세 조회: `GET /api/error-patterns/{id}`
+   - 사용자에게 솔루션 제시
+   - 솔루션 적용 여부 확인 후 자동 적용
+3. **매칭된 패턴이 없으면**:
+   - 일반적인 디버깅 진행
+   - 해결 후 새로운 패턴으로 DB에 등록
+
+**적용 대상**:
+- ✅ `/스킬테스터` 사용 시 테스트 실패
+- ✅ `npm run build` 빌드 에러
+- ✅ `docker build` 빌드 에러
+- ✅ `docker compose up` 실행 에러
+- ✅ `git` 명령어 에러
+- ✅ 모든 CLI 명령어 에러
 
 #### 트리거 키워드
 사용자가 다음 키워드를 말하면 에러 패턴 DB에 기록:
@@ -140,6 +167,25 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 1. ❌ 테스트 리포트 파일 생성 **금지**
 2. ✅ 발생한 에러와 해결 방법을 에러 패턴 DB에 기록
 3. 사용자에게 등록된 에러 패턴 ID 알림
+
+#### 에러 패턴 DB 현황 (2026-01-17 기준)
+**총 15개 패턴 등록 완료** (모든 패턴에 솔루션 포함)
+
+| 카테고리 | 개수 | 주요 패턴 |
+|----------|------|----------|
+| docker | 5개 | Exit 137 (OOM), Exit 255 (Compose 버그), npm cache 충돌, 재시작 vs 재생성, ECONNREFUSED |
+| nginx | 3개 | 프록시 실패, HTTPS 거부, 400 Bad Request |
+| git | 2개 | unrelated histories, untracked files |
+| authentication | 2개 | SSO 무한 리디렉트, JWT invalid signature |
+| typescript | 1개 | ES Modules __dirname |
+| nextjs | 1개 | Network Error (환경변수) |
+| security | 1개 | 암호화폐 채굴 악성코드 |
+
+**API 엔드포인트**:
+- 패턴 검색: `GET /api/error-patterns?query=키워드`
+- 패턴 상세: `GET /api/error-patterns/:id`
+- 패턴 등록: `POST /api/error-patterns/record`
+- 솔루션 등록: `POST /api/error-patterns/:id/solutions`
 
 ## 세션 시작 규칙
 - 새 세션에서 사용자가 처음 입력하는 단어는 **세션 제목용**
@@ -319,8 +365,12 @@ fetch('/api/auth/me/')
 
 ---
 
-마지막 업데이트: 2026-01-17
+---
+
+마지막 업데이트: 2026-01-17 00:30
 
 **주요 변경 사항**:
-- 에러 패턴 DB 기록 규칙 추가 (HWTestAgent 연동)
-- 디버깅/구현 완료 시 테스트 리포트 대신 에러 패턴 DB 기록으로 변경
+- ✅ 에러 패턴 DB 기록 규칙 추가 (HWTestAgent 연동)
+- ✅ 에러 발생 시 자동 솔루션 검색 규칙 추가 (최우선 실행)
+- ✅ 15개 에러 패턴 및 솔루션 등록 완료
+- ✅ 디버깅/구현 완료 시 테스트 리포트 대신 에러 패턴 DB 기록으로 변경
