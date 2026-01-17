@@ -187,6 +187,102 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 - 패턴 등록: `POST /api/error-patterns/record`
 - 솔루션 등록: `POST /api/error-patterns/:id/solutions`
 
+### 🟢 디버깅 체크리스트 활용 규칙 (RECOMMENDED)
+
+**HWTestAgent 디버깅 체크리스트**: http://workhub.biz/testagent/api/debugging-checklists
+
+에러 패턴 DB를 분석하여 생성된 **코드 컨벤션 및 구현/디버깅 체크리스트**입니다.
+
+#### 트리거 키워드 (자동 체크리스트 조회)
+다음 작업 시 해당 카테고리 체크리스트를 **자동으로 조회**하여 참조:
+
+| 키워드 | 카테고리 | API |
+|--------|----------|-----|
+| SSO, OAuth, 인증, 로그인, 쿠키, 토큰 | sso | `GET /api/debugging-checklists/category/sso` |
+| Docker, 컨테이너, 빌드, OOM, Exit | docker | `GET /api/debugging-checklists/category/docker` |
+| DB, 데이터베이스, 마이그레이션, PostgreSQL | database | `GET /api/debugging-checklists/category/database` |
+| Nginx, 프록시, 리버스프록시, 404 | nginx | `GET /api/debugging-checklists/category/nginx` |
+
+#### 체크리스트 사용 시점
+
+1. **구현 전**: 체크리스트 조회 → 필수 항목 사전 확인 (critical, high 우선)
+2. **디버깅 시**: 에러 패턴 검색 → 연결된 체크리스트 항목 참조
+3. **코드 리뷰**: 체크리스트 기준으로 검증
+
+#### 체크리스트 API 엔드포인트
+
+```bash
+# 전체 목록
+GET /api/debugging-checklists
+
+# 카테고리별 조회 (아이템 포함)
+GET /api/debugging-checklists/category/sso
+GET /api/debugging-checklists/category/docker
+
+# 상세 조회
+GET /api/debugging-checklists/:id
+
+# 에러 패턴 연결 항목 조회
+GET /api/debugging-checklists/by-error-pattern/:patternId
+
+# 키워드 검색
+GET /api/debugging-checklists/search?keyword=쿠키
+```
+
+#### 현재 등록된 체크리스트 (2026-01-17 기준)
+
+| 카테고리 | 체크리스트 | 항목 수 | Critical |
+|----------|-----------|---------|----------|
+| sso | 허브 간 SSO 인증 체크리스트 | 12 | 4 |
+| docker | Docker 빌드 및 배포 체크리스트 | 5 | 1 |
+
+**프론트엔드 UI**: http://workhub.biz/testagent/debugging-checklists
+
+### 🟣 오라클 스테이징 환경 E2E 테스트 규칙 (IMPORTANT)
+
+**자동 적용 조건**:
+- 사용자가 "오라클", "스테이징", "staging" 키워드를 포함하여 E2E 테스트 요청
+- URL에 `staging.workhub.biz` 포함
+
+**Google OAuth 자동 스킵**:
+오라클 스테이징 환경에서는 Google OAuth 로그인을 **자동으로 스킵**하고 JWT 토큰을 직접 주입합니다.
+
+**JWT 토큰 발급 방법**:
+1. `/api/auth/dev-login` 엔드포인트 호출 (HubManager 연동)
+2. 리다이렉트 URL에서 `accessToken`, `refreshToken` 파싱
+3. 쿠키(`wbhub_access_token`) 또는 localStorage에 저장
+
+**필수 테스트 시나리오**:
+- ✅ dev-login 자동 로그인 플로우
+- ✅ 쿠키 기반 SSO 완료 플로우
+- ✅ 페이지 새로고침 후 인증 유지
+- ✅ 토큰 없이 대시보드 접근 (로그인 페이지 리다이렉트)
+
+**테스트 헬퍼 위치**:
+- `e2e/helpers/jwt-helper.ts`: JWT 토큰 발급 및 주입
+- `e2e/helpers/api-helper.ts`: API 응답 검증
+
+**인증 플로우 검증 항목**:
+1. JWT 토큰 발급 성공
+2. 쿠키에 `wbhub_access_token` 설정
+3. JWT 미들웨어가 쿠키에서 토큰 읽기
+4. `/api/auth/me` 호출 성공
+5. 대시보드 정상 렌더링
+6. 무한 리디렉션 없음
+7. 페이지 새로고침 후 인증 유지
+
+**예시 명령어**:
+```bash
+# 자동으로 Google OAuth 스킵 + JWT 토큰 주입 테스트 실행
+/스킬테스터 오라클에서 허브매니저->세일즈허브 E2E
+/스킬테스터 스테이징 환경 세일즈허브 E2E 테스트
+```
+
+**주의사항**:
+- 개발 모드(`localhost`)에서는 Google OAuth 정상 실행
+- 오라클 스테이징(`staging.workhub.biz`)에서만 자동 스킵
+- 프로덕션(`workhub.biz`)에서는 실제 Google OAuth 사용
+
 ## 세션 시작 규칙
 - 새 세션에서 사용자가 처음 입력하는 단어는 **세션 제목용**
 - 첫 입력에 대해 제목으로만 인식하고 간단히 인사만 할 것

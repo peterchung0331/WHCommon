@@ -53,6 +53,105 @@ TEST_URL_ORACLE=https://wbhub.oracle.cloud
 }
 ```
 
+## 오라클 스테이징 환경 특수 처리
+
+### Google OAuth 자동 스킵 (스테이징 전용)
+오라클 스테이징 환경(`staging.workhub.biz`)에서는 Google OAuth를 스킵하고 JWT 토큰을 직접 주입합니다.
+
+**적용 조건**:
+- 환경: `oracle` 또는 `staging`
+- URL에 `staging.workhub.biz` 포함
+
+**JWT 토큰 발급 방법**:
+1. **방법 1: `/api/auth/dev-login` 엔드포인트 호출**
+   ```typescript
+   const response = await fetch(`${BACKEND_URL}/api/auth/dev-login`, {
+     redirect: 'manual',
+   });
+   const redirectUrl = response.headers.get('location');
+   // URL에서 accessToken, refreshToken 파싱
+   ```
+
+2. **방법 2: 쿠키 직접 주입**
+   ```typescript
+   await page.context().addCookies([
+     {
+       name: 'wbhub_access_token',
+       value: jwt_token,
+       domain: 'staging.workhub.biz',
+       path: '/',
+       secure: true,
+       httpOnly: false,
+       sameSite: 'Lax',
+     },
+   ]);
+   ```
+
+### 인증 플로우 검증 시나리오
+
+**Scenario 1: dev-login 자동 로그인**
+- `/api/auth/dev-login` → 토큰 발급 → localStorage 저장 → 대시보드
+
+**Scenario 2: 쿠키 기반 SSO 완료**
+- 쿠키 주입 → `/api/auth/sso-complete` → JWT 검증 → 대시보드
+
+**Scenario 3: 페이지 새로고침 후 인증 유지**
+- dev-login → 대시보드 → 새로고침 → 여전히 인증됨
+
+**Scenario 4: 토큰 없이 대시보드 접근**
+- 인증 없음 → `/login` 리다이렉트
+
+### 테스트 헬퍼 위치
+- JWT 헬퍼: `e2e/helpers/jwt-helper.ts`
+  - `getDevJWT()`: JWT 토큰 발급
+  - `injectCookie()`: 쿠키 주입
+  - `injectLocalStorage()`: localStorage 주입
+  - `clearAuth()`: 인증 정보 초기화
+
+- API 헬퍼: `e2e/helpers/api-helper.ts`
+  - `verifyAuthMeResponse()`: `/api/auth/me` 검증
+  - `verifyCookies()`: 쿠키 확인
+  - `verifyLocalStorageTokens()`: localStorage 확인
+  - `verifyDashboardUI()`: 대시보드 UI 확인
+
+### 스크린샷 단계 (OAuth 스킵)
+```
+├─ 01-jwt-token-issued.png          # JWT 토큰 발급
+├─ 02-cookie-injected.png            # 쿠키 주입
+├─ 03-sso-complete-redirect.png     # /auth/sso-complete 접근
+├─ 04-dashboard-loaded.png          # 대시보드 로드
+├─ 05-page-refreshed.png            # 페이지 새로고침
+└─ 06-auth-persisted.png            # 인증 유지 확인
+```
+
+### 예상 리포트 구조
+```markdown
+# E2E 테스트 결과 - WBSalesHub (오라클 스테이징)
+
+## 테스트 환경
+- 환경: Oracle Staging (staging.workhub.biz)
+- 인증 방식: JWT 토큰 직접 주입 (Google OAuth 스킵)
+- 브라우저: Chromium
+
+## 테스트 시나리오
+✅ Scenario 1: dev-login 자동 로그인
+✅ Scenario 2: 쿠키 기반 SSO 완료
+✅ Scenario 3: 페이지 새로고침 후 인증 유지
+✅ Scenario 4: 토큰 없이 대시보드 접근
+
+## 검증된 항목
+- ✅ JWT 토큰 발급 (`/api/auth/dev-login`)
+- ✅ 쿠키 기반 인증 (`wbhub_access_token`)
+- ✅ JWT 미들웨어가 쿠키에서 토큰 읽기
+- ✅ `/api/auth/me` 호출 성공
+- ✅ 무한 리디렉션 방지
+- ✅ 페이지 새로고침 후 인증 유지
+
+## 스크린샷
+![JWT 토큰 발급](screenshots/01-jwt-token-issued.png)
+![대시보드 로드](screenshots/04-dashboard-loaded.png)
+```
+
 ## 작업 순서
 
 ### 1단계: 환경 설정
