@@ -396,10 +396,35 @@ GET /api/debugging-checklists/search?keyword=쿠키
 - ✅ `.env.staging`: Docker 스테이징 (Git 제외, `DOCKER_PORT=4400`)
 - ✅ `.env.prd`: 프로덕션 (Git 제외, `DOCKER_PORT=4500`)
 
-### Doppler 동기화
-- **3개 환경 동기화**: Development, Staging, Production
-- **수동 푸시**: `WHCommon/scripts/push-all-to-doppler.sh`
-- **Config 명명**: `dev_wbhubmanager`, `stg_wbhubmanager`, `prd_wbhubmanager`
+### Doppler 사용 금지 (CRITICAL)
+- ❌ **모든 빌드 환경에서 Doppler 사용 금지**
+- ❌ DOPPLER_TOKEN 하드코딩 금지
+- ❌ Doppler CLI 사용 금지
+- ✅ `.env` 파일만 사용
+- ✅ Docker Compose `env_file` 사용
+
+**이유**:
+- 토큰 평문 노출 보안 이슈
+- 배포 복잡도 증가
+- multiline 환경변수 파싱 문제
+- 일관성 없는 환경변수 관리
+
+### JWT 키 관리 규칙
+- ✅ **Base64 인코딩 필수** (multiline 문제 회피)
+- ✅ 환경변수 우선: `JWT_PRIVATE_KEY`, `JWT_PUBLIC_KEY`
+- ✅ 파일 fallback: `server/keys/private.pem`, `server/keys/public.pem`
+- ✅ Docker Compose `env_file`로 자동 로드
+
+**인코딩 명령어**:
+```bash
+cat server/keys/private.pem | base64 -w 0  # JWT_PRIVATE_KEY
+cat server/keys/public.pem | base64 -w 0   # JWT_PUBLIC_KEY
+```
+
+**배포 체크리스트**:
+1. `.env.staging`에 Base64 인코딩된 JWT 키 확인
+2. `docker-compose.staging.yml`에서 `env_file: .env.staging` 확인
+3. 배포 후 컨테이너에서 JWT 키 길이 검증 (200+ 정상)
 
 ### 환경변수 추가 규칙
 - ❌ `NEXT_PUBLIC_*` 사용 금지 (빌드 시점 하드코딩)
