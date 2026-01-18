@@ -66,19 +66,30 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 
 ### 전체 허브 리스트
 
-| 허브 이름 | 경로 | 개발 포트 (F/B) | 운영 포트 (B) |
-|----------|------|----------------|--------------|
-| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4090 |
-| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4010 |
-| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4020 |
-| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | 4030 |
-| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | 4040 |
-| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4100 |
+| 허브 이름 | 경로 | 로컬 개발 (F/B) | 스테이징 (내부) | 프로덕션 (호스트) |
+|----------|------|----------------|----------------|------------------|
+| **WBHubManager** | `/home/peterchung/WBHubManager` | 3090 / 4090 | 4090 | 4090 |
+| **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010 / 4010 | 4010 | 4010 |
+| **WBFinHub** | `/home/peterchung/WBFinHub` | 3020 / 4020 | 4020 | 4020 |
+| **WBOnboardingHub** | `/home/peterchung/WBOnboardingHub` | 3030 / 4030 | (비활성) | (비활성) |
+| **WBRefHub** | `/home/peterchung/WBHubManager/WBRefHub` | 3040 / 4040 | (미배포) | (미배포) |
+| **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080 / 4080 | 4100 | 4100 |
 
-**포트 체계**:
-- 개발: 3000번대 (프론트) / 4000번대 (백엔드)
-- 운영: 각 허브별 개별 포트, Nginx가 경로별 프록시
-- 프로덕션 URL: `http://workhub.biz/[hub-name]`
+**포트 체계** (2026-01-18 업데이트):
+- **로컬 개발**: 3000번대 (프론트엔드), 4000번대 (백엔드 Docker)
+- **스테이징**: 내부 포트만 (4090, 4010, 4020), Nginx :4400 (HTTPS)으로만 접근
+- **프로덕션**: 호스트 포트 노출 (4090, 4010, 4020), Nginx :80/:443으로도 접근
+- **Docker 네트워크**: workhub-network (172.19.0.0/16)
+- **DB 접근**: 컨테이너 → 172.19.0.1:5432 (Docker 게이트웨이)
+
+**브라우저 접근 URL**:
+- 로컬: `http://localhost:3090`, `http://localhost:3010/saleshub`, ...
+- 스테이징: `https://staging.workhub.biz:4400`, `https://staging.workhub.biz:4400/finhub`, ...
+- 프로덕션: `https://workhub.biz`, `https://workhub.biz/finhub`, `https://workhub.biz/saleshub`, ...
+
+**컨테이너 명명 규칙**:
+- 스테이징: `hubmanager-staging`, `wbsaleshub-staging`, `wbfinhub-staging`, `nginx-staging`
+- 프로덕션: `wbhubmanager-prod`, `wbsaleshub-prod`, `wbfinhub-prod`, `nginx-prod`
 
 ### 문서 폴더 구조
 
