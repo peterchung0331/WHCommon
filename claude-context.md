@@ -4,6 +4,48 @@
 
 ## 기본 규칙
 
+### 🚨 인증 및 SSO 규칙 (CRITICAL)
+**모든 허브의 인증은 반드시 쿠키 기반 SSO를 사용합니다.**
+
+#### 필수 사항
+- ✅ **쿠키 기반 SSO만 사용** - URL 쿼리 파라미터(`?accessToken=...`) 방식 절대 사용 금지
+- ✅ **프론트엔드 AuthProvider는 항상 `/api/auth/me` 호출** - localStorage 체크하지 않음
+- ✅ **axios `withCredentials: true` 필수** - 쿠키 전송을 위해 반드시 설정
+- ✅ **쿠키 도메인 설정 필수** - `.workhub.biz` (프로덕션), `.staging.workhub.biz` (스테이징)
+
+#### 환경변수 필수 설정
+모든 허브의 프로덕션/스테이징 환경변수에 다음 항목 필수:
+```bash
+COOKIE_DOMAIN=.workhub.biz         # 프로덕션
+COOKIE_SECURE=true
+SAME_SITE=lax
+```
+
+#### AuthProvider 구현 패턴
+```typescript
+// ✅ 올바른 방식 (쿠키 기반)
+const refreshUser = async () => {
+  // localStorage 체크 없이 항상 API 호출
+  const response = await authApi.getMe(); // axios가 자동으로 쿠키 전송
+  if (response.success && response.user) {
+    setUser(response.user);
+  }
+};
+
+// ❌ 잘못된 방식 (localStorage 체크)
+const refreshUser = async () => {
+  if (!hasTokens()) return; // 쿠키 기반 SSO 무시하는 잘못된 패턴
+  // ...
+};
+```
+
+#### 참고 문서
+- [2026-01-18 프로덕션 SSO 쿠키 도메인 수정](/home/peterchung/WHCommon/작업기록/완료/2026-01-18-프로덕션-SSO-쿠키-도메인-수정.md)
+- 에러 패턴 ID: 64 (SSO 쿠키 공유 실패)
+- 솔루션 ID: 52 (COOKIE_DOMAIN 환경변수 추가)
+
+---
+
 ### 시간 기준
 - **모든 작업의 기준 시간은 한국시간(KST, UTC+9)**
 - 표시 형식: `YYYY. MM. DD. HH:MM` (24시간 형식)
