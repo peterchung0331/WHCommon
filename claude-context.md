@@ -353,6 +353,44 @@ GET /api/debugging-checklists/search?keyword=쿠키
 
 ---
 
+## 🤖 Reno AI 봇 작업 규칙 (IMPORTANT)
+
+Reno 봇 관련 작업 시 **반드시** 페르소나 문서를 참조합니다.
+
+### 자동 참조 트리거
+다음 키워드가 포함된 작업에서 페르소나 문서 **자동 참조**:
+- "Reno", "레노", "AI 봇", "AI 에이전트", "AI 어시스턴트"
+- "페르소나", "persona", "캐릭터", "봇 성격"
+- "Slack 봇", "챗봇", "대화 스타일"
+
+### 참조 문서
+
+| 문서 | 경로 |
+|------|------|
+| **페르소나 가이드** | `/home/peterchung/WBHubManager/packages/ai-agent-core/docs/personas/reno.md` |
+| **Internal YAML** | `/home/peterchung/WBHubManager/packages/ai-agent-core/personas/reno-internal.yaml` |
+| **External YAML** | `/home/peterchung/WBHubManager/packages/ai-agent-core/personas/reno-external.yaml` |
+
+### 작업 시 필수 확인 항목
+
+| 작업 유형 | 확인 항목 |
+|----------|----------|
+| 대화 스타일 변경 | 페르소나 가이드의 톤/스타일 섹션 |
+| 새 기능 추가 | `knowledge.areas` 및 `limitations` |
+| 프롬프트 수정 | `behavior.do/dont` 규칙 준수 |
+| 이모지 사용 | Internal만 허용, **External 절대 금지** |
+
+### 페르소나 핵심 차이점
+
+| 구분 | Internal (직원) | External (고객) |
+|------|----------------|-----------------|
+| 캐릭터 | 막내 인턴 | 공식 대표 AI |
+| 이모지 | O | **X (절대 금지)** |
+| 어투 | 반말/친근한 존댓말 | 격식체 존댓말만 |
+| 톤 | 밝고 친근함 | 전문적, 신뢰감 |
+
+---
+
 ## 스킬 (Skills)
 
 ### 스킬테스터
@@ -449,18 +487,90 @@ GET /api/debugging-checklists/search?keyword=쿠키
 - ✅ `.env.staging`: Docker 스테이징 (Git 제외, `DOCKER_PORT=4400`)
 - ✅ `.env.prd`: 프로덕션 (Git 제외, `DOCKER_PORT=4500`)
 
-### Doppler 사용 금지 (CRITICAL)
-- ❌ **모든 빌드 환경에서 Doppler 사용 금지**
-- ❌ DOPPLER_TOKEN 하드코딩 금지
-- ❌ Doppler CLI 사용 금지
-- ✅ `.env` 파일만 사용
-- ✅ Docker Compose `env_file` 사용
+### 🚨 환경변수 구현 가이드 (CRITICAL)
 
-**이유**:
-- 토큰 평문 노출 보안 이슈
-- 배포 복잡도 증가
-- multiline 환경변수 파싱 문제
-- 일관성 없는 환경변수 관리
+#### 금지 항목 (절대 사용 금지)
+- ❌ **Doppler CLI** (`doppler run`, `doppler secrets`, `doppler setup`)
+- ❌ **Doppler API** (`api.doppler.com`)
+- ❌ **DOPPLER_TOKEN** 환경변수
+- ❌ **doppler-*.cjs/sh** 스크립트
+- ❌ **Dockerfile 내 Doppler CLI 설치**
+- ❌ **런타임 시크릿 매니저 호출** (AWS Secrets Manager, GCP Secret Manager 직접 호출)
+
+#### 올바른 환경변수 패턴
+
+**1. 파일 구조**
+```bash
+.env.local      # 로컬 개발 (Git 제외)
+.env.staging    # 스테이징 (Git 제외)
+.env.prd        # 프로덕션 (Git 제외)
+.env.template   # 템플릿 (Git 포함, 값 없이 키만)
+```
+
+**2. 환경변수 로딩**
+```typescript
+// ✅ 올바른 방식: dotenv 사용
+import 'dotenv/config';
+
+// ✅ 올바른 방식: process.env 직접 참조
+const dbUrl = process.env.DATABASE_URL;
+
+// ❌ 금지: 외부 서비스에서 런타임 로드
+const secrets = await fetchFromDoppler(token);
+```
+
+**3. package.json 스크립트**
+```json
+{
+  "scripts": {
+    "dev": "nodemon server/index.ts",           // ✅ dotenv가 자동 로드
+    "dev:server": "tsx watch server/index.ts",  // ✅ 직접 실행
+    "start": "node dist/server/index.js",       // ✅ 직접 실행
+
+    // ❌ 금지 패턴
+    "dev:wrong": "doppler run -- nodemon...",
+    "start:wrong": "node scripts/load-doppler-env.cjs && ..."
+  }
+}
+```
+
+**4. Docker 배포**
+```yaml
+# docker-compose.yml
+services:
+  app:
+    env_file:
+      - .env.staging  # ✅ 파일 직접 참조
+    environment:
+      NODE_ENV: production
+      # ❌ DOPPLER_TOKEN 사용 금지
+```
+
+**5. Dockerfile**
+```dockerfile
+# ✅ 올바른 방식: 환경변수는 docker-compose에서 주입
+ENV NODE_ENV=production
+
+# ❌ 금지: Doppler CLI 설치
+# RUN curl ... doppler.com/install.sh | sh
+```
+
+#### 민감 정보 관리
+
+| 항목 | 저장 위치 | 형식 |
+|------|----------|------|
+| JWT 키 | `.env.*` 파일 | Base64 인코딩 |
+| DB 비밀번호 | `.env.*` 파일 | 평문 (Git 제외) |
+| OAuth 시크릿 | `.env.*` 파일 | 평문 (Git 제외) |
+| API 키 | `.env.*` 파일 | 평문 (Git 제외) |
+
+#### 새 허브 생성 시 체크리스트
+- [ ] `.env.template` 생성 (값 없이 키만)
+- [ ] `.env.local`, `.env.staging`, `.env.prd` 생성
+- [ ] `.gitignore`에 `.env*` 추가 (`.env.template` 제외)
+- [ ] `package.json`의 `dev` 스크립트에 Doppler 없음 확인
+- [ ] `Dockerfile`에 Doppler CLI 설치 없음 확인
+- [ ] `docker-compose.*.yml`에 `env_file` 사용
 
 ### JWT 키 관리 규칙
 - ✅ **Base64 인코딩 필수** (multiline 문제 회피)
@@ -541,9 +651,10 @@ fetch('/api/auth/me/')
 
 ---
 
-마지막 업데이트: 2026-01-17 00:30
+마지막 업데이트: 2026-01-24 10:30
 
 **주요 변경 사항**:
+- ✅ **Reno AI 봇 작업 규칙 추가** - 페르소나 문서 자동 참조 규칙
 - ✅ 에러 패턴 DB 기록 규칙 추가 (HWTestAgent 연동)
 - ✅ 에러 발생 시 자동 솔루션 검색 규칙 추가 (최우선 실행)
 - ✅ 15개 에러 패턴 및 솔루션 등록 완료
