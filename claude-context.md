@@ -596,13 +596,20 @@ Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
 
 ### 🚨 환경변수 구현 가이드 (CRITICAL)
 
-#### 금지 항목 (절대 사용 금지)
-- ❌ **Doppler CLI** (`doppler run`, `doppler secrets`, `doppler setup`)
-- ❌ **Doppler API** (`api.doppler.com`)
-- ❌ **DOPPLER_TOKEN** 환경변수
-- ❌ **doppler-*.cjs/sh** 스크립트
+#### Doppler 사용 규칙
+
+**❌ 자동 구현/배포 시 금지** (코드, 스크립트, Dockerfile에서):
+- ❌ **Doppler CLI 자동 실행** (`doppler run`, `package.json` 스크립트에서 사용)
+- ❌ **Doppler API 런타임 호출** (`api.doppler.com` 직접 호출)
+- ❌ **DOPPLER_TOKEN** 환경변수 사용
+- ❌ **doppler-*.cjs/sh** 자동 실행 스크립트
 - ❌ **Dockerfile 내 Doppler CLI 설치**
 - ❌ **런타임 시크릿 매니저 호출** (AWS Secrets Manager, GCP Secret Manager 직접 호출)
+
+**✅ 사용자 명시적 요청 시 허용** (수동 동기화만):
+- ✅ **사용자가 "도플러 동기화", "Doppler 푸시" 등 명시적 요청 시**
+- ✅ **Doppler CLI를 사용한 수동 환경변수 업로드/다운로드**
+- ✅ **일회성 Doppler 명령어 실행** (자동화 스크립트 외부)
 
 #### 올바른 환경변수 패턴
 
