@@ -389,6 +389,113 @@ Reno 봇 관련 작업 시 **반드시** 페르소나 문서를 참조합니다.
 | 어투 | 반말/친근한 존댓말 | 격식체 존댓말만 |
 | 톤 | 밝고 친근함 | 전문적, 신뢰감 |
 
+### 배포 및 환경 설정 (2026-01-26 업데이트)
+
+#### 환경변수 (Slack 토큰)
+**세 환경 모두 최신 토큰으로 업데이트 완료** (2026-01-26):
+```bash
+SLACK_BOT_TOKEN=xoxb-****-****-****  # Slack App 재설치 시 재발급
+SLACK_SIGNING_SECRET=****  # Slack App 설정에서 확인
+```
+
+**적용 위치**:
+- ✅ 로컬: `/home/peterchung/WBSalesHub/.env.local`
+- ✅ 스테이징: `/home/ubuntu/WBSalesHub/.env.staging` (오라클 서버)
+- ✅ 프로덕션: `/home/ubuntu/WBSalesHub/.env.prd` (오라클 서버)
+
+**토큰 확인 방법**: https://api.slack.com/apps/A0A4Q3AC1LK → OAuth & Permissions
+
+#### Slack Event Subscriptions URL
+- **스테이징**: `https://staging.workhub.biz:4400/saleshub/slack/reno/events`
+- **프로덕션**: `https://workhub.biz/saleshub/slack/reno/events`
+
+**중요**: Slack App 토큰 재발급 시 반드시 **Reinstall to Workspace** 필요
+
+#### Nginx 스테이징 설정
+**위치**: `nginx-staging` 컨테이너 `/etc/nginx/conf.d/default.conf`
+
+**SalesHub 프록시 설정** (필수):
+```nginx
+location /saleshub/ {
+    proxy_pass http://wbsaleshub-staging:4010/;
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection "upgrade";
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_read_timeout 300s;
+    proxy_connect_timeout 75s;
+}
+```
+
+**설정 업데이트 명령어**:
+```bash
+ssh -i ~/.ssh/oracle-cloud.key ubuntu@158.180.95.246
+docker cp /tmp/nginx-staging.conf nginx-staging:/etc/nginx/conf.d/default.conf
+docker exec nginx-staging nginx -t
+docker exec nginx-staging nginx -s reload
+```
+
+#### DB 스키마 수정 (2026-01-26)
+**수정된 파일**:
+1. [server/modules/reno/context/CustomerContextManager.ts:475](../../WBSalesHub/server/modules/reno/context/CustomerContextManager.ts#L475)
+   - `address` → `location as address` (DB 컬럼명 불일치 수정)
+
+2. [server/modules/reno/features/meeting-prep/MeetingPrepGenerator.ts](../../WBSalesHub/server/modules/reno/features/meeting-prep/MeetingPrepGenerator.ts)
+   - Line 45: `SELECT m.*, m.date as meeting_date`
+   - Line 189: `ORDER BY date DESC`
+   - Line 328-330: `WHERE date BETWEEN...`
+
+**에러 해결**:
+- ❌ `column "address" does not exist` → ✅ `location as address`
+- ❌ `column "meeting_date" does not exist` → ✅ `date as meeting_date`
+
+#### 즉각 응답 피드백 구현 (2026-01-26)
+**위치**: [server/modules/integrations/slack/renoSlackApp.ts](../../WBSalesHub/server/modules/integrations/slack/renoSlackApp.ts)
+
+**주요 변경사항**:
+1. **즉시 임시 응답 전송** (Line 467-476):
+   ```typescript
+   const tempMessage = await say({
+     text: '처리 중입니다! 😊',
+     thread_ts: threadTs,
+   });
+   ```
+
+2. **백그라운드 처리 후 메시지 업데이트** (Line 535-539):
+   ```typescript
+   await client.chat.update({
+     channel: channelId,
+     ts: tempMessage.ts,
+     text: response,
+   });
+   ```
+
+**사용자 경험**:
+- ⏱️ **1초 이내**: "처리 중입니다! 😊" 메시지 표시
+- 🔄 **처리 완료 후**: 실제 답변으로 자동 업데이트
+- ❌ **에러 발생 시**: "죄송합니다. 처리 중 오류가 발생했습니다." 메시지 표시
+
+#### Git 커밋
+```bash
+git commit -m "Fix Reno bot DB schema issues and add instant feedback
+
+- Fix DB column mismatch: address -> location, meeting_date -> date
+- Add instant response feedback in Slack (sends 'Processing...' immediately)
+- Update message with final response after processing
+
+Co-Authored-By: Claude Sonnet 4.5 <noreply@anthropic.com>"
+```
+
+**커밋 해시**: `d0608c5`
+
+#### 배포 상태
+- ✅ **로컬**: 빌드 성공
+- ✅ **스테이징**: 배포 완료 (컨테이너: `wbsaleshub-staging`)
+- ✅ **프로덕션**: 배포 완료 (컨테이너: `wbsaleshub-prod`)
+
 ---
 
 ## 스킬 (Skills)
@@ -651,11 +758,11 @@ fetch('/api/auth/me/')
 
 ---
 
-마지막 업데이트: 2026-01-24 10:30
+마지막 업데이트: 2026-01-26 00:30
 
 **주요 변경 사항**:
-- ✅ **Reno AI 봇 작업 규칙 추가** - 페르소나 문서 자동 참조 규칙
-- ✅ 에러 패턴 DB 기록 규칙 추가 (HWTestAgent 연동)
-- ✅ 에러 발생 시 자동 솔루션 검색 규칙 추가 (최우선 실행)
-- ✅ 15개 에러 패턴 및 솔루션 등록 완료
-- ✅ 디버깅/구현 완료 시 테스트 리포트 대신 에러 패턴 DB 기록으로 변경
+- ✅ **Reno AI 봇 DB 에러 수정** - `address` → `location`, `meeting_date` → `date`
+- ✅ **Reno AI 봇 즉각 응답 피드백 구현** - 1초 이내 "처리 중" 메시지 전송
+- ✅ **Slack 토큰 업데이트** - 세 환경 모두 최신 토큰 적용
+- ✅ **Nginx 스테이징 설정 추가** - SalesHub 프록시 설정 완료
+- ✅ Reno AI 봇 배포 및 환경 설정 규칙 추가
