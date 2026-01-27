@@ -195,6 +195,51 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 
 ---
 
+## AI 봇 개발 규칙 (레노봇 등)
+
+### 페르소나 관리 - DB 기반 필수
+
+**❌ YAML 파일 직접 수정 금지**
+- `packages/ai-agent-core/personas/*.yaml` 파일은 초기 시드 데이터용
+- 운영 중 페르소나 변경 시 YAML 수정하지 말 것
+
+**✅ DB 기반 페르소나 관리 사용**
+- 테이블: `ai_personas`, `ai_persona_change_logs` (WBHubManager DB)
+- API: `/api/ai-admin/personas/*`
+- 버전 관리 + 변경 이력 자동 추적
+
+**페르소나 관련 파일 (WBHubManager)**:
+| 파일 | 용도 |
+|------|------|
+| `server/services/personaService.ts` | CRUD + 버전 관리 |
+| `server/routes/aiAdminRoutes.ts` | API 엔드포인트 |
+| `packages/ai-agent-core/src/persona/personaLoader.ts` | Cache → DB → YAML 폴백 |
+| `packages/ai-agent-core/src/persona/dbPersonaLoader.ts` | DB 로더 |
+| `packages/ai-agent-core/src/persona/personaManager.ts` | 런타임 관리 |
+
+**YAML → DB 마이그레이션**:
+```bash
+cd /home/peterchung/WBHubManager && npm run migrate-personas-to-db
+```
+
+### 슬랙 포맷팅 규칙
+
+**❌ 마크다운 사용 금지** (슬랙에서 작동 안함)
+- `**bold**`, `*italic*`, `` `code` ``, `[link](url)` 모두 불가
+
+**✅ 플레인 텍스트 포맷팅**
+- 제목: `[제목]` 대괄호 형식
+- 불렛: `• ` 또는 `- ` 접두사
+- 강조: 이모지 또는 대문자
+
+### 고객 컨텍스트
+
+- **캐싱**: DB에 저장, 갱신 전까지 재사용
+- **포맷**: 5~10줄 블렛포인트
+- **서비스**: `CustomerContextManager.formatForSlack()`
+
+---
+
 ## 환경변수 관리 규칙
 
 ### 환경변수 파일
@@ -268,9 +313,8 @@ fetch('/api/auth/me/')
 
 ---
 
-마지막 업데이트: 2026-01-16
+마지막 업데이트: 2026-01-27
 
 **주요 변경 사항**:
-- 토큰 사용량 최적화를 위해 파일 크기 50% 축소
-- 스킬테스터, MCP 상세 정보를 별도 문서로 분리
-- 핵심 규칙과 가이드 참조 링크 중심으로 재구성
+- AI 봇 개발 규칙 섹션 추가 (페르소나 DB 관리, 슬랙 포맷팅)
+- 페르소나 YAML 직접 수정 금지, DB API 사용 필수화
