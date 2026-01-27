@@ -1,0 +1,27 @@
+# PostgreSQL Auto Backup Schedule (Oracle Cloud Server)
+# Server Timezone: UTC
+# All times are set based on KST (KST = UTC + 9 hours)
+#
+# Installed: 2026-01-17
+# Contact: Peter Chung
+
+# Environment variables
+SHELL=/bin/bash
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+BACKUP_ROOT=/home/ubuntu/workhub/backups
+
+# Daily backup: 03:00 KST = 18:00 UTC (previous day)
+0 18 * * * /home/ubuntu/workhub/backups/scripts/backup-daily.sh >> /home/ubuntu/workhub/backups/logs/cron.log 2>&1
+
+# Weekly backup: 04:00 KST Sunday = 19:00 UTC Saturday
+0 19 * * 6 /home/ubuntu/workhub/backups/scripts/backup-daily.sh --weekly >> /home/ubuntu/workhub/backups/logs/cron.log 2>&1
+
+# Monthly backup: 05:00 KST 1st = 20:00 UTC last day of previous month
+# Using simpler approach: run at 20:00 UTC on the last day of each month
+0 20 28-31 * * [ "$(date -d tomorrow +\%d)" = "01" ] && /home/ubuntu/workhub/backups/scripts/backup-daily.sh --monthly >> /home/ubuntu/workhub/backups/logs/cron.log 2>&1
+
+# Backup cleanup: 06:00 KST = 21:00 UTC (previous day)
+0 21 * * * /home/ubuntu/workhub/backups/scripts/backup-cleanup.sh >> /home/ubuntu/workhub/backups/logs/cron.log 2>&1
+
+# Backup verification: 07:00 KST = 22:00 UTC (previous day)
+0 22 * * * /home/ubuntu/workhub/backups/scripts/backup-verify.sh >> /home/ubuntu/workhub/backups/logs/cron.log 2>&1
