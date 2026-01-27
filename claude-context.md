@@ -64,6 +64,12 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 
 ## 프로젝트 정보
 
+### 용어 정의
+
+| 용어 | 의미 |
+|------|------|
+| **어드민페이지** | WBHubManager의 어드민 기능 (`/admin` 경로) |
+
 ### 전체 허브 리스트
 
 | 허브 이름 | 경로 | 로컬 개발 (F/B) | 스테이징 (내부) | 프로덕션 (호스트) |
@@ -126,22 +132,48 @@ Bash 명령 실행 시 모던 CLI 도구를 우선 사용합니다.
 
 ## 작업 실행 규칙
 
-### 🚨 플랜모드 종료 후 작업 시 필수 규칙 (CRITICAL)
+### 🔴🔴🔴 플랜 실행 시 필수 규칙 (ABSOLUTELY CRITICAL) 🔴🔴🔴
 
-1. **실행_작업.md 필수 참조** (항상 첫 번째 단계)
-   - 위치: `/home/peterchung/WHCommon/규칙/실행_작업.md`
-   - ExitPlanMode 호출 직후 반드시 읽어야 함
-   - 병렬 실행 그룹, 의존성 분석 필수
+**⚠️ 이 규칙을 무시하면 비효율적인 순차 실행으로 인해 작업 시간이 3-5배 증가합니다 ⚠️**
 
-2. **TodoWrite로 작업 추적**
-   - 병렬 실행 그룹 식별 후 진행 상황 추적
+#### 필수 프로세스 (반드시 이 순서대로)
 
-3. **병렬 실행 우선**
-   - 의존성 없는 작업은 동시 병렬 수행
+**STEP 1: 플랜 승인 직후 즉시 실행**
+```
+ExitPlanMode 호출 직후 → 즉시 실행_작업.md 읽기 → 작업 파일 생성
+```
 
-### 일반 작업 실행 규칙
-- ✅ **모든 구현 작업은 병렬로 진행**: 겹치지 않는 작업은 동시에 병렬 수행
-- 📌 **예외**: 순차적 의존성이 있는 작업은 순서대로 진행
+**STEP 2: 실행_작업.md 기반 작업 파일 생성**
+- 위치: `/home/peterchung/WHCommon/규칙/실행_작업.md`
+- 형식: `/mnt/c/GitHub/WHCommon/작업/진행중/tasks-[feature-name].md`
+- 내용:
+  - 작업량 요약 (WU, 파일 수, LOC)
+  - 병렬 실행 그룹 식별 `[PARALLEL GROUP: group-name]`
+  - 의존성 분석 및 순서 정의
+  - 상세 sub-task 체크리스트
+
+**STEP 3: 병렬 실행 그룹 식별**
+- ✅ **독립적인 파일 수정** → 병렬 실행 가능
+- ✅ **다른 리포지토리** → 병렬 실행 가능
+- ✅ **프론트엔드 + 백엔드 (API 계약 정의 후)** → 병렬 실행 가능
+- ❌ **DB 마이그레이션 → 스키마 사용** → 순차 실행 필수
+- ❌ **의존성 설치 → 빌드** → 순차 실행 필수
+
+**STEP 4: TodoWrite로 병렬 작업 추적**
+```json
+{
+  "todos": [
+    {"content": "Phase 1.1 YAML 파일 수정", "status": "in_progress", "activeForm": "..."},
+    {"content": "Phase 1.2 RenoAgent.ts 도구 추가", "status": "in_progress", "activeForm": "..."},
+    {"content": "Phase 1.3 CustomerContextManager 메서드 추가", "status": "in_progress", "activeForm": "..."}
+  ]
+}
+```
+
+**STEP 5: 단일 메시지로 병렬 Tool 호출**
+```xml
+<function_calls>
+  <invoke name="Edit"><parameter name="file_path">file1.ts
 
 ### 🔴 에러 패턴 DB 활용 규칙 (CRITICAL)
 
