@@ -150,10 +150,22 @@ curl -s "http://workhub.biz/testagent/api/error-patterns?query=에러키워드"
 | 이모지 | O | **X (절대 금지)** |
 | 어투 | 반말/친근 | 격식체만 |
 
-### 슬랙 포맷팅
+### 슬랙 포맷팅 (CRITICAL)
 **❌ 마크다운 금지** → **✅ 플레인 텍스트**
 - 제목: `[제목]` 대괄호
 - 불렛: `• ` 또는 `- `
+- **❌ `**볼드**` 절대 금지** - Slack에서 렌더링 안됨
+- **❌ `*이탤릭*` 금지**
+- **❌ `` `코드` `` 최소화**
+
+### 🚀 배포 규칙 (필수)
+**레노봇 관련 코드 수정 시 스테이징 배포를 기본으로 함께 진행**
+```bash
+# WBSalesHub 스테이징 배포
+cd /home/peterchung/WBSalesHub && ./scripts/deploy-staging.sh
+```
+- 코드 수정 → 빌드 검증 → 스테이징 배포까지 한 세트로 진행
+- 배포 완료 후 Slack에서 테스트 가능
 
 ### 상세 정보
 @/home/peterchung/WHCommon/아키텍처/WBSalesHub.md 참조

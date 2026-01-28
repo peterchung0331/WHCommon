@@ -101,14 +101,22 @@ WBSalesHub/
 | get_sales_stats | statsTools.ts | 영업 통계 |
 | search_knowledge | knowledgeTools.ts | 지식 검색 |
 
-### 페르소나 시스템
+### 페르소나 시스템 (DB 기반)
 
-| 타입 | 파일 | 대상 | 특징 |
-|------|------|------|------|
-| Internal | reno-internal.yaml | 직원 | 반말/친근, 이모지 사용 |
-| External | reno-external.yaml | 고객 | 격식체, 이모지 금지 |
+| 타입 | 대상 | 특징 |
+|------|------|------|
+| Internal | 직원 | 반말/친근, 이모지 허용 |
+| External | 고객 | 격식체만, 이모지 금지 |
 
-**로딩 순서**: Cache → DB → YAML 폴백
+- **관리**: HubManager `/api/ai-admin/personas/*`
+- **테이블**: `ai_personas`, `ai_persona_change_logs`
+- **로딩 순서**: Cache → DB (YAML 폴백 제거됨)
+
+### Slack 포맷팅 규칙 (필수)
+
+- **❌ 마크다운 금지**: `**볼드**`, `*이탤릭*` 사용 금지
+- **✅ 대괄호 제목**: `[제목]` 형식 사용
+- **✅ 불렛**: `• ` 또는 `- ` 사용
 
 ## API 엔드포인트
 
