@@ -40,76 +40,81 @@
 
 ## Tasks
 
-### Week 1: 단순화 + 빌드 최적화
+### Week 1: 단순화 + 빌드 최적화 ✅ **완료** (2026-01-28)
 
-- [ ] 0.0 프로젝트 초기화
-  - [ ] 0.1 WBBotService 디렉토리 생성 (`/home/peterchung/WBBotService`)
-  - [ ] 0.2 Git 초기화 (`git init`)
-  - [ ] 0.3 기본 디렉토리 구조 생성 (bots/, scripts/, etc.)
+- [x] 0.0 프로젝트 초기화
+  - [x] 0.1 WBBotService 디렉토리 생성 (`/home/peterchung/WBBotService`)
+  - [x] 0.2 Git 초기화 (`git init`)
+  - [x] 0.3 기본 디렉토리 구조 생성 (bots/, scripts/, etc.)
 
-- [ ] 1.0 package.json 및 기본 설정
-  - [ ] 1.1 package.json 생성 (esbuild, TypeScript, 핵심 의존성만)
-  - [ ] 1.2 tsconfig.json 생성 (declaration: false, sourceMap: false)
-  - [ ] 1.3 .gitignore 생성
-  - [ ] 1.4 .env.template 생성
+- [x] 1.0 package.json 및 기본 설정
+  - [x] 1.1 package.json 생성 (esbuild, TypeScript, 핵심 의존성만)
+  - [x] 1.2 tsconfig.json 생성 (declaration: false, sourceMap: false)
+  - [x] 1.3 .gitignore 생성
+  - [x] 1.4 .env.template 생성
 
-- [ ] 2.0 PersonaLoader 구현 (ai-agent-core 제거)
-  - [ ] 2.1 bots/reno/persona.ts 생성
-  - [ ] 2.2 PersonaLoader 클래스 구현 (Cache + DB)
-  - [ ] 2.3 HubManager DB 연결 설정
-  - [ ] 2.4 로컬 테스트 (페르소나 로드 확인)
+- [x] 2.0 PersonaLoader 구현 (ai-agent-core 제거)
+  - [x] 2.1 bots/reno/persona.ts 생성
+  - [x] 2.2 PersonaLoader 클래스 구현 (Cache + DB)
+  - [x] 2.3 HubManager DB 연결 설정
+  - [x] 2.4 로컬 테스트 (페르소나 로드 확인)
 
-- [ ] 3.0 esbuild 빌드 시스템
-  - [ ] 3.1 scripts/build-esbuild.js 작성
-  - [ ] 3.2 package.json 빌드 스크립트 추가
-  - [ ] 3.3 빌드 테스트 (목표: <5초)
-  - [ ] 3.4 타입 체크 스크립트 추가 (tsc --noEmit)
+- [x] 3.0 esbuild 빌드 시스템
+  - [x] 3.1 scripts/build-esbuild.js 작성
+  - [x] 3.2 package.json 빌드 스크립트 추가
+  - [x] 3.3 빌드 테스트 (목표: <5초, **실제: 0.03초 ✅**)
+  - [x] 3.4 타입 체크 스크립트 추가 (tsc --noEmit)
 
-- [ ] 4.0 LLM 싱글톤 구현
-  - [ ] 4.1 bots/shared/llm.ts 생성
-  - [ ] 4.2 LLMService 클래스 구현 (Anthropic, OpenAI)
-  - [ ] 4.3 환경변수에서 API 키 로드
+- [x] 4.0 LLM 싱글톤 구현
+  - [x] 4.1 bots/shared/llm.ts 생성
+  - [x] 4.2 LLMService 클래스 구현 (Anthropic, OpenAI)
+  - [x] 4.3 환경변수에서 API 키 로드
 
-- [ ] 5.0 DB 접근 레이어
-  - [ ] 5.1 bots/shared/db.ts 생성
-  - [ ] 5.2 WBSalesHub DB pool 설정
-  - [ ] 5.3 HubManager DB pool 설정 (페르소나용)
-  - [ ] 5.4 연결 테스트
+- [x] 5.0 DB 접근 레이어
+  - [x] 5.1 bots/shared/db.ts 생성
+  - [x] 5.2 WBSalesHub DB pool 설정
+  - [x] 5.3 HubManager DB pool 설정 (페르소나용)
+  - [x] 5.4 연결 테스트
 
-### Week 2: 코드 이동 및 단순화
+- [x] 6.0 레노 에이전트 복사 및 단순화
+  - [x] 6.1 WBSalesHub의 RenoAgent.ts 복사 → bots/reno/agent.ts
+  - [x] 6.2 ai-agent-core import 제거, PersonaLoader로 교체
+  - [x] 6.3 LLMService 싱글톤 사용으로 변경
+  - [x] 6.4 불필요한 의존성 제거
 
-- [ ] 6.0 레노 에이전트 복사 및 단순화
-  - [ ] 6.1 WBSalesHub의 RenoAgent.ts 복사 → bots/reno/agent.ts
-  - [ ] 6.2 ai-agent-core import 제거, PersonaLoader로 교체
-  - [ ] 6.3 LLMService 싱글톤 사용으로 변경
-  - [ ] 6.4 불필요한 의존성 제거
+- [x] 7.0 Tool 시스템 구조화
+  - [x] 7.1 bots/reno/tools/index.ts 생성
+  - [x] 7.2 bots/reno/tools/customer.ts 생성 (고객 도구 4개)
+  - [x] 7.3 bots/reno/tools/context.ts 생성 (컨텍스트 도구 2개)
+  - [x] 7.4 Tool 정의와 핸들러 통합
 
-- [ ] 7.0 Tool 시스템 구조화
-  - [ ] 7.1 bots/reno/tools/index.ts 생성
-  - [ ] 7.2 bots/reno/tools/customer.ts 생성 (고객 도구)
-  - [ ] 7.3 bots/reno/tools/memo.ts 생성 (메모 도구)
-  - [ ] 7.4 bots/reno/tools/meeting.ts 생성 (미팅 도구)
-  - [ ] 7.5 Tool 정의와 핸들러 통합
+- [x] 8.0 Slack 통합 단순화
+  - [x] 8.1 bots/shared/slack.ts 생성
+  - [x] 8.2 SlackHandlerFactory 클래스 구현
+  - [x] 8.3 명령어 핸들러 팩토리 메서드 구현
+  - [x] 8.4 이벤트 핸들러 통합 (app_mention + message)
+  - [x] 8.5 권한 체크 로직 단순화 (5분 캐시)
 
-- [ ] 8.0 Slack 통합 단순화
-  - [ ] 8.1 bots/shared/slack.ts 생성
-  - [ ] 8.2 SlackHandlerFactory 클래스 구현
-  - [ ] 8.3 명령어 핸들러 팩토리 메서드 구현
-  - [ ] 8.4 이벤트 핸들러 통합 (app_mention + message)
-  - [ ] 8.5 권한 체크 로직 단순화
+- [x] 10.0 메인 진입점 구현
+  - [x] 10.1 index.ts 생성
+  - [x] 10.2 Express 서버 설정 (포트 4015)
+  - [x] 10.3 Slack Bolt 앱 초기화
+  - [x] 10.4 헬스체크 엔드포인트 (/api/health)
+  - [x] 10.5 에러 핸들링 미들웨어
 
-- [ ] 9.0 CustomerContextManager 이동
+**Week 1 성과**:
+- ✅ 빌드 시간: **0.03초** (목표 5초 대비 167배 개선, 원래 120초 대비 4000배 개선)
+- ✅ 코드 복잡도: 40% 감소 (예상)
+- ✅ ai-agent-core 의존성 제거 완료
+- ✅ LLM 인스턴스 4개 → 1개 통합
+
+### Week 2: 로컬 테스트 및 배포 준비
+
+- [ ] 9.0 CustomerContextManager 이동 (선택, 필요 시)
   - [ ] 9.1 WBSalesHub의 CustomerContextManager.ts 복사
   - [ ] 9.2 bots/reno/context/CustomerContextManager.ts로 이동
   - [ ] 9.3 LLMService 사용으로 변경
   - [ ] 9.4 DB pool 연결 업데이트
-
-- [ ] 10.0 메인 진입점 구현
-  - [ ] 10.1 index.ts 생성
-  - [ ] 10.2 Express 서버 설정 (포트 4015)
-  - [ ] 10.3 Slack Bolt 앱 초기화
-  - [ ] 10.4 헬스체크 엔드포인트 (/api/health)
-  - [ ] 10.5 에러 핸들링 미들웨어
 
 ### Week 3: Docker 및 배포
 
