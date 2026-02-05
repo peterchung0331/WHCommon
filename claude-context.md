@@ -54,6 +54,106 @@ const refreshUser = async () => {
 
 ---
 
+## 🔴 API baseURL 규칙 (CRITICAL)
+
+**모든 허브는 동일한 API baseURL 패턴을 사용합니다.**
+
+### ⚠️ 반복되는 문제
+- `/saleshub/api/api/auth/me` - **api가 두 번 반복됨!**
+- 원인: baseURL에 `/api`가 포함되어 있는데, API 호출 시 `/api/...` 경로를 또 사용
+
+### ✅ 올바른 패턴 (모든 허브 동일)
+
+#### 1. baseURL 설정 (lib/api-client.ts)
+```typescript
+// 환경별 baseURL 정적 설정 - 절대 런타임 조작 금지!
+const IS_PRODUCTION = process.env.NODE_ENV === 'production';
+
+// HubManager
+const API_BASE_URL = IS_PRODUCTION ? '/api' : '/api';
+
+// SalesHub
+const API_BASE_URL = IS_PRODUCTION ? '/saleshub/api' : '/api';
+
+// FinHub
+const API_BASE_URL = IS_PRODUCTION ? '/finhub/api' : '/api';
+
+const apiClient = axios.create({
+  baseURL: API_BASE_URL,
+  withCredentials: true,
+});
+
+// ❌ interceptor로 경로 조작 절대 금지!
+// ❌ window.location.pathname 체크 금지!
+```
+
+#### 2. API 호출 시 경로 (lib/api.ts)
+```typescript
+// ✅ 올바른 방식 - /api 접두사 없이
+export const authApi = {
+  getMe: () => apiClient.get('/auth/me'),           // ✅ /auth/me
+  login: (data) => apiClient.post('/auth/login', data),  // ✅ /auth/login
+  logout: () => apiClient.post('/auth/logout'),     // ✅ /auth/logout
+};
+
+export const customersApi = {
+  getAll: () => api.get('/customers'),              // ✅ /customers
+  getById: (id) => api.get(`/customers/${id}`),     // ✅ /customers/:id
+};
+
+// ❌ 잘못된 방식 - /api 접두사 중복
+authApi.getMe: () => apiClient.get('/api/auth/me')  // ❌ /saleshub/api/api/auth/me
+```
+
+#### 3. 최종 API URL 구성
+
+| 환경 | baseURL | API 경로 | 최종 URL |
+|------|---------|----------|----------|
+| 로컬 개발 | `/api` | `/auth/me` | `/api/auth/me` |
+| 프로덕션 (SalesHub) | `/saleshub/api` | `/auth/me` | `/saleshub/api/auth/me` |
+| 프로덕션 (FinHub) | `/finhub/api` | `/auth/me` | `/finhub/api/auth/me` |
+
+### 🚫 절대 금지 사항
+
+```typescript
+// ❌ interceptor로 경로 동적 조작
+apiClient.interceptors.request.use((config) => {
+  if (window.location.pathname.startsWith('/saleshub')) {
+    config.url = `/saleshub${config.url}`;  // 절대 금지!
+  }
+});
+
+// ❌ baseURL을 빈 문자열로 설정하고 전체 경로 사용
+const apiClient = axios.create({ baseURL: '' });
+apiClient.get('/saleshub/api/auth/me');  // 절대 금지!
+
+// ❌ API 경로에 /api 접두사 포함
+authApi.getMe: () => apiClient.get('/api/auth/me')  // 중복 발생!
+```
+
+### ✅ 검증 방법
+
+```bash
+# 브라우저 개발자 도구 Network 탭 확인
+# ✅ 올바른 URL
+GET /saleshub/api/auth/me          # 프로덕션
+GET /api/auth/me                   # 로컬
+
+# ❌ 잘못된 URL
+GET /saleshub/api/api/auth/me      # api 중복!
+GET /api/api/auth/me               # api 중복!
+```
+
+### 📝 체크리스트 (새 허브 생성 시)
+
+- [ ] `lib/api-client.ts`: baseURL에 `/api` 포함 (프로덕션: `/허브명/api`)
+- [ ] `lib/api.ts`: 모든 API 경로에서 `/api` 접두사 제거
+- [ ] interceptor로 경로 조작하지 않음
+- [ ] 로컬/스테이징/프로덕션에서 Network 탭 확인
+- [ ] `/api/api/...` 중복 없음 확인
+
+---
+
 ## 프로젝트 정보
 
 ### 허브 리스트
