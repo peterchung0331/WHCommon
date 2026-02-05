@@ -1,0 +1,66 @@
+{
+  "folders": [
+    {
+      "path": "WHCommon",
+      "name": "📚 WHCommon (공통)"
+    },
+    {
+      "path": "WBHubManager",
+      "name": "🏢 HubManager (메인)"
+    },
+    {
+      "path": "WBSalesHub",
+      "name": "💼 SalesHub (영업)"
+    },
+    {
+      "path": "WBBotService",
+      "name": "🤖 BotService (레노봇v2)"
+    },
+    {
+      "path": "WBFinHub",
+      "name": "💰 FinHub (재무)"
+    },
+    {
+      "path": "WBStrategyHub",
+      "name": "📊 StrategyHub (전략)"
+    },
+    {
+      "path": "HWTestAgent",
+      "name": "🧪 TestAgent (테스트)"
+    }
+  ],
+  "settings": {
+    "typescript.tsdk": "node_modules/typescript/lib",
+    "typescript.enablePromptUseWorkspaceTsdk": true,
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.formatOnSave": true,
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": "explicit"
+    },
+    "files.exclude": {
+      "**/node_modules": true,
+      "**/.next": true,
+      "**/dist": true,
+      "**/out": true
+    },
+    "search.exclude": {
+      "**/node_modules": true,
+      "**/dist": true,
+      "**/out": true,
+      "**/.next": true
+    },
+    "files.watcherExclude": {
+      "**/node_modules/**": true,
+      "**/dist/**": true,
+      "**/out/**": true,
+      "**/.next/**": true
+    }
+  },
+  "extensions": {
+    "recommendations": [
+      "dbaeumer.vscode-eslint",
+      "esbenp.prettier-vscode",
+      "ms-vscode.vscode-typescript-next"
+    ]
+  }
+}
