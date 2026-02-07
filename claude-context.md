@@ -259,7 +259,7 @@ curl -s "http://workhub.biz/testagent/api/error-patterns?query=에러키워드"
 - **❌ `` `코드` `` 최소화**
 
 ### 🚀 배포 규칙 (필수)
-**레노봇 관련 코드 수정 시 스테이징 배포를 기본으로 함께 진행**
+**리노봇 관련 코드 수정 시 스테이징 배포를 기본으로 함께 진행**
 ```bash
 # WBSalesHub 스테이징 배포
 cd /home/peterchung/WBSalesHub && ./scripts/deploy-staging.sh

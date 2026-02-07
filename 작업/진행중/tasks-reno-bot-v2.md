@@ -1,4 +1,4 @@
-# Task: 레노봇v2 마이크로서비스 구현
+# Task: 리노봇v2 마이크로서비스 구현
 
 ## 작업량 요약
 
@@ -16,21 +16,21 @@
 - `/home/peterchung/WBBotService/tsconfig.json` - TypeScript 설정 (declaration: false)
 - `/home/peterchung/WBBotService/scripts/build-esbuild.js` - esbuild 빌드 스크립트
 - `/home/peterchung/WBBotService/bots/reno/persona.ts` - PersonaLoader (50줄)
-- `/home/peterchung/WBBotService/bots/reno/agent.ts` - 레노 에이전트
+- `/home/peterchung/WBBotService/bots/reno/agent.ts` - 리노 에이전트
 - `/home/peterchung/WBBotService/bots/shared/llm.ts` - LLM 싱글톤
 - `/home/peterchung/WBBotService/bots/shared/slack.ts` - Slack 핸들러 팩토리
 - `/home/peterchung/WBBotService/bots/shared/db.ts` - DB 접근 레이어
 - `/home/peterchung/WBBotService/Dockerfile` - Docker 빌드 최적화
 - `/home/peterchung/WBBotService/.dockerignore` - Docker 제외 파일
 
-### 참조 파일 (레노봇v1 - 읽기 전용)
+### 참조 파일 (리노봇v1 - 읽기 전용)
 - `/home/peterchung/WBSalesHub/server/modules/reno/agent/RenoAgent.ts:1-1356` - 기존 에이전트 로직
 - `/home/peterchung/WBSalesHub/server/modules/integrations/slack/renoSlackApp.ts:1-914` - Slack 통합
 - `/home/peterchung/WBSalesHub/server/modules/reno/context/CustomerContextManager.ts` - 컨텍스트 관리
 
 ### Notes
-- **레노봇v1은 WBSalesHub에 그대로 유지** (동작 보장)
-- **레노봇v2는 WBBotService에 새로 구현** (단순화 버전)
+- **리노봇v1은 WBSalesHub에 그대로 유지** (동작 보장)
+- **리노봇v2는 WBBotService에 새로 구현** (단순화 버전)
 - esbuild로 빌드 시간 15-20초 목표
 - ai-agent-core 의존성 제거 (PersonaLoader로 대체)
 
@@ -76,7 +76,7 @@
   - [x] 5.3 HubManager DB pool 설정 (페르소나용)
   - [x] 5.4 연결 테스트
 
-- [x] 6.0 레노 에이전트 복사 및 단순화
+- [x] 6.0 리노 에이전트 복사 및 단순화
   - [x] 6.1 WBSalesHub의 RenoAgent.ts 복사 → bots/reno/agent.ts
   - [x] 6.2 ai-agent-core import 제거, PersonaLoader로 교체
   - [x] 6.3 LLMService 싱글톤 사용으로 변경
@@ -221,7 +221,7 @@
 
 ## 참고 사항
 
-- **레노봇v1 (WBSalesHub)**: 그대로 유지, 동작 보장
-- **레노봇v2 (WBBotService)**: 새로운 마이크로서비스, 단순화 버전
+- **리노봇v1 (WBSalesHub)**: 그대로 유지, 동작 보장
+- **리노봇v2 (WBBotService)**: 새로운 마이크로서비스, 단순화 버전
 - **Slack 명령어**: `/reno2-*` 형식 사용 (충돌 방지)
 - **포트**: 4015 (WBBotService), 4010 (WBSalesHub)

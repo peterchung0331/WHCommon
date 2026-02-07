@@ -1,4 +1,4 @@
-# PRD: 레노봇v2 마이크로서비스
+# PRD: 리노봇v2 마이크로서비스
 
 ## 문서 정보
 - **작성일**: 2026-01-28
@@ -11,7 +11,7 @@
 ## 1. 개요
 
 ### 1.1 배경
-- **문제**: 레노봇v1(WBSalesHub 내장)의 빌드 시간이 2분으로 과도함 (4,000줄 코드 대비 30배 느림)
+- **문제**: 리노봇v1(WBSalesHub 내장)의 빌드 시간이 2분으로 과도함 (4,000줄 코드 대비 30배 느림)
 - **근본 원인**:
   - ai-agent-core 의존성 (빌드 +40초)
   - tsc 컴파일 (15-20초)
@@ -19,7 +19,7 @@
   - 과도한 추상화 (298줄 하드코딩 도구 정의)
 
 ### 1.2 목표
-레노봇을 **독립 마이크로서비스**로 분리하고 **단순화**하여:
+리노봇을 **독립 마이크로서비스**로 분리하고 **단순화**하여:
 - ✅ 빌드 시간 **83% 단축** (120초 → 20초 목표)
 - ✅ 코드 복잡도 **40% 감소**
 - ✅ 향후 봇 4개+ 확장 가능한 구조
@@ -32,7 +32,7 @@
   - Slack 통합 단순화
   - Tool 시스템 파일 기반 구조화
 - **Out of Scope**:
-  - 레노봇v1 수정 (그대로 유지)
+  - 리노봇v1 수정 (그대로 유지)
   - 다른 봇 구현 (추후 확장)
 
 ---
@@ -102,7 +102,7 @@
 ```
 WBBotService (포트 4015)
 ├── bots/
-│   ├── reno/                   # 레노봇 구현
+│   ├── reno/                   # 리노봇 구현
 │   │   ├── agent.ts            # RenoAgent (162줄)
 │   │   ├── persona.ts          # PersonaLoader (50줄)
 │   │   └── tools/              # Tool 정의
@@ -381,7 +381,7 @@ esbuild.build({
 
 | 위험 | 확률 | 영향 | 완화 방안 |
 |------|------|------|----------|
-| 레노봇v1과 충돌 | 낮음 | 중간 | v1은 유지, v2는 독립 배포 |
+| 리노봇v1과 충돌 | 낮음 | 중간 | v1은 유지, v2는 독립 배포 |
 | 환경 변수 누락 | 중간 | 높음 | .env.template 제공, 문서화 |
 | 메모리 부족 (OOM) | 낮음 | 높음 | Docker 메모리 제한 설정 |
 
@@ -429,7 +429,7 @@ esbuild.build({
 
 **총 코드**: ~1,005줄 (주석 포함)
 
-### 레노봇v1 참조 파일 (읽기 전용)
+### 리노봇v1 참조 파일 (읽기 전용)
 - `/home/peterchung/WBSalesHub/server/modules/reno/agent/RenoAgent.ts` (1,341줄)
 - `/home/peterchung/WBSalesHub/server/modules/integrations/slack/renoSlackApp.ts` (914줄)
 - `/home/peterchung/WBSalesHub/server/modules/reno/context/CustomerContextManager.ts` (1,021줄)
