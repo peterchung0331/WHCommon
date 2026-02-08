@@ -117,3 +117,4 @@ WBFinHub
 - [WBFinHub.md](./WBFinHub.md) - FinHub 거래 관리
 - [shared-packages.md](./shared-packages.md) - 공용 패키지 상세
 - [deployment.md](./deployment.md) - 배포 및 환경 설정
+- [계정관리.md](./계정관리.md) - 계정 관리 중앙화 가이드
