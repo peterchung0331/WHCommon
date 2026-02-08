@@ -9,6 +9,9 @@
 - **허브별 상세**: @/home/peterchung/WHCommon/아키텍처/WBHubManager.md, WBSalesHub.md, WBFinHub.md
 - **공용 패키지**: @/home/peterchung/WHCommon/아키텍처/shared-packages.md
 - **배포 환경**: @/home/peterchung/WHCommon/아키텍처/deployment.md
+- **디자인 시스템**: @/home/peterchung/WHCommon/아키텍처/디자인 시스템/디자인 시스템 v1.0.md
+
+> **프론트엔드 작업 시 디자인 시스템 v1.0을 항상 참고하세요.** 색상, 배지, 테이블, 그림자, 간격 등 모든 UI 규칙이 정의되어 있습니다.
 
 ---
 
