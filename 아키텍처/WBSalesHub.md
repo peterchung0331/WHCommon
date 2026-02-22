@@ -152,15 +152,45 @@ WBSalesHub/
 
 ## Slack 통합
 
+### 🔴 리노봇 운영 환경 (CRITICAL)
+
+**리노봇은 스테이징 환경(`wbsaleshub-staging`)에서만 Slack 연동이 작동합니다.**
+
+| 항목 | 스테이징 (활성) | 프로덕션 (비활성) |
+|------|---------------|-----------------|
+| **Slack App** | `A0ADG3U5DGV` (새 워크스페이스) | `A0A4Q3AC1LK` |
+| **봇 이벤트 수신** | 정상 | 미수신 |
+| **채널 모니터링** | 정상 | `channel_not_found` |
+| **@리노봇 멘션** | 정상 | 미작동 |
+
+- **DB**: 스테이징/프로덕션 모두 동일한 `wbsaleshub` DB 사용
+- **Slack 이벤트 URL**: 스테이징 앱(A0ADG3U5DGV)으로 설정됨
+- **프로덕션 `.env.prd`**: `CUSTOMER_CONTEXT_SLACK_CHANNELS` 제거 필요 (불필요한 에러 로그 방지)
+
+> **리노봇 관련 Slack 기능 테스트/배포 시 반드시 스테이징 환경 기준으로 진행**
+
+### 채널 모니터링
+
+| 채널 ID | 유형 | 모니터 | 수집 방식 |
+|---------|------|--------|----------|
+| `C096XMFD5S7` | 정형 (SlackChannelMonitor) | `[고객명: XXX]` 패턴 추출 | 5분 배치 |
+| `C08MG8ZEC6P` | 비정형 (UnstructuredCollector) | AI 분류 + 회사명 추출 | 5분 배치 |
+| `C0ACWDEE13L` | 비정형 (UnstructuredCollector) | AI 분류 + 회사명 추출 | 5분 배치 |
+
+- **저장 테이블**: `customer_contexts`, `customer_context_history` (customer_activities 아님)
+- **이모지 반응**: 정형 📝(memo), 비정형 🔖(bookmark)
+
 ### 환경변수
 ```bash
 SLACK_BOT_TOKEN=xoxb-...
 SLACK_SIGNING_SECRET=...
+CUSTOMER_CONTEXT_SLACK_CHANNELS=C096XMFD5S7
+UNSTRUCTURED_SLACK_CHANNELS=C08MG8ZEC6P,C0ACWDEE13L
 ```
 
 ### 이벤트 Subscription URL
 - 스테이징: `https://staging.workhub.biz:4400/saleshub/slack/reno/events`
-- 프로덕션: `https://workhub.biz/saleshub/slack/reno/events`
+- 프로덕션: `https://workhub.biz/saleshub/slack/reno/events` (현재 미사용)
 
 ### 즉시 응답 피드백 (2026-01-26 구현)
 ```typescript

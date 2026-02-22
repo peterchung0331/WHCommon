@@ -1,0 +1,41 @@
+{
+  "theme": "base",
+  "themeVariables": {
+    "primaryColor": "#EEF2FF",
+    "primaryTextColor": "#18181B",
+    "primaryBorderColor": "#4338CA",
+    "lineColor": "#71717A",
+    "secondaryColor": "#F4F4F5",
+    "secondaryTextColor": "#3F3F46",
+    "secondaryBorderColor": "#D4D4D8",
+    "tertiaryColor": "#FAFAFA",
+    "tertiaryTextColor": "#3F3F46",
+    "tertiaryBorderColor": "#E4E4E7",
+    "noteBkgColor": "#FFFBEB",
+    "noteTextColor": "#3F3F46",
+    "noteBorderColor": "#B45309",
+    "fontSize": "16px",
+    "fontFamily": "Pretendard, NanumGothic, sans-serif",
+    "nodeBorder": "#4338CA",
+    "mainBkg": "#EEF2FF",
+    "clusterBkg": "#F4F4F5",
+    "clusterBorder": "#D4D4D8",
+    "titleColor": "#18181B",
+    "edgeLabelBackground": "#FFFFFF",
+    "nodeTextColor": "#18181B"
+  },
+  "flowchart": {
+    "htmlLabels": true,
+    "curve": "basis",
+    "nodeSpacing": 50,
+    "rankSpacing": 60,
+    "padding": 15,
+    "useMaxWidth": true
+  },
+  "sequence": {
+    "mirrorActors": false,
+    "actorFontFamily": "Pretendard, NanumGothic, sans-serif",
+    "noteFontFamily": "Pretendard, NanumGothic, sans-serif",
+    "messageFontFamily": "Pretendard, NanumGothic, sans-serif"
+  }
+}

@@ -1,0 +1,325 @@
+/* WorkHub 문서 스타일 — Pretendard + 디자인 시스템 기반 */
+
+/* ===== 페이지 설정 ===== */
+@page {
+  size: A4;
+  margin: 15mm 12mm;
+}
+
+/* ===== 기본 설정 ===== */
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', 'Apple SD Gothic Neo', 'Noto Sans KR', 'NanumGothic', sans-serif;
+  font-size: 15px;
+  line-height: 1.7;
+  color: #3F3F46;
+  background-color: #fff;
+  box-sizing: border-box;
+  word-wrap: break-word;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+body > :first-child {
+  margin-top: 0;
+}
+
+/* ===== 페이지 래퍼 (thead = 매 페이지 헤더 반복) ===== */
+table.print-wrapper {
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0;
+  border: none;
+  margin: 0;
+  padding: 0;
+}
+
+table.print-wrapper td {
+  padding: 0;
+  border: none;
+  vertical-align: top;
+}
+
+table.print-wrapper thead {
+  display: table-header-group;
+}
+
+table.print-wrapper .header-cell {
+  padding: 0;
+  border: none;
+}
+
+table.print-wrapper .body-cell {
+  padding: 0;
+  border: none;
+}
+
+/* ===== 로고 헤더 ===== */
+.doc-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 0 6px 0;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #4338CA;
+}
+
+.doc-header .confidential {
+  font-style: italic;
+  font-size: 11px;
+  color: #71717A;
+  letter-spacing: 0.02em;
+}
+
+.doc-header img {
+  height: 40px;
+  width: auto;
+}
+
+/* ===== 제목 (H1-H6) ===== */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Pretendard Variable', Pretendard, -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.3;
+  margin-top: 1.4em;
+  margin-bottom: 16px;
+  color: #18181B;
+}
+
+h1 {
+  font-size: 1.85em;
+  font-weight: 700;
+  padding-bottom: 0.3em;
+  border-bottom: 1px solid #E4E4E7;
+}
+
+h2 {
+  font-size: 1.45em;
+  font-weight: 700;
+  padding-bottom: 0.25em;
+  border-bottom: 1px solid #E4E4E7;
+}
+
+h3 {
+  font-size: 1.2em;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 1.05em;
+  font-weight: 600;
+}
+
+h5 {
+  font-size: 1em;
+  font-weight: 600;
+}
+
+h6 {
+  font-size: 1em;
+  font-weight: 600;
+  color: #71717A;
+}
+
+/* ===== 단락 ===== */
+p {
+  margin-top: 0;
+  margin-bottom: 14px;
+  word-wrap: break-word;
+}
+
+/* ===== 강조 ===== */
+strong {
+  font-weight: 700;
+  color: #18181B;
+}
+
+del {
+  color: #71717A;
+}
+
+/* ===== 링크 ===== */
+a {
+  color: #4338CA;
+  text-decoration: none;
+}
+
+a:hover {
+  color: #6366F1;
+}
+
+a:not([href]) {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* ===== 인라인 코드 ===== */
+code {
+  font-family: 'JetBrains Mono', 'NanumGothicCoding', Menlo, Monaco, Consolas, monospace;
+  font-size: 0.85em;
+  color: #18181B;
+  background-color: #F4F4F5;
+  border-radius: 6px;
+  padding: 0.2em 0.4em;
+}
+
+/* ===== 코드 블록 ===== */
+pre {
+  padding: 1em;
+  overflow: auto;
+  line-height: 1.45;
+  border-radius: 8px;
+  border: 1px solid #E4E4E7;
+  background-color: #FAFAFA;
+}
+
+pre > code {
+  padding: 0;
+  margin: 0;
+  word-break: normal;
+  white-space: pre;
+  background: transparent;
+  border: 0;
+  font-size: 0.85em;
+}
+
+/* ===== 표 ===== */
+table:not(.print-wrapper) {
+  margin: 12px 0 16px 0;
+  border-collapse: collapse;
+  border-spacing: 0;
+  display: table;
+  width: 100%;
+  overflow: auto;
+  word-break: keep-all;
+  border-radius: 8px;
+}
+
+table:not(.print-wrapper) th {
+  font-weight: 600;
+  color: #71717A;
+  background-color: #FAFAFA;
+  font-size: 0.85em;
+}
+
+table:not(.print-wrapper) td,
+table:not(.print-wrapper) th {
+  border: 1px solid #E4E4E7;
+  padding: 8px 14px;
+}
+
+table:not(.print-wrapper) td {
+  color: #3F3F46;
+}
+
+table:not(.print-wrapper) tr:nth-child(2n) {
+  background-color: #FAFAFA;
+}
+
+/* ===== 인용문 ===== */
+blockquote {
+  margin: 16px 0;
+  font-size: inherit;
+  padding: 12px 16px;
+  color: #71717A;
+  background-color: #FAFAFA;
+  border-left: 4px solid #4338CA;
+  border-radius: 0 8px 8px 0;
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+/* ===== 수평선 ===== */
+hr {
+  height: 2px;
+  margin: 28px 0;
+  background-color: #E4E4E7;
+  border: 0 none;
+}
+
+/* ===== 리스트 ===== */
+ol, ul {
+  padding-left: 2em;
+}
+
+body > ol,
+body > ul {
+  margin-bottom: 16px;
+}
+
+ol ol, ol ul,
+ul ol, ul ul {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+li {
+  margin-bottom: 2px;
+}
+
+li > p {
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+/* ===== 이미지 ===== */
+img {
+  max-width: 100%;
+  display: block;
+  margin: 12px 0;
+}
+
+/* ===== 키보드 ===== */
+kbd {
+  color: #18181B;
+  border: 1px solid #D4D4D8;
+  border-bottom: 2px solid #A1A1AA;
+  padding: 2px 6px;
+  background-color: #F4F4F5;
+  border-radius: 6px;
+  font-size: 0.85em;
+}
+
+/* ===== 정의 목록 ===== */
+dl { padding: 0; }
+
+dl dt {
+  padding: 0;
+  margin-top: 16px;
+  font-size: 1em;
+  font-weight: 600;
+}
+
+dl dd {
+  padding: 0 16px;
+  margin-bottom: 16px;
+}
+
+/* ===== 인쇄 최적화 ===== */
+@media print {
+  body {
+    background-color: #fff;
+    max-width: none;
+    padding: 0;
+    margin: 0;
+  }
+  h1, h2, h3, h4, h5, h6 {
+    color: #18181B;
+    page-break-after: avoid;
+  }
+  pre, table, img, blockquote {
+    page-break-inside: avoid;
+  }
+  h2, h3 {
+    page-break-after: avoid;
+  }
+}

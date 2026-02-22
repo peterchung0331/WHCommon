@@ -38,6 +38,9 @@ tmp/
 temp/
 *.tmp
 
+# 개인 로컬 전용
+개인 사용/
+
 # Build outputs (if any)
 dist/
 build/

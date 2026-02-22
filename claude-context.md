@@ -6,10 +6,13 @@
 
 아키텍처 관련 작업 시 다음 파일을 먼저 읽어주세요:
 - **전체 구조**: @/home/peterchung/WHCommon/아키텍처/overview.md
-- **허브별 상세**: @/home/peterchung/WHCommon/아키텍처/WBHubManager.md, WBSalesHub.md, WBFinHub.md
+- **허브별 상세**:
+  - @/home/peterchung/WHCommon/아키텍처/WBHubManager.md
+  - @/home/peterchung/WHCommon/아키텍처/WBSalesHub.md
+  - @/home/peterchung/WHCommon/아키텍처/WBFinHub.md
 - **공용 패키지**: @/home/peterchung/WHCommon/아키텍처/shared-packages.md
 - **배포 환경**: @/home/peterchung/WHCommon/아키텍처/deployment.md
-- **디자인 시스템**: @/home/peterchung/WHCommon/아키텍처/디자인 시스템/디자인 시스템 v1.0.md
+- **디자인 시스템**: @/home/peterchung/WHCommon/아키텍처/디자인-시스템/디자인-시스템-v1.0.md
 
 > **프론트엔드 작업 시 디자인 시스템 v1.0을 항상 참고하세요.** 색상, 배지, 테이블, 그림자, 간격 등 모든 UI 규칙이 정의되어 있습니다.
 
@@ -54,6 +57,16 @@ const refreshUser = async () => {
 
 // ❌ 잘못된 방식 - localStorage 체크 금지
 ```
+
+### 통합 테스트 계정
+
+| 항목 | 값 |
+|------|-----|
+| **이메일** | `peter.chung@wavebridge.com` |
+| **비밀번호** | `wave1234!!` |
+| **역할** | MASTER (어드민) |
+
+> 모든 허브(HubManager, SalesHub, FinHub) 및 E2E 테스트에 동일하게 사용
 
 ---
 
@@ -159,6 +172,11 @@ GET /api/api/auth/me               # api 중복!
 
 ## 프로젝트 정보
 
+### 회사 정보
+- **웨이브릿지 프로필**: @/home/peterchung/WHCommon/회사-정보/웨이브릿지-회사-정보.md
+
+> 웨이브릿지 관련 기획 시 이 문서를 참고하세요.
+
 ### 허브 리스트
 
 | 허브 | 경로 | 로컬 (F/B) | 역할 |
@@ -167,6 +185,30 @@ GET /api/api/auth/me               # api 중복!
 | **WBSalesHub** | `/home/peterchung/WBSalesHub` | 3010/4010 | 영업 CRM, Reno AI |
 | **WBFinHub** | `/home/peterchung/WBFinHub` | 3020/4020 | 재무 관리 |
 | **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080/4080 | 테스트/에러 패턴 DB |
+
+### Orbit AAM (개인 프로젝트) — OrbitAI
+
+**AI 에이전트 기반 퀀트 자산배분 포트폴리오 시스템 (오르빗AI 자산운용)** (WorkHub와 별도)
+
+- **상세 컨텍스트**: @/home/peterchung/orbit-alpha/docs/오르빗-컨텍스트.md
+- **정식명칭**: Orbit AI Asset Management (Orbit AAM)
+- **프로젝트 내부 지칭**: OrbitAI
+- **경로**: `/home/peterchung/orbit-alpha`
+- **리포**: `git@github.com:peterchung0331/OrbitAlpha.git`
+- **기술스택**: Python 3.11+ / FastAPI / Dash(Plotly) / PostgreSQL / Redis+Celery
+- **PRD 문서**: `orbit-alpha/시스템 기획/` (리포 내)
+- **디자인 시스템**: `orbit-alpha/시스템 기획/OrbitAI-브랜드-디자인시스템-v1.0.md`
+
+| 서브시스템 | 내부코드 | 역할 | 포트 |
+|-----------|---------|------|------|
+| **Orbit Base** | `base` | 데이터 수집 & 시뮬레이션 | :8001 |
+| **Orbit Lab** | `lab` | 모델 리서치 & 설계 (AI 에이전트) | :8002 |
+| **Orbit Bay** | `bay` | 자동 리밸런싱 & 거래 실행 | :8003 |
+| **Orbit Deck** | `deck` | 대시보드 & 리포트 (3단계 접근 제어) | :443 |
+
+> **네이밍 주의**: PRD 원본은 구 이름 사용 (Pulse→Base, Forge→Lab, Navigator→Deck, Pilot→Bay)
+> **이름 변경**: Orbit Alpha → Orbit AAM (Orbit AI Asset Management), 내부 지칭: OrbitAI, 한국어: 오르빗AI 자산운용
+> **오르빗 작업 시**: 반드시 `오르빗-컨텍스트.md`를 먼저 참조 (시스템 아키텍처, DB 스키마, 마스터 전략, 코드 경로 등 포함)
 
 ### URL 체계
 - **로컬**: `localhost:3090`, `localhost:3010/saleshub`
