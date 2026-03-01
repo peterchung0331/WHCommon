@@ -186,13 +186,13 @@ GET /api/api/auth/me               # api 중복!
 | **WBFinHub** | `/home/peterchung/WBFinHub` | 3020/4020 | 재무 관리 |
 | **HWTestAgent** | `/home/peterchung/HWTestAgent` | 3080/4080 | 테스트/에러 패턴 DB |
 
-### Orbit AAM (개인 프로젝트) — OrbitAI
+### Orbit Research (개인 프로젝트) — 오르빗 리서치
 
-**AI 에이전트 기반 퀀트 자산배분 포트폴리오 시스템 (오르빗AI 자산운용)** (WorkHub와 별도)
+**AI 에이전트 기반 퀀트 자산배분 포트폴리오 리서치 시스템 (오르빗 리서치)** (WorkHub와 별도)
 
 - **상세 컨텍스트**: @/home/peterchung/orbit-alpha/docs/오르빗-컨텍스트.md
-- **정식명칭**: Orbit AI Asset Management (Orbit AAM)
-- **프로젝트 내부 지칭**: OrbitAI
+- **정식명칭**: Orbit Research (오르빗 리서치)
+- **프로젝트 내부 지칭**: Orbit Research
 - **경로**: `/home/peterchung/orbit-alpha`
 - **리포**: `git@github.com:peterchung0331/OrbitAlpha.git`
 - **기술스택**: Python 3.11+ / FastAPI / Dash(Plotly) / PostgreSQL / Redis+Celery
@@ -207,7 +207,7 @@ GET /api/api/auth/me               # api 중복!
 | **Orbit Deck** | `deck` | 대시보드 & 리포트 (3단계 접근 제어) | :443 |
 
 > **네이밍 주의**: PRD 원본은 구 이름 사용 (Pulse→Base, Forge→Lab, Navigator→Deck, Pilot→Bay)
-> **이름 변경**: Orbit Alpha → Orbit AAM (Orbit AI Asset Management), 내부 지칭: OrbitAI, 한국어: 오르빗AI 자산운용
+> **이름 변경**: Orbit Alpha → Orbit Research (오르빗 리서치)
 > **오르빗 작업 시**: 반드시 `오르빗-컨텍스트.md`를 먼저 참조 (시스템 아키텍처, DB 스키마, 마스터 전략, 코드 경로 등 포함)
 
 ### URL 체계
