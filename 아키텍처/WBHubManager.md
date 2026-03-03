@@ -1,5 +1,7 @@
 # WBHubManager 아키텍처
 
+> Last verified: 2026-02-26
+
 ## 개요
 
 WBHubManager는 WorkHub 시스템의 **메인 관리 허브**로, 사용자 인증, 허브 관리, AI 페르소나 관리를 담당합니다.
@@ -17,10 +19,14 @@ WBHubManager/
 │   │   ├── schema/           # SQL 스키마 (hubs, users, documents)
 │   │   └── migrations/       # 마이그레이션 (16개)
 │   ├── routes/
-│   │   ├── hubRoutes.ts      # /api/hubs
-│   │   ├── adminRoutes.ts    # /api/admin
-│   │   ├── aiAdminRoutes.ts  # /api/ai-admin (페르소나)
-│   │   └── ...
+│   │   ├── hubRoutes.ts              # /api/hubs
+│   │   ├── adminRoutes.ts            # /api/admin
+│   │   ├── aiAdminRoutes.ts          # /api/ai-admin (페르소나)
+│   │   ├── adminIntegratedRoutes.ts  # /api/admin/integrated
+│   │   ├── bannerRoutes.ts           # /api/banners
+│   │   ├── botHelpMessageRoutes.ts   # /api/bot-help
+│   │   ├── documentRoutes.ts         # /api/documents
+│   │   └── riskAssessmentRoutes.ts   # /api/risk-assessment
 │   ├── services/
 │   │   ├── personaService.ts # 페르소나 CRUD + 버전 관리
 │   │   └── ...
@@ -33,7 +39,10 @@ WBHubManager/
 │   │   ├── layout.tsx
 │   │   ├── admin/            # 어드민 페이지
 │   │   ├── hubs/             # 허브 목록
-│   │   └── docs/             # 문서
+│   │   ├── docs/             # 문서
+│   │   ├── sales/            # SalesHub 임베드
+│   │   ├── fin/              # FinHub 임베드
+│   │   └── splash/           # 스플래시
 │   ├── components/
 │   └── lib/
 │

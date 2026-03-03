@@ -1,0 +1,22 @@
+# Infrastructure (not code)
+SSHkey/
+env/
+Docker/
+Sample/
+pandoc/
+
+# Binary assets
+assets/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+
+# Large design doc (49KB, load on-demand only)
+아키텍처/디자인-시스템/디자인-시스템-v1.0.md
+
+# Archives
+작업기록/
+테스트결과/

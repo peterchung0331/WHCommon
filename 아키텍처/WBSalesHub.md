@@ -1,5 +1,7 @@
 # WBSalesHub 아키텍처
 
+> Last verified: 2026-02-26
+
 ## 개요
 
 WBSalesHub는 **영업 CRM 허브**로, 고객 관리와 **Reno AI 봇**을 통한 Slack 기반 영업 지원을 제공합니다.
@@ -27,9 +29,13 @@ WBSalesHub/
 │   │   │   └── slack/
 │   │   │       └── renoSlackApp.ts # Slack Bolt 앱 (914줄)
 │   │   │
+│   │   ├── accounts/               # 계정 관리
+│   │   ├── auth/                   # 인증
+│   │   ├── categories/             # 카테고리
 │   │   ├── customers/              # 고객 관리
+│   │   ├── documents/              # 문서 관리
 │   │   ├── meetings/               # 미팅 관리
-│   │   └── memos/                  # 메모 관리
+│   │   └── meeting-notes/          # 회의록
 │   │
 │   ├── routes/
 │   │   ├── customerRoutes.ts

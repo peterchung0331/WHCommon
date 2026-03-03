@@ -1,5 +1,7 @@
 # WBFinHub 아키텍처
 
+> Last verified: 2026-02-26
+
 ## 개요
 
 WBFinHub는 **재무/거래 관리 허브**로, 거래(Deal) 관리, CSV 임포트, Fireblocks API 통합을 담당합니다.
@@ -13,17 +15,15 @@ WBFinHub/
 ├── server/
 │   ├── index.ts                    # 진입점 (포트 4020)
 │   ├── modules/
+│   │   ├── accounts/               # 계정 관리
+│   │   ├── customers/              # 고객 관리
 │   │   ├── deals/                  # 거래 관리 (핵심)
-│   │   │   ├── deal.service.ts     # CRUD 서비스 (412줄)
+│   │   │   ├── deal.service.ts     # CRUD 서비스
 │   │   │   ├── deal.types.ts       # 타입 정의
 │   │   │   └── index.ts
-│   │   │
-│   │   ├── fireblocks/             # Fireblocks API 통합
-│   │   │   ├── fireblocks.service.ts
-│   │   │   └── fireblocks.types.ts
-│   │   │
-│   │   └── import/                 # CSV 임포트
-│   │       └── csvImporter.ts
+│   │   ├── deal-transactions/      # 딜 트랜잭션
+│   │   ├── integrations/           # Fireblocks API 통합
+│   │   └── sales-leads/            # 영업 리드
 │   │
 │   ├── routes/
 │   │   ├── dealRoutes.ts

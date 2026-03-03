@@ -46,3 +46,7 @@ dist/
 build/
 out/
 .env.doppler
+
+# Large binary files
+*.xlsx
+*.zip

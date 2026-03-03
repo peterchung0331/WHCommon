@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>2026-상반기-업무영역-정리.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="peter-%EC%97%85%EB%AC%B4-%EC%98%81%EC%97%AD-%EC%A0%95%EB%A6%AC-2025-%E2%86%92-2026-%E2%86%92-2027">Peter 업무 영역 정리: 2025 → 2026 → 2027</h1>
+<p><strong>작성일:</strong> 2026. 02. 25.
+<strong>목적:</strong> 업무 비중 변화 정리 및 C레벨 전환 로드맵 설계</p>
+<hr>
+<h2 id="1-2025%EB%85%84-%EC%97%85%EB%AC%B4-%EC%98%81%EC%97%AD-%EB%B0%8F-%EB%B9%84%EC%A4%91">1. 2025년 업무 영역 및 비중</h2>
+<table>
+<thead>
+<tr>
+<th>업무 영역</th>
+<th>비중</th>
+<th>주요 내용</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>대형 금융기관 BD &amp; 파트너십</td>
+<td>30%</td>
+<td>ETF 운용사 8개사·증권사 6개사 커버리지, 스테이블코인 결제사업 (BC카드 MOU)</td>
+</tr>
+<tr>
+<td>신사업 기획</td>
+<td>20%</td>
+<td>BTC 현물 ETF 한국형 구조 설계, 원화 스테이블코인 기획 (솔라나 MOU), BC카드 협업구조</td>
+</tr>
+<tr>
+<td>WB Prime 운영 &amp; 세일즈</td>
+<td>15%</td>
+<td>법인 10+개 온보딩, 운영 프로세스 구조화, 계약·거래 표준화</td>
+</tr>
+<tr>
+<td>본부 매니지먼트</td>
+<td>10%</td>
+<td>3인→6인 확장, R&amp;R 재조정 (리나 BD 전환, 문 직보 전환), 이탈 0건</td>
+</tr>
+<tr>
+<td>대관 활동</td>
+<td>10%</td>
+<td>금융위·금감원 대관, 디지털자산기본법 대응 전략</td>
+</tr>
+<tr>
+<td>AI Transformation</td>
+<td>10%</td>
+<td>세일즈허브·전략허브 CRM 기획·제작, 리노봇 연동</td>
+</tr>
+<tr>
+<td>세일즈 조직 신설</td>
+<td>5%</td>
+<td>법인영업팀 셋업 (법인 11개 온보딩), 제품 고도화 지연으로 일시 연기</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>특징:</strong> BD(30%) + 신사업(20%) = 50%로 대외 사업 추진이 절반. Jay(COO)와 공동 수행.</p>
+</blockquote>
+<hr>
+<h2 id="2-2026%EB%85%84-%EB%B3%80%ED%99%94-%EC%9A%94%EC%9D%B8">2. 2026년 변화 요인</h2>
+<h3 id="%EC%A1%B0%EC%A7%81-%EC%9E%AC%ED%8E%B8-%EB%A7%A4%EB%8B%88%EC%A7%80%EB%A8%BC%ED%8A%B8-%EB%B9%84%EC%A4%91-%EC%83%81%EC%8A%B9-%EC%9A%94%EC%9D%B8">조직 재편 (매니지먼트 비중 상승 요인)</h3>
+<table>
+<thead>
+<tr>
+<th>변화</th>
+<th>상세</th>
+<th>Peter 역할</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>이유정님 합류</td>
+<td>전략팀 추가 (프레드 후임)</td>
+<td>업무 이관 및 안정화 가이드</td>
+</tr>
+<tr>
+<td>리나 BD 재조정</td>
+<td>BD 업무 초반 안착</td>
+<td>가이드라인 직접 수립·코칭</td>
+</tr>
+<tr>
+<td>패트릭-문 체계 해체</td>
+<td>팀장-팀원 구조 해제</td>
+<td>각각 독립 R&amp;R 재설계</td>
+</tr>
+<tr>
+<td>패트릭</td>
+<td>기존 고객 관리 &amp; 고객 운영</td>
+<td>운영 체계 감독</td>
+</tr>
+<tr>
+<td>문</td>
+<td>WB Prime 프로덕트 운영</td>
+<td>프로덕트 방향 설정</td>
+</tr>
+<tr>
+<td>신규 1인 충원</td>
+<td>패트릭과 협업, 고객관리 강화</td>
+<td>채용·온보딩·안정화</td>
+</tr>
+</tbody>
+</table>
+<h3 id="bd-%EB%B9%84%EC%9C%A8-%EC%A1%B0%EC%A0%95-%EB%B6%88%EA%B0%80%ED%94%BC">BD 비율 조정 불가피</h3>
+<ul>
+<li>25년: Peter가 대형 금융사 BD를 Jay(COO)와 직접 추진</li>
+<li>26년: 조직 내부 정비에 시간 투입 필요 → <strong>직접 BD 비중 축소 불가피</strong></li>
+<li>Jay는 COO로서 BD 포함 더 넓은 범위 수행, 역할 유지</li>
+</ul>
+<hr>
+<h2 id="3-2026%EB%85%84-%EC%97%85%EB%AC%B4-%EB%B9%84%EC%A4%91-%EC%9E%AC%EC%A0%95%EC%9D%98">3. 2026년 업무 비중 재정의</h2>
+<table>
+<thead>
+<tr>
+<th>업무 영역</th>
+<th>'25년</th>
+<th>'26년</th>
+<th>변동</th>
+<th>사유</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>본부 매니지먼트</strong></td>
+<td>10%</td>
+<td><strong>25%</strong></td>
+<td>+15</td>
+<td>인원 재조정·신규 채용·안정화, 리나 BD 코칭</td>
+</tr>
+<tr>
+<td>대형 금융기관 BD</td>
+<td>30%</td>
+<td>20%</td>
+<td>-10</td>
+<td>내부 정비 우선, 직접 추진 축소</td>
+</tr>
+<tr>
+<td>신사업 기획</td>
+<td>20%</td>
+<td>15%</td>
+<td>-5</td>
+<td>기존 트랙 유지하되 소폭 축소</td>
+</tr>
+<tr>
+<td>대관 활동</td>
+<td>10%</td>
+<td>10%</td>
+<td>0</td>
+<td>법안 동향 지속 모니터링</td>
+</tr>
+<tr>
+<td>AI Transformation</td>
+<td>10%</td>
+<td>10%</td>
+<td>0</td>
+<td>도구 고도화, 업무 자동화 확대</td>
+</tr>
+<tr>
+<td>WB Prime 운영</td>
+<td>15%</td>
+<td>5%</td>
+<td>-10</td>
+<td>패트릭·문에게 운영 이관 완료</td>
+</tr>
+<tr>
+<td>세일즈 조직 세팅</td>
+<td>5%</td>
+<td>5%</td>
+<td>0</td>
+<td>패트릭+신규인원 기존 고객 관리 체계</td>
+</tr>
+<tr>
+<td><strong>C레벨 전환 준비</strong></td>
+<td>-</td>
+<td><strong>10%</strong></td>
+<td>신규</td>
+<td>27년 업무 범위 정의, 경영 참여 설계</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>핵심 변화:</strong> 매니지먼트 10%→25%로 최대 상승, BD 30%→20%로 축소. 대외 사업 비중(BD+신사업) 50%→35%로 감소, 내부 조직 역량 강화에 집중.</p>
+</blockquote>
+<hr>
+<h2 id="4-2027%EB%85%84-c%EB%A0%88%EB%B2%A8-%EC%97%85%EB%AC%B4-%EB%B2%94%EC%9C%84-%EB%B0%A9%ED%96%A5%EC%84%B1">4. 2027년 C레벨 업무 범위 방향성</h2>
+<h3 id="%EC%A0%84%EC%A0%9C%EC%A1%B0%EA%B1%B4-26%EB%85%84-%EB%82%B4-%EC%99%84%EB%A3%8C">전제조건 (26년 내 완료)</h3>
+<ul>
+<li><input type="checkbox" id="checkbox0"><label for="checkbox0">조직 재편 완료 및 안정화 (이유정, 리나, 패트릭, 문, 신규인원)</label></li>
+<li><input type="checkbox" id="checkbox1"><label for="checkbox1">각 팀원 독립 수행 가능한 R&amp;R 체계 확립</label></li>
+<li><input type="checkbox" id="checkbox2"><label for="checkbox2">WB Prime 운영이 팀 자체 운영으로 완전 이관</label></li>
+</ul>
+<h3 id="27%EB%85%84-%EC%97%85%EB%AC%B4-%EB%B9%84%EC%A4%91-%EB%AA%A9%ED%91%9C">27년 업무 비중 목표</h3>
+<table>
+<thead>
+<tr>
+<th>업무 영역</th>
+<th>'26년</th>
+<th>'27년 목표</th>
+<th>방향</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>전략적 BD &amp; 파트너십</td>
+<td>20%</td>
+<td>25%</td>
+<td>매니지먼트 안정화 후 다시 확대</td>
+</tr>
+<tr>
+<td>신사업 기획 &amp; 전략</td>
+<td>15%</td>
+<td>20%</td>
+<td>C레벨 핵심 역할</td>
+</tr>
+<tr>
+<td>경영 의사결정 참여</td>
+<td>-</td>
+<td>15%</td>
+<td>C레벨 신규 영역</td>
+</tr>
+<tr>
+<td>대관 활동</td>
+<td>10%</td>
+<td>10%</td>
+<td>유지</td>
+</tr>
+<tr>
+<td>본부 매니지먼트</td>
+<td>25%</td>
+<td>15%</td>
+<td>안정화 후 위임 비중 확대</td>
+</tr>
+<tr>
+<td>AI Transformation</td>
+<td>10%</td>
+<td>10%</td>
+<td>유지</td>
+</tr>
+<tr>
+<td>WB Prime·세일즈</td>
+<td>10%</td>
+<td>5%</td>
+<td>최소 감독만</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p><strong>방향:</strong> 본부장(실행 중심) → C레벨(전략·의사결정 중심)로 전환. BD+신사업+대관+경영참여 = 70%로 전략적 영역에 집중.</p>
+</blockquote>
+
+</body>
+</html>
