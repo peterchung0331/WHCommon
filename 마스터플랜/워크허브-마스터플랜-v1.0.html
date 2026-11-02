@@ -1,0 +1,2314 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<style>
+@page {
+  size: A4;
+  margin: 14mm 16mm;
+}
+body {
+  font-family: "Malgun Gothic", "맑은 고딕", "Apple SD Gothic Neo", sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.65;
+  color: #1a1a1a;
+  max-width: 100%;
+}
+
+/* Headings */
+h1 {
+  font-size: 20pt;
+  border-bottom: 2.5px solid #1a56db;
+  padding-bottom: 6px;
+  margin-top: 28px;
+  margin-bottom: 10px;
+  page-break-before: always;
+  color: #0f172a;
+}
+h1:first-of-type { page-break-before: avoid; }
+h2 {
+  font-size: 15pt;
+  border-bottom: 1px solid #94a3b8;
+  padding-bottom: 4px;
+  margin-top: 22px;
+  margin-bottom: 8px;
+  page-break-after: avoid;
+  color: #1e293b;
+}
+h3 {
+  font-size: 12pt;
+  margin-top: 14px;
+  margin-bottom: 6px;
+  page-break-after: avoid;
+  color: #334155;
+}
+h4 { font-size: 11pt; margin-top: 10px; margin-bottom: 4px; }
+
+/* Text */
+p { margin: 4px 0 8px 0; }
+ul, ol { margin: 4px 0 8px 0; padding-left: 22px; }
+li { margin: 2px 0; }
+hr { border: none; border-top: 1px solid #e2e8f0; margin: 14px 0; }
+strong { color: #1a56db; }
+blockquote { border-left: 3px solid #1a56db; padding-left: 10px; color: #64748b; margin: 8px 0; font-size: 10pt; }
+
+/* Tables */
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 8px 0;
+  font-size: 9pt;
+  page-break-inside: avoid;
+}
+th, td { border: 1px solid #d0d5dd; padding: 5px 8px; text-align: left; }
+th { background: #e8edfa; font-weight: bold; color: #1e293b; }
+tr:nth-child(even) { background: #f8fafc; }
+
+/* Code blocks (remaining ASCII that wasn't converted) */
+pre {
+  background: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  padding: 12px 16px;
+  margin: 8px 0;
+  font-size: 8pt;
+  line-height: 1.35;
+  page-break-inside: avoid;
+  overflow-x: hidden;
+  white-space: pre;
+}
+code { font-family: "D2Coding", "Consolas", "Courier New", monospace; font-size: 8.5pt; }
+p code { background: #e8edfa; padding: 1px 4px; border-radius: 3px; font-size: 9pt; }
+
+/* Mermaid diagram containers */
+.mermaid {
+  display: flex;
+  justify-content: center;
+  margin: 10px 0;
+  page-break-inside: avoid;
+}
+.mermaid svg {
+  max-width: 100% !important;
+  max-height: 280px !important;
+  width: auto !important;
+  height: auto !important;
+}
+.mermaid[data-size="large"] svg {
+  max-height: 360px !important;
+}
+.mermaid[data-size="small"] svg {
+  max-height: 180px !important;
+}
+
+/* Orphan/Widow */
+p, li { orphans: 3; widows: 3; }
+</style>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+<script>
+  mermaid.initialize({
+    startOnLoad: true,
+    theme: 'base',
+    themeVariables: {
+      primaryColor: '#dbeafe',
+      primaryTextColor: '#1e293b',
+      primaryBorderColor: '#1a56db',
+      lineColor: '#64748b',
+      secondaryColor: '#f0f4ff',
+      tertiaryColor: '#fef3c7',
+      fontSize: '10px',
+      fontFamily: '"Malgun Gothic", sans-serif'
+    },
+    flowchart: {
+      htmlLabels: true,
+      curve: 'basis',
+      padding: 8,
+      nodeSpacing: 20,
+      rankSpacing: 25,
+      useMaxWidth: true
+    }
+  });
+</script>
+</head>
+<body>
+<h1>워크허브 마스터플랜 v1.0</h1>
+<p><strong>WorkHub Master Plan — Context-Driven AI Business Platform</strong></p>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>내용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>버전</td>
+<td>v1.0</td>
+</tr>
+<tr>
+<td>작성일</td>
+<td>2026. 03. 12.</td>
+</tr>
+<tr>
+<td>작성</td>
+<td>Peter Chung</td>
+</tr>
+<tr>
+<td>대상 독자</td>
+<td>내부 경영진</td>
+</tr>
+<tr>
+<td>기밀 등급</td>
+<td>사내 한정</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 1. 비전과 전략</h1>
+<hr>
+<h2>1. Executive Summary</h2>
+<h3>워크허브가 해결하는 문제</h3>
+<p>금융업 현장의 업무 시스템은 여전히 <strong>정형 데이터 중심</strong>이다. CRM에 고객명과 연락처를 입력하고, ERP에 거래 금액을 기록하고, 엑셀로 리포트를 만든다. 그러나 실제 의사결정에 필요한 정보의 80%는 <strong>비정형 데이터</strong>에 흩어져 있다.</p>
+<ul>
+<li>Slack에서 오고 간 고객 대화</li>
+<li>미팅 후 메모나 음성 녹취</li>
+<li>이메일 스레드에 묻힌 합의 내용</li>
+<li>팀 내부 문서와 보고서 초안</li>
+<li>규제 변화에 대한 산발적인 논의</li>
+</ul>
+<p>기존 시스템은 이 비정형 데이터를 다루지 못한다. 담당자가 바뀌면 맥락이 사라지고, 주간 리포트를 쓰려면 여러 시스템을 뒤져야 하며, &quot;이 고객과 지난달에 무슨 얘기를 했지?&quot;라는 단순한 질문에도 30분이 걸린다.</p>
+<p><strong>워크허브는 이 문제를 근본적으로 다르게 접근한다.</strong></p>
+<h3>핵심 접근: 컨텍스트 + AI 에이전트</h3>
+<p>워크허브는 데이터를 테이블의 행(Row)이 아니라 **컨텍스트(Context)**로 다룬다.</p>
+<table>
+<thead>
+<tr>
+<th>기존 시스템</th>
+<th>워크허브</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>고객 정보 = DB 레코드</td>
+<td>고객 정보 = 대화, 미팅, 거래, 피드백을 종합한 <strong>컨텍스트</strong></td>
+</tr>
+<tr>
+<td>검색 = SQL 쿼리</td>
+<td>검색 = AI 에이전트에게 자연어 질문</td>
+</tr>
+<tr>
+<td>리포트 = 수동 작성</td>
+<td>리포트 = AI가 컨텍스트 기반 자동 생성</td>
+</tr>
+<tr>
+<td>인사이트 = 대시보드 숫자 해석</td>
+<td>인사이트 = AI가 패턴 감지 후 <strong>선제적 알림</strong></td>
+</tr>
+</tbody></table>
+<p>각 허브(SalesHub, FinHub, OnboardingHub, StrategyHub)는 현업의 업무 흐름에 맞춘 <strong>전문 AI 에이전트</strong>를 보유한다. SalesHub의 &quot;Reno&quot;는 고객 미팅 전 브리핑을 자동 생성하고, FinHub는 거래 라이프사이클을 관리하며, OnboardingHub는 KYC 서류를 OCR로 자동 인식한다. StrategyHub는 산업·규제 동향을 자동 수집하고 AI 기반 문서 생성·리뷰 환경을 제공한다.</p>
+<p>이 에이전트들은 중앙 <strong>Context Pool</strong>에 축적된 컨텍스트를 활용하므로, 시간이 지날수록 더 정확하고 유용해진다.</p>
+<h3>플랫폼 전체 구조</h3>
+<div class="mermaid">
+graph TB
+    subgraph WorkHub["워크허브 플랫폼"]
+        subgraph Hubs["업무 허브"]
+            SH["SalesHub<br/>영업/CRM<br/>Reno AI"]
+            FH["FinHub<br/>재무/거래<br/>거래분석 AI"]
+            OH["OnboardingHub<br/>고객 온보딩<br/>OCR AI"]
+            STH["StrategyHub<br/>문서·협업<br/>문서편집 AI"]
+        end
+        HM["HubManager<br/>SSO · 권한 · AI 관리<br/>페르소나 · 모니터링"]
+        subgraph Ext["외부 연동"]
+            Slack["Slack<br/>봇/알림"]
+            Telegram["Telegram<br/>경량 접근"]
+            Notion["Notion<br/>문서 연동"]
+            Email["Email<br/>알림"]
+        end
+        subgraph Client["클라이언트"]
+            Apps["PC 웹앱 · Android 앱 · iOS 계획 · PWA"]
+        end
+    end
+    SH & FH & OH & STH --> HM
+    HM --> Slack & Telegram & Notion & Email
+    HM --> Apps
+
+<pre><code>style WorkHub fill:#f0f4ff,stroke:#1a56db,stroke-width:2px
+style SH fill:#e8edfa,stroke:#1a56db
+style FH fill:#e8edfa,stroke:#1a56db
+style OH fill:#e8edfa,stroke:#1a56db
+style STH fill:#e8edfa,stroke:#1a56db
+style HM fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+style Slack fill:#fef3c7,stroke:#d97706
+style Telegram fill:#fef3c7,stroke:#d97706
+style Notion fill:#fef3c7,stroke:#d97706
+style Email fill:#fef3c7,stroke:#d97706
+style Apps fill:#d1fae5,stroke:#059669
+</code></pre>
+</div>
+
+<h3>역할별 가치 제안</h3>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>기존 방식</th>
+<th>워크허브 방식</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>대표/CFO</strong></td>
+<td>팀별 보고 취합, 엑셀 수작업</td>
+<td>주간 리포트 자동 생성, AI 경영 인사이트</td>
+</tr>
+<tr>
+<td><strong>세일즈</strong></td>
+<td>CRM 수동 입력, 미팅 전 수동 조사</td>
+<td>고객 컨텍스트 자동 축적, 미팅 브리핑 자동 생성</td>
+</tr>
+<tr>
+<td><strong>BD</strong></td>
+<td>분산된 파트너 정보, 수동 추적</td>
+<td>딜 건강도 자동 분석, 위험 신호 선제 알림</td>
+</tr>
+<tr>
+<td><strong>전략/사업기획</strong></td>
+<td>여러 소스에서 수동 정보 수집, 문서 개별 작성</td>
+<td>산업·규제 동향 자동 수집, AI 문서 공동 작성, 협업 리뷰</td>
+</tr>
+<tr>
+<td><strong>재무</strong></td>
+<td>엑셀 거래 관리, 수동 승인</td>
+<td>거래 라이프사이클 관리, AI 이상 거래 감지</td>
+</tr>
+<tr>
+<td><strong>컴플라이언스</strong></td>
+<td>종이 서류 검토, 수동 체크리스트</td>
+<td>OCR 자동 인식, AI 위험 평가, 듀얼 승인 자동화</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>2. 워크허브란 무엇인가</h2>
+<h3>기존 업무시스템의 한계: 정형 데이터의 사각지대</h3>
+<p>금융업에서 사용하는 기존 업무 도구들 — Salesforce, HubSpot, SAP, 사내 ERP — 은 모두 <strong>정형 데이터베이스(RDB)</strong> 위에 구축되어 있다. 고객 테이블, 거래 테이블, 활동 테이블에 행(Row)을 추가하는 방식이다.</p>
+<p>이 구조의 근본적 한계는 세 가지다:</p>
+<p><strong>1) 비정형 데이터를 담을 수 없다</strong></p>
+<p>&quot;지난 미팅에서 A사 CFO가 내년 예산 확대 가능성을 언급했다&quot;는 정보는 CRM의 어떤 필드에도 들어가지 않는다. 미팅 메모를 첨부할 수는 있지만, 시스템이 그 내용을 이해하거나 활용하지는 못한다. 결국 담당자의 기억에만 의존하게 된다.</p>
+<p><strong>2) 맥락(Context)이 유실된다</strong></p>
+<p>고객과의 관계는 단일 레코드가 아니라 수개월에 걸친 대화, 미팅, 이메일, 내부 논의의 <strong>축적</strong>이다. 담당자가 교체되면 이 맥락이 통째로 사라진다. 새 담당자는 CRM의 기본 정보만으로 관계를 이어가야 하며, 이전 담당자가 쌓은 신뢰와 이해의 깊이를 복원할 수 없다.</p>
+<p><strong>3) 인사이트가 사후적이다</strong></p>
+<p>기존 대시보드는 &quot;이미 일어난 일&quot;을 보여준다. 이번 달 매출, 지난 분기 거래 건수, 올해 고객 이탈률. 하지만 의사결정자가 정말 필요한 것은 &quot;앞으로 일어날 일&quot; — 위험 신호, 기회 포착, 트렌드 변화 — 에 대한 선제적 알림이다.</p>
+<h3>워크허브의 접근: &quot;컨텍스트 중심 AI 업무 플랫폼&quot;</h3>
+<p>워크허브는 데이터를 RDB의 행이 아니라 <strong>컨텍스트</strong>라는 단위로 다룬다.</p>
+<p><strong>컨텍스트</strong>란 특정 주제(고객, 거래, 프로젝트)에 대한 모든 관련 정보 — 대화, 미팅, 문서, 거래 내역, 외부 동향 — 를 AI가 자동으로 종합하고 요약한 것이다. 정형/비정형을 가리지 않고 모든 소스에서 정보를 수집하며, 시간이 지남에 따라 자동으로 갱신된다.</p>
+<p>이 컨텍스트 위에서 AI 에이전트가 동작한다. 에이전트는 사용자의 질문에 답하고, 브리핑을 생성하고, 위험을 감지하고, 리포트를 작성한다. 에이전트가 활용할 수 있는 컨텍스트가 풍부할수록 결과물의 품질이 높아지며, 이것이 워크허브의 핵심 선순환 구조다.</p>
+<h3>핵심 차별점 3가지</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>차별점</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Context Pool</strong></td>
+<td>비정형 데이터를 포함한 모든 업무 정보를 자동 수집·정제·축적하는 중앙 지식 저수지</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>AI 에이전트</strong></td>
+<td>허브별 전문 에이전트가 Context Pool을 활용하여 브리핑, 분석, 리포트를 자동 생성</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>멀티 파이프라인 입력</strong></td>
+<td>Slack, 음성, OCR, 이메일, 웹 수집 등 8가지 자동 수집 경로로 Context Pool을 지속 확충</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>3. 타겟 사용자와 가치 제안</h2>
+<h3>역할별 페인포인트 → 워크허브 솔루션</h3>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>핵심 페인포인트</th>
+<th>워크허브 솔루션</th>
+<th>주요 사용 허브</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>대표/C레벨</strong></td>
+<td>주간 보고 취합에 시간 소모, 현장 맥락 파악 어려움</td>
+<td>AI 주간 리포트 자동 생성, 경영 인사이트 대시보드, 전략 문서 리뷰</td>
+<td>SalesHub, StrategyHub</td>
+</tr>
+<tr>
+<td><strong>세일즈 매니저</strong></td>
+<td>고객 히스토리 파악에 30분+, CRM 수동 입력 부담</td>
+<td>고객 컨텍스트 자동 축적, 미팅 24시간 전 브리핑 자동 생성, 팔로업 메일 초안</td>
+<td>SalesHub</td>
+</tr>
+<tr>
+<td><strong>BD 매니저</strong></td>
+<td>파트너십 진행 상황 추적 어려움, 위험 신호 놓침</td>
+<td>딜 건강도 실시간 점수화, 위험 감지 시 Slack 즉시 알림</td>
+<td>SalesHub</td>
+</tr>
+<tr>
+<td><strong>전략기획/사업기획</strong></td>
+<td>산업 동향 수집에 많은 시간, 문서 작성 비효율</td>
+<td>규제/산업 동향 매시간 자동 수집, AI 문서 공동 작성, 협업 리뷰</td>
+<td>StrategyHub</td>
+</tr>
+<tr>
+<td><strong>재무 담당자</strong></td>
+<td>거래 관리 엑셀 의존, 승인 프로세스 비체계적</td>
+<td>딜 라이프사이클 시스템 관리, 체계적 승인 워크플로우, Fireblocks 연동</td>
+<td>FinHub</td>
+</tr>
+<tr>
+<td><strong>컴플라이언스</strong></td>
+<td>종이 서류 수동 검토, KYC 체크리스트 누락 위험</td>
+<td>OCR 자동 인식, AI 위험 평가, 듀얼 승인 자동화, 감사 추적</td>
+<td>OnboardingHub</td>
+</tr>
+<tr>
+<td><strong>운영팀</strong></td>
+<td>온보딩 진행 상황 파악 어려움, 서류 누락 빈발</td>
+<td>6단계 서류 워크플로우, 토큰 기반 고객 포털, 진행 상태 실시간 추적</td>
+<td>OnboardingHub</td>
+</tr>
+</tbody></table>
+<hr>
+<h1>Part 2. 플랫폼 아키텍처</h1>
+<hr>
+<h2>4. 시스템 전체 구조</h2>
+<h3>허브 생태계</h3>
+<p>워크허브는 <strong>중앙 관리 허브(HubManager)</strong> + <strong>5개 업무 허브</strong>(SalesHub, FinHub, OnboardingHub, StrategyHub)로 구성된 생태계이다.</p>
+<table>
+<thead>
+<tr>
+<th>허브</th>
+<th>역할</th>
+<th>주요 사용자</th>
+<th>AI 에이전트</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HubManager</strong></td>
+<td>SSO 인증, 권한 관리, AI 페르소나 중앙 관리, 모니터링</td>
+<td>어드민</td>
+<td>페르소나 관리 AI</td>
+</tr>
+<tr>
+<td><strong>SalesHub</strong></td>
+<td>고객 관리(CRM), 미팅, 거래 추적, 주간 리포트</td>
+<td>세일즈, BD</td>
+<td>Reno AI</td>
+</tr>
+<tr>
+<td><strong>FinHub</strong></td>
+<td>거래(Deal) 관리, 암호자산 거래, 승인 워크플로우</td>
+<td>재무</td>
+<td>거래 분석 AI</td>
+</tr>
+<tr>
+<td><strong>OnboardingHub</strong></td>
+<td>신규 고객 온보딩, KYC/AML, 서류 검토</td>
+<td>운영팀, 컴플라이언스</td>
+<td>OCR AI</td>
+</tr>
+<tr>
+<td><strong>StrategyHub</strong></td>
+<td>전략 문서 생성, 협업 리뷰, 정보 수집, 규제 관리</td>
+<td>전략기획, C레벨</td>
+<td>문서 편집 AI</td>
+</tr>
+</tbody></table>
+<h3>중앙 인증(SSO) + 허브별 독립 운영</h3>
+<div class="mermaid">
+graph TB
+    HM["HubManager<br/>(SSO Gateway)<br/>JWT 쿠키 발급<br/>.workhub.biz"]
+    SH["SalesHub<br/>독립 DB · 독립 API"]
+    FH["FinHub<br/>독립 DB · 독립 API"]
+    OH["OnboardingHub<br/>독립 DB · 독립 API"]
+    STH["StrategyHub<br/>독립 DB · 독립 API"]
+    HM -->|JWT 쿠키| SH & FH & OH & STH
+    style HM fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+    style SH fill:#e8edfa,stroke:#1a56db
+    style FH fill:#e8edfa,stroke:#1a56db
+    style OH fill:#e8edfa,stroke:#1a56db
+    style STH fill:#e8edfa,stroke:#1a56db
+</div>
+
+<ul>
+<li>사용자는 HubManager에서 <strong>한 번 로그인</strong>하면 모든 허브에 접근 가능 (쿠키 기반 SSO)</li>
+<li>각 허브는 <strong>독립적인 데이터베이스와 API</strong>를 보유하여 서로 영향을 주지 않음</li>
+<li>HubManager가 <strong>중앙 계정·권한·AI 페르소나</strong>를 관리하여 일관성 유지</li>
+</ul>
+<h3>데이터 흐름도: 입력 → Context Pool → AI → 사용자</h3>
+<div class="mermaid">
+graph LR
+    subgraph Input["입력 소스"]
+        I1["Slack 메시지"]
+        I2["음성 녹취"]
+        I3["문서 OCR"]
+        I4["수동 입력"]
+        I5["이메일"]
+        I6["외부 API"]
+        I7["크론 배치"]
+        I8["Collector<br/>(RSS/웹/PDF)"]
+    end
+    Engine["정제/분류<br/>엔진"]
+    CP[("Context<br/>Pool")]
+    AI["AI<br/>에이전트"]
+    subgraph Output["출력"]
+        O1["미팅 브리핑"]
+        O2["주간 리포트"]
+        O3["위험 알림"]
+        O4["팔로업 메일"]
+        O5["딜 분석"]
+        O6["전략 문서"]
+    end
+    I1 & I2 & I3 & I4 & I5 & I6 & I7 & I8 --> Engine --> CP --> AI --> O1 & O2 & O3 & O4 & O5 & O6
+    style CP fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+    style AI fill:#fef3c7,stroke:#d97706,stroke-width:2px
+</div>
+
+<hr>
+<h2>5. AI 엔진 아키텍처</h2>
+<h3>컨텍스트 + AI 에이전트 모델 vs 전통 RDB 모델</h3>
+<pre><code>┌─ 전통 RDB 모델 ─────────────────┐    ┌─ 워크허브 모델 ─────────────────┐
+│                                   │    │                                   │
+│  사용자 → SQL 쿼리 → DB → 결과    │    │  사용자 → 자연어 → AI → 인사이트  │
+│                                   │    │              ↑                    │
+│  · 정형 데이터만 처리              │    │         Context Pool              │
+│  · 검색어를 정확히 알아야 함       │    │  · 정형 + 비정형 통합            │
+│  · 사후적 대시보드                 │    │  · &quot;A사 최근 상황 알려줘&quot;        │
+│  · 수동 리포트 작성                │    │  · 선제적 알림 + 자동 리포트      │
+│                                   │    │                                   │
+└───────────────────────────────────┘    └───────────────────────────────────┘
+</code></pre>
+<h3>LLM 멀티 프로바이더 전략</h3>
+<p>워크허브는 단일 LLM에 의존하지 않고, 멀티 프로바이더 전략으로 안정성과 비용 효율을 확보한다.</p>
+<table>
+<thead>
+<tr>
+<th>우선순위</th>
+<th>프로바이더</th>
+<th>용도</th>
+<th>월 예산</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1순위</td>
+<td>Claude (Anthropic)</td>
+<td>주력 모델 — 문서 생성, 분석, 대화</td>
+<td>무제한</td>
+</tr>
+<tr>
+<td>2순위</td>
+<td>GPT-4o (OpenAI)</td>
+<td>보조 — 특정 작업 최적화</td>
+<td>$100/월</td>
+</tr>
+<tr>
+<td>3순위</td>
+<td>Gemini (Google)</td>
+<td>폴백 — 2순위 예산 초과 시</td>
+<td>$100/월</td>
+</tr>
+</tbody></table>
+<p><strong>자동 폴백 구조</strong>: 2순위/3순위 월 예산 초과 시 자동으로 1순위(Claude)로 전환. 서비스 중단 없음.</p>
+<h3>페르소나(Persona) 시스템</h3>
+<p>각 AI 에이전트는 <strong>페르소나</strong>라는 성격과 역할 정의를 갖는다. 페르소나는 HubManager에서 중앙 관리되며, 허브별로 전문화된 에이전트를 구성한다.</p>
+<table>
+<thead>
+<tr>
+<th>페르소나</th>
+<th>소속 허브</th>
+<th>역할</th>
+<th>톤</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Reno</strong> (내부)</td>
+<td>SalesHub</td>
+<td>영업팀 AI 어시스턴트 — 고객 분석, 미팅 준비, 메시지 작성</td>
+<td>친근, 반말</td>
+</tr>
+<tr>
+<td><strong>Reno</strong> (외부)</td>
+<td>SalesHub</td>
+<td>고객 대면 AI — 격식 있는 응대</td>
+<td>경어, 격식</td>
+</tr>
+<tr>
+<td><strong>문서 편집 AI</strong></td>
+<td>StrategyHub</td>
+<td>문서 리뷰 반영, 톤 조정, 품질 검증</td>
+<td>비즈니스 격식체</td>
+</tr>
+<tr>
+<td><strong>위험평가 AI</strong></td>
+<td>HubManager</td>
+<td>가상자산 위험 설명서 자동 생성</td>
+<td>규제 문서체</td>
+</tr>
+<tr>
+<td><strong>OCR AI</strong></td>
+<td>OnboardingHub</td>
+<td>서류 자동 인식, 필드 추출</td>
+<td>— (백그라운드)</td>
+</tr>
+</tbody></table>
+<h3>비용 관리 구조</h3>
+<div class="mermaid">
+graph TB
+    subgraph Cost["LLM 비용 관리 시스템"]
+        Track["사용량 추적<br/>(토큰/비용)"]
+        Monitor["월 예산 모니터링<br/>프로바이더별 · 허브별 · 목적별"]
+        Check{"예산 초과?"}
+        Fallback["자동 폴백<br/>(Claude)"]
+        Dash["어드민 대시보드<br/>일/주/월 비용 리포트"]
+    end
+    Track --> Monitor --> Check
+    Check -->|Yes| Fallback
+    Check -->|No| Dash
+    Fallback --> Dash
+    style Cost fill:#f0f4ff,stroke:#1a56db
+    style Check fill:#fef3c7,stroke:#d97706
+</div>
+
+<hr>
+<h2>6. Context Pool 아키텍처</h2>
+<h3>비정형 데이터 수집 → 정제 → 컨텍스트화</h3>
+<p>Context Pool(컨텍스트 풀)은 워크허브 생태계의 <strong>지식 저수지</strong>이다. 다양한 소스에서 흘러들어온 비정형 데이터가 AI에 의해 정제·분류되어 <strong>고객별/거래별/조직별 컨텍스트</strong>로 구조화된다.</p>
+<div class="mermaid">
+graph LR
+    subgraph Collect["수집"]
+        S1["Slack"]
+        S2["음성"]
+        S3["OCR"]
+        S4["수동"]
+        S5["이메일"]
+        S6["API"]
+        S7["크론"]
+        S8["Collector"]
+    end
+    Engine["AI 정제/<br/>분류 엔진"]
+    subgraph Context["컨텍스트"]
+        C1["고객 A 컨텍스트"]
+        C2["고객 B 컨텍스트"]
+        C3["거래 X 컨텍스트"]
+        C4["프로젝트 Y 컨텍스트"]
+        C5["산업 동향 컨텍스트"]
+        C6["규제 변화 컨텍스트"]
+    end
+    S1 & S2 & S3 & S4 & S5 & S6 & S7 & S8 --> Engine --> C1 & C2 & C3 & C4 & C5 & C6
+    style Engine fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<h3>8가지 입력 파이프라인</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>파이프라인</th>
+<th>소스</th>
+<th>컨텍스트 유형</th>
+<th>자동화 수준</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Slack 메시지</strong></td>
+<td>채널 모니터링, @멘션</td>
+<td>고객 동향, 내부 논의</td>
+<td>완전 자동</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>음성 녹취</strong></td>
+<td>Fireflies 연동</td>
+<td>미팅 요약, 핵심 합의</td>
+<td>완전 자동</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>문서 OCR</strong></td>
+<td>GCP Vision</td>
+<td>KYC 서류, 사업자등록증</td>
+<td>완전 자동</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>수동 입력</strong></td>
+<td>웹 UI 직접 입력</td>
+<td>미팅 노트, 메모</td>
+<td>수동</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>이메일</strong></td>
+<td>이메일 연동 (계획)</td>
+<td>커뮤니케이션 로그</td>
+<td>반자동</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>외부 API</strong></td>
+<td>시장 데이터, 규제 정보</td>
+<td>산업/규제 동향</td>
+<td>완전 자동</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>크론 배치</strong></td>
+<td>정기 집계/요약</td>
+<td>주간 통계, 건강도</td>
+<td>완전 자동</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Collector</strong></td>
+<td>RSS, 웹 스크래핑, PDF</td>
+<td>규제/산업 뉴스</td>
+<td>완전 자동</td>
+</tr>
+</tbody></table>
+<h3>컨텍스트 저장소 구조</h3>
+<p>컨텍스트는 세 가지 차원으로 조직된다:</p>
+<ul>
+<li><strong>고객별 컨텍스트</strong>: A사와의 모든 상호작용 — 대화, 미팅, 거래, 피드백</li>
+<li><strong>거래별 컨텍스트</strong>: 특정 딜의 진행 경과, 관련 문서, 승인 이력</li>
+<li><strong>조직별 컨텍스트</strong>: 산업 동향, 규제 변화, 내부 전략 문서</li>
+</ul>
+<p>각 컨텍스트는 AI가 주기적으로 자동 요약하며, 새 정보가 유입될 때마다 갱신된다. 시간이 지날수록 풍부해지는 <strong>자기 강화(Self-Reinforcing)</strong> 구조이다.</p>
+<hr>
+<h1>Part 3. 허브별 상세 기능</h1>
+<hr>
+<h2>7. HubManager — 중앙 관리 허브</h2>
+<h3>7.1 허브 개요 및 포지셔닝</h3>
+<p>HubManager는 워크허브 생태계의 <strong>관제탑</strong>이다. 직접적인 비즈니스 기능은 수행하지 않지만, 모든 허브가 작동하기 위한 핵심 인프라 — 인증, 권한, AI 페르소나, 모니터링 — 를 제공한다.</p>
+<div class="mermaid">
+graph TB
+    HM["HubManager<br/>· SSO 인증 · 권한 관리<br/>· AI 페르소나 · LLM 모니터링<br/>· 푸시 알림 · 문서 관리"]
+    SH["SalesHub"]
+    FH["FinHub"]
+    OH["OnboardingHub"]
+    STH["StrategyHub"]
+    HM --> SH & FH & OH & STH
+    style HM fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<p><strong>다른 허브와의 관계</strong>: 모든 허브는 HubManager의 SSO 토큰으로 인증하며, AI 에이전트는 HubManager에 등록된 페르소나 정의를 사용한다. LLM 사용량과 비용은 HubManager 어드민 대시보드에서 통합 모니터링된다.</p>
+<h3>7.2 통합 계정 및 권한 관리</h3>
+<p><strong>5단계 역할 체계</strong></p>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>권한 범위</th>
+<th>대상</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>MASTER</strong></td>
+<td>전체 시스템 관리, 모든 권한</td>
+<td>시스템 관리자</td>
+</tr>
+<tr>
+<td><strong>ADMIN</strong></td>
+<td>허브별 관리, 사용자 초대</td>
+<td>허브 책임자</td>
+</tr>
+<tr>
+<td><strong>USER</strong></td>
+<td>업무 기능 사용, 데이터 입력/수정</td>
+<td>일반 실무자</td>
+</tr>
+<tr>
+<td><strong>VIEWER</strong></td>
+<td>읽기 전용 접근</td>
+<td>리포트 열람자</td>
+</tr>
+<tr>
+<td><strong>GUEST</strong></td>
+<td>제한된 기능 접근</td>
+<td>외부 협력사</td>
+</tr>
+</tbody></table>
+<p><strong>허브별 멤버십 관리</strong></p>
+<p>사용자는 허브마다 다른 역할을 가질 수 있다. 예를 들어, Peter는 SalesHub에서는 ADMIN이지만 FinHub에서는 USER일 수 있다. 이 멀티 허브 권한 구조는 <code>hub_memberships</code> 테이블로 관리된다.</p>
+<p><strong>SSO 인증 흐름</strong></p>
+<div class="mermaid">
+graph LR
+    User["사용자"] --> Login["HubManager 로그인"] --> JWT["JWT 쿠키 발급<br/>(.workhub.biz)"]
+    JWT --> Valid["쿠키가 모든 허브에서 유효<br/>(SalesHub, FinHub, ...)"]
+    Valid --> Access["각 허브가 JWT 검증 후<br/>접근 허용"]
+    style JWT fill:#dbeafe,stroke:#1a56db
+</div>
+
+<p><strong>계정 워크플로우</strong>: 생성 → 허브 초대 → 역할 배정 → 활성 → (필요시) 비활성화</p>
+<h3>7.3 AI 페르소나 중앙 관리</h3>
+<p>HubManager는 워크허브 생태계의 모든 AI 에이전트 페르소나를 <strong>중앙에서 관리</strong>한다.</p>
+<p><strong>페르소나 정의 구조</strong></p>
+<p>각 페르소나는 다음 속성을 갖는다:</p>
+<ul>
+<li><strong>이름</strong>: Reno, 문서편집AI 등</li>
+<li><strong>역할 설명</strong>: 이 에이전트가 수행하는 업무 정의</li>
+<li><strong>톤/스타일</strong>: 격식체/반말, 이모지 허용 여부</li>
+<li><strong>도구(Tools)</strong>: 에이전트가 사용할 수 있는 기능 목록</li>
+<li><strong>지식 범위</strong>: 접근 가능한 Context Pool 영역</li>
+<li><strong>변형(Variant)</strong>: 내부용/외부용 등 상황별 다른 성격</li>
+</ul>
+<p><strong>버전 관리</strong>: 페르소나 정의를 변경할 때마다 변경 이력이 자동 기록된다. 문제 발생 시 이전 버전으로 즉시 롤백 가능하다.</p>
+<p><strong>런타임 로드 순서</strong>: Cache → DB → YAML. 성능을 위해 캐시를 우선 참조하되, 최신 정의는 DB에 저장하고, 초기 시드 데이터는 YAML 파일로 관리한다.</p>
+<h3>7.4 통합 어드민 대시보드</h3>
+<p>어드민 대시보드는 전체 워크허브 생태계의 <strong>운영 현황을 한눈에</strong> 파악할 수 있는 통합 관리 화면이다.</p>
+<p><strong>허브별 사용 현황</strong>: 각 허브의 활성 사용자 수, 최근 활동, 주요 지표</p>
+<p><strong>LLM 사용량/비용 통계</strong>:</p>
+<ul>
+<li>프로바이더별 (Claude/OpenAI/Gemini) 토큰 사용량 및 비용</li>
+<li>허브별 AI 사용 현황</li>
+<li>목적별 분류 (브리핑, 리포트, 분석, 문서 생성 등)</li>
+<li>월간 비용 추이 및 예산 대비 현황</li>
+</ul>
+<p><strong>AI 대화 로그 관리</strong>: 에이전트별 대화 이력 조회, 품질 검토, 문제 대화 플래그</p>
+<p><strong>배너/공지사항 관리</strong>: 전체 허브 또는 특정 허브에 공지사항 배포</p>
+<h3>7.5 푸시 알림 시스템</h3>
+<p>Firebase Cloud Messaging(FCM) 기반의 통합 알림 시스템으로, 웹과 모바일 환경에서 동일한 알림을 수신한다.</p>
+<p><strong>알림 유형</strong>:</p>
+<ul>
+<li><strong>긴급 알림</strong>: 위험 거래 감지, KYC 서류 만료 임박</li>
+<li><strong>업무 알림</strong>: 미팅 브리핑 준비 완료, 리포트 생성 완료</li>
+<li><strong>정보 알림</strong>: 주간 리포트 발행, 새 문서 공개</li>
+</ul>
+<p><strong>허브별 알림 라우팅</strong>: 각 허브에서 발생한 이벤트가 해당 허브의 구독자에게만 전달되며, 사용자별 알림 선호도 설정이 가능하다.</p>
+<h3>7.6 문서 및 기술 자료 관리</h3>
+<p>내부 기술 문서, 운영 가이드, 정책 문서를 중앙에서 관리하는 저장소이다.</p>
+<p><strong>태그 기반 분류</strong>: 문서에 태그를 부여하여 주제별, 허브별, 유형별 검색이 가능하다.</p>
+<p><strong>허브간 공유 문서</strong>: 특정 문서를 여러 허브에서 참조할 수 있도록 공유 설정을 지원한다.</p>
+<hr>
+<h2>8. SalesHub — 영업 CRM + AI 어시스턴트</h2>
+<h3>8.1 허브 개요 및 포지셔닝</h3>
+<p>SalesHub는 <strong>고객 관계의 모든 맥락을 AI로 관리</strong>하는 허브이다. 단순한 CRM(고객 관계 관리)을 넘어, AI 에이전트 Reno가 고객 컨텍스트를 자동으로 축적하고, 미팅 준비부터 팔로업까지 영업 실무의 전 과정을 지원한다.</p>
+<p><strong>세일즈/BD 실무자의 하루 — 워크허브 이전 vs 이후</strong></p>
+<table>
+<thead>
+<tr>
+<th>시간</th>
+<th>이전</th>
+<th>이후 (워크허브)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>09:00</td>
+<td>CRM 열고 오늘 미팅 고객 수동 조사 (30분)</td>
+<td>Reno가 미팅 브리핑 자동 생성 완료, Slack DM으로 수신</td>
+</tr>
+<tr>
+<td>10:00</td>
+<td>미팅 진행</td>
+<td>미팅 진행 (동일)</td>
+</tr>
+<tr>
+<td>11:00</td>
+<td>미팅 메모 정리, CRM에 수동 입력 (20분)</td>
+<td>음성 녹취 자동 전사, Reno가 미팅 요약 + 컨텍스트 갱신</td>
+</tr>
+<tr>
+<td>14:00</td>
+<td>팔로업 이메일 작성 (15분)</td>
+<td>Reno가 초안 생성, 톤 선택 후 발송</td>
+</tr>
+<tr>
+<td>16:00</td>
+<td>Slack 대화에서 고객 언급 수동 확인</td>
+<td>Reno가 채널 모니터링 후 관련 고객 컨텍스트 자동 업데이트</td>
+</tr>
+<tr>
+<td>17:00</td>
+<td>—</td>
+<td>위험 고객 알림 수신: &quot;B사 30일간 미응답, 건강도 Critical&quot;</td>
+</tr>
+</tbody></table>
+<h3>8.2 고객(Customer) 관리</h3>
+<p><strong>고객 프로필 구조</strong></p>
+<p>각 고객은 기본 정보 외에 다음을 포함한다:</p>
+<ul>
+<li><strong>카테고리</strong>: 기관투자자, 법인, 개인, 파트너 등</li>
+<li><strong>태그</strong>: 자유 형식의 분류 태그</li>
+<li><strong>담당자</strong>: 세일즈/BD 담당자 배정</li>
+<li><strong>건강도 배지</strong>: AI가 실시간 산출하는 관계 건강도 (Healthy/Warning/Critical)</li>
+</ul>
+<p><strong>고객 상세 페이지</strong></p>
+<p>고객 상세 페이지는 다음 탭으로 구성된다:</p>
+<ol>
+<li><strong>컨텍스트</strong>: AI가 종합한 고객과의 전체 맥락 요약</li>
+<li><strong>미팅</strong>: 예정/완료 미팅 목록, 미팅 노트</li>
+<li><strong>활동 타임라인</strong>: 고객 관련 모든 활동의 시간순 기록</li>
+<li><strong>거래</strong>: 진행 중/완료 거래 내역</li>
+</ol>
+<p><strong>고객 목록 뷰</strong></p>
+<ul>
+<li>카테고리별, 담당자별 필터링</li>
+<li>건강도 배지 컬럼 (Healthy/Warning/Critical)</li>
+<li>최근 활동일 기준 정렬</li>
+</ul>
+<p><strong>데이터 입력 경로</strong></p>
+<table>
+<thead>
+<tr>
+<th>경로</th>
+<th>설명</th>
+<th>자동화</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>수동 입력</td>
+<td>웹 UI에서 직접 고객 정보 등록</td>
+<td>수동</td>
+</tr>
+<tr>
+<td>Slack</td>
+<td>채널 모니터링으로 고객명 자동 추출</td>
+<td>자동</td>
+</tr>
+<tr>
+<td>음성 녹취</td>
+<td>Fireflies 연동으로 미팅 후 자동 반영</td>
+<td>자동</td>
+</tr>
+<tr>
+<td>CSV 임포트</td>
+<td>기존 고객 데이터 대량 등록</td>
+<td>반자동</td>
+</tr>
+</tbody></table>
+<h3>8.3 고객 컨텍스트 자동 관리</h3>
+<p><strong>컨텍스트란?</strong></p>
+<p>고객 컨텍스트는 특정 고객과의 <strong>모든 상호작용을 AI가 종합·요약한 살아있는 문서</strong>이다. CRM의 정적 필드가 아니라, Slack 대화, 미팅 노트, 음성 녹취, 이메일 등 다양한 소스에서 자동으로 수집되어 지속적으로 갱신된다.</p>
+<p><strong>자동 수집 소스</strong></p>
+<div class="mermaid">
+graph LR
+    S1["Slack 채널"]
+    S2["미팅 노트"]
+    S3["음성 녹취"]
+    S4["이메일"]
+    AI["AI 정제"]
+    CTX["고객 컨텍스트<br/>(Markdown + JSONB)"]
+    Summary["· 최근 활동 10건 요약<br/>· 핵심 합의 사항<br/>· 주요 리스크<br/>· 다음 액션 아이템"]
+    S1 & S2 & S3 & S4 --> AI --> CTX --> Summary
+    style CTX fill:#dbeafe,stroke:#1a56db
+</div>
+
+<p><strong>AI 자동 요약 및 갱신 주기</strong>: 새 정보가 유입될 때마다 AI가 컨텍스트를 갱신하며, 크론 배치로 일 1회 전체 재요약을 수행한다.</p>
+<p><strong>활용 시나리오</strong>:</p>
+<ul>
+<li><strong>미팅 전</strong>: 고객 히스토리 빠른 파악</li>
+<li><strong>주간 리포트</strong>: 고객별 주요 동향 자동 포함</li>
+<li><strong>담당자 핸드오버</strong>: 새 담당자가 즉시 맥락 파악 가능</li>
+</ul>
+<h3>8.4 Reno AI — 미팅 브리핑 생성기</h3>
+<p>Reno AI의 핵심 기능 중 하나로, <strong>미팅 전 자동 브리핑을 생성</strong>한다.</p>
+<p><strong>브리핑 포함 내용</strong>:</p>
+<ol>
+<li><strong>고객 요약</strong>: 기본 정보, 카테고리, 현재 관계 상태</li>
+<li><strong>최근 활동 10건</strong>: 시간순 정리 (미팅, Slack 대화, 거래 등)</li>
+<li><strong>핵심 히스토리</strong>: AI가 추출한 주요 합의/이슈</li>
+<li><strong>제안 주제</strong>: 이번 미팅에서 다뤄야 할 주제 AI 추천</li>
+<li><strong>주의 사항</strong>: 미해결 이슈, 약속된 사항 리마인드</li>
+</ol>
+<p><strong>자동 생성 트리거</strong>: 미팅 24시간 전 크론이 자동으로 브리핑 생성. 담당자에게 Slack DM 또는 푸시 알림으로 통보.</p>
+<p><strong>사용자 편집</strong>: 생성된 브리핑은 AI 초안이며, 담당자가 직접 수정·보완할 수 있다.</p>
+<h3>8.5 Reno AI — 메시지 드래프터</h3>
+<p>미팅 후 팔로업 이메일이나 Slack 메시지의 <strong>초안을 자동 작성</strong>한다.</p>
+<p><strong>톤 선택</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>톤</th>
+<th>용도</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>격식</td>
+<td>신규 고객, 공식 서신</td>
+<td>&quot;귀사와의 협력 가능성에 대해 논의할 수 있어 영광이었습니다.&quot;</td>
+</tr>
+<tr>
+<td>친근</td>
+<td>기존 관계, 내부 소통</td>
+<td>&quot;오늘 미팅 감사합니다! 말씀하신 부분 정리해서 보내드립니다.&quot;</td>
+</tr>
+<tr>
+<td>간결</td>
+<td>빠른 확인, 짧은 메모</td>
+<td>&quot;미팅 내용 정리입니다. 확인 부탁드립니다.&quot;</td>
+</tr>
+</tbody></table>
+<p><strong>미팅 노트 기반</strong>: 미팅 노트에 기록된 합의사항, 액션 아이템을 기반으로 팔로업 메시지를 자동 구성한다.</p>
+<h3>8.6 Reno AI — 딜 헬스 분석기</h3>
+<p>각 고객/거래의 <strong>건강도를 5가지 지표로 점수화</strong>하여, 위험 신호를 조기에 감지한다.</p>
+<p><strong>5가지 건강도 지표</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>지표</th>
+<th>측정 방법</th>
+<th>가중치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Engagement</strong></td>
+<td>최근 30일 상호작용 빈도</td>
+<td>25%</td>
+</tr>
+<tr>
+<td><strong>Timeline</strong></td>
+<td>거래 진행 속도 vs 예상 기간</td>
+<td>20%</td>
+</tr>
+<tr>
+<td><strong>Stage</strong></td>
+<td>현재 거래 단계의 정상 여부</td>
+<td>20%</td>
+</tr>
+<tr>
+<td><strong>Budget</strong></td>
+<td>예산 규모 및 확정 여부</td>
+<td>15%</td>
+</tr>
+<tr>
+<td><strong>Response Rate</strong></td>
+<td>고객 응답 속도 및 빈도</td>
+<td>20%</td>
+</tr>
+</tbody></table>
+<p><strong>등급 체계</strong>:</p>
+<ul>
+<li><strong>Healthy</strong> (70점 이상): 정상 진행</li>
+<li><strong>Warning</strong> (40~69점): 주의 필요 — 담당자에게 알림</li>
+<li><strong>Critical</strong> (40점 미만): 긴급 — Slack DM으로 즉시 알림</li>
+</ul>
+<p><strong>자동 알림</strong>: 매일 오전 9시 크론이 전체 고객 건강도를 점검하고, Critical 등급 고객의 담당자에게 Slack DM을 발송한다.</p>
+<p><strong>대시보드 위젯</strong>: 메인 대시보드에 &quot;위험 거래(Deals at Risk)&quot; 위젯이 표시되어, 한눈에 주의가 필요한 거래를 파악할 수 있다.</p>
+<h3>8.7 주간 리포트 자동 생성</h3>
+<p>경영진을 위한 <strong>주간 리포트를 AI가 자동 생성</strong>하고, WYSIWYG 편집기에서 수정한 뒤 Notion으로 내보내는 워크플로우이다.</p>
+<p><strong>4섹션 구조</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>섹션</th>
+<th>내용</th>
+<th>데이터 소스</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>요약</strong></td>
+<td>금주 주요 성과 및 이슈 요약</td>
+<td>전체 허브</td>
+</tr>
+<tr>
+<td><strong>세일즈</strong></td>
+<td>신규 고객, 거래 진행 현황, 건강도 변화</td>
+<td>SalesHub</td>
+</tr>
+<tr>
+<td><strong>BD</strong></td>
+<td>파트너십 진행, 주요 미팅, 합의 사항</td>
+<td>SalesHub</td>
+</tr>
+<tr>
+<td><strong>대관</strong></td>
+<td>규제 동향, 대관 활동, 정부 접촉</td>
+<td>SalesHub, StrategyHub</td>
+</tr>
+</tbody></table>
+<p>각 섹션은 <strong>전주/금주 2컬럼</strong>으로 비교하여 변화를 직관적으로 파악한다.</p>
+<p><strong>워크플로우</strong>:</p>
+<div class="mermaid">
+graph LR
+    Cron["크론<br/>매주 금요일 15시"] --> AI["AI 초안 생성<br/>(4섹션 병렬, 15-30초)"]
+    AI --> Editor["WYSIWYG 편집기<br/>(TipTap)<br/>담당자가 수정·보완"]
+    Editor --> Export["Notion 자동 내보내기<br/>+ 이메일 배포 (계획)"]
+    style Cron fill:#fef3c7,stroke:#d97706
+    style AI fill:#dbeafe,stroke:#1a56db
+</div>
+
+<p><strong>3개월 누적 추이</strong>: 주간 리포트에 3개월간의 주요 지표 추이를 포함하여 장기 트렌드를 파악한다.</p>
+<h3>8.8 Slack 봇 연동</h3>
+<p>Reno AI는 Slack 앱으로도 동작하여, 영업팀이 Slack 워크스페이스를 떠나지 않고도 AI 기능을 활용할 수 있다.</p>
+<p><strong>@Reno 멘션 응답</strong>: Slack 채널에서 <code>@Reno [질문]</code>으로 고객 정보, 미팅 일정, 거래 현황 등을 즉시 질의.</p>
+<p><strong>채널 모니터링</strong>:</p>
+<ul>
+<li><strong>정형 채널</strong>: <code>[고객명: XXX]</code> 패턴의 채널에서 고객명 자동 추출</li>
+<li><strong>비정형 채널</strong>: AI가 대화 내용을 분석하여 관련 고객/회사명 자동 분류</li>
+</ul>
+<p><strong>슬래시 명령어</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>명령어</th>
+<th>기능</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>/reno memo [내용]</code></td>
+<td>고객 메모 빠른 추가</td>
+</tr>
+<tr>
+<td><code>/reno customer [고객명]</code></td>
+<td>고객 컨텍스트 요약 조회</td>
+</tr>
+<tr>
+<td><code>/reno search [키워드]</code></td>
+<td>전체 고객/거래 검색</td>
+</tr>
+</tbody></table>
+<p><strong>선제적 알림</strong>: 미팅 리마인더, 위험 고객 경고, 주간 리포트 발행 알림을 Slack DM으로 전달.</p>
+<h3>8.9 음성 녹취 및 미팅 노트</h3>
+<p><strong>Fireflies 음성 녹취 연동</strong>: 미팅 녹취가 자동으로 텍스트로 전사되고, AI가 핵심 내용을 요약한다.</p>
+<p><strong>파이프라인</strong>:</p>
+<div class="mermaid">
+graph LR
+    Voice["음성 녹취"] --> Text["텍스트 전사"] --> Summary["AI 요약"] --> Note["미팅 노트<br/>자동 생성"]
+    Note --> Ctx["고객 컨텍스트에 반영"]
+    style Summary fill:#dbeafe,stroke:#1a56db
+</div>
+
+<p><strong>미팅 노트 기능</strong>:</p>
+<ul>
+<li>미팅별 노트 작성/수정 (모바일 반응형)</li>
+<li>음성 업로드 시 제목 자동 생성</li>
+<li>마크다운 렌더링 지원</li>
+<li>팔로업 이메일 생성 버튼 연동 (Reno AI)</li>
+</ul>
+<hr>
+<h2>9. FinHub — 재무/거래 관리</h2>
+<h3>9.1 허브 개요 및 포지셔닝</h3>
+<p>FinHub는 <strong>거래(Deal)의 전체 라이프사이클과 암호자산 거래를 관리</strong>하는 허브이다. 엑셀 기반의 거래 관리에서 벗어나, 체계적인 워크플로우와 Fireblocks 연동을 통해 재무/컴플라이언스 업무의 정확성과 효율을 높인다.</p>
+<p><strong>재무/컴플라이언스 담당자의 업무 흐름</strong>:</p>
+<div class="mermaid">
+graph LR
+    D1["딜 생성<br/>(FinHub에서 딜 등록)"] --> D2["조건 협의<br/>(FinHub에서 조건 기록)"]
+    D2 --> D3["내부 승인<br/>(승인 워크플로우 자동 실행)"]
+    D3 --> D4["Fireblocks 거래 실행<br/>(트랜잭션 모니터링 및 정산 확인)"]
+    style D3 fill:#fef3c7,stroke:#d97706
+</div>
+
+<h3>9.2 딜(Deal) 라이프사이클 관리</h3>
+<p><strong>딜 코드 체계</strong></p>
+<p>각 거래는 고유한 코드로 식별된다:</p>
+<div class="mermaid">
+graph LR
+    Code["LCH_2025E01A_USDT_1"]
+    P1["LCH → 고객/상대방 코드"]
+    P2["2025E01A → 거래 식별자"]
+    P3["USDT → 거래 자산"]
+    P4["1 → 순번"]
+    Code --- P1
+    Code --- P2
+    Code --- P3
+    Code --- P4
+    style Code fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<p><strong>딜 상태 워크플로우</strong>:</p>
+<div class="mermaid">
+graph LR
+    Draft --> InProgress["In Progress"] --> Completed --> Settled
+    Draft -.->|취소| X1["취소"]
+    InProgress -.->|보류| X2["보류"]
+    Completed -.->|분쟁| X3["분쟁 처리"]
+    style Draft fill:#e8edfa,stroke:#1a56db
+    style Settled fill:#d1fae5,stroke:#059669
+</div>
+
+<p><strong>딜 유형별 관리</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th>설명</th>
+<th>특성</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Earn</strong></td>
+<td>이자 수익 상품</td>
+<td>기간 고정, 이자율 명시</td>
+</tr>
+<tr>
+<td><strong>Booster Range</strong></td>
+<td>범위 기반 수익 상품</td>
+<td>상한/하한 가격 설정</td>
+</tr>
+<tr>
+<td><strong>Riskless BTC</strong></td>
+<td>무위험 BTC 상품</td>
+<td>원금 보장 구조</td>
+</tr>
+</tbody></table>
+<p><strong>딜 상세 화면</strong>: 딜 코드, 상태, 유형, 관련 자산, 금액, 기간, 상대방 정보, 승인 이력, 관련 트랜잭션을 한 화면에서 확인한다.</p>
+<h3>9.3 암호자산 거래 — Fireblocks 연동</h3>
+<p>Fireblocks는 기관급 디지털자산 관리 플랫폼으로, FinHub와 연동하여 안전한 암호자산 거래를 지원한다.</p>
+<p><strong>연동 구조</strong>:</p>
+<div class="mermaid">
+graph LR
+    FH["FinHub<br/>(딜 관리)"] --> FB["Fireblocks API"] --> BC["블록체인"]
+    FB --> Vault["Vault (금고)<br/>Wallet A · Wallet B"]
+    FH --> Monitor["트랜잭션 상태<br/>모니터링"]
+    style FB fill:#fef3c7,stroke:#d97706
+    style Vault fill:#e8edfa,stroke:#1a56db
+</div>
+
+<p><strong>지갑(Wallet) 관리</strong>: 자산별 지갑 생성/조회, 잔고 확인, 입출금 이력</p>
+<p><strong>트랜잭션 흐름</strong>: 생성 → 내부 승인 → Fireblocks 서명 → 블록체인 전파 → 확인</p>
+<p><strong>자산 유형별 관리</strong>: USDT, USDC, BTC, ETH 등 주요 암호자산 지원</p>
+<h3>9.4 CSV 대량 임포트</h3>
+<p>기존 엑셀/CSV로 관리하던 거래 데이터를 FinHub으로 대량 이관하는 기능이다.</p>
+<p><strong>워크플로우</strong>:</p>
+<div class="mermaid">
+graph LR
+    Upload["CSV 업로드"] --> Preview["미리보기<br/>(샘플 5행 표시)"]
+    Preview --> Map["필드 매핑<br/>(컬럼 매칭, 자동 추천)"]
+    Map --> Validate["검증<br/>(오류 표시, 행별 오류 이유)"]
+    Validate --> Import["확정 임포트"]
+    style Validate fill:#fef3c7,stroke:#d97706
+</div>
+
+<p><strong>지원 데이터</strong>: 고객 정보, 거래 내역, 자산 정보</p>
+<p><strong>오류 처리</strong>: 행별 오류를 표시하며, 전체 롤백 또는 오류 행만 제외하고 임포트하는 옵션을 제공한다.</p>
+<h3>9.5 거래 승인 워크플로우</h3>
+<p>거래의 내부 승인을 체계적으로 관리하는 워크플로우이다.</p>
+<p><strong>승인 단계</strong>:</p>
+<div class="mermaid">
+graph LR
+    Req["담당자 요청"] --> Review["팀장 검토"] --> Approve["본부장 승인"] --> Exec["실행"]
+    Review -.->|반려| Rej1["반려"]
+    Approve -.->|반려| Rej2["반려 (사유 기록)"]
+    style Approve fill:#d1fae5,stroke:#059669
+    style Rej1 fill:#fee2e2,stroke:#dc2626
+    style Rej2 fill:#fee2e2,stroke:#dc2626
+</div>
+
+<p><strong>감사 로그</strong>: 모든 승인/반려 이력이 자동 기록되며, 언제든 감사 추적이 가능하다.</p>
+<h3>9.6 대시보드 및 리포팅</h3>
+<p><strong>거래 현황 대시보드</strong>:</p>
+<ul>
+<li>상태별 (Draft/In Progress/Completed/Settled) 건수 및 금액</li>
+<li>유형별 (Earn/Booster Range/Riskless BTC) 분포</li>
+<li>자산별 (USDT/BTC/ETH) 포지션</li>
+</ul>
+<p><strong>엔티티(Entity) 관리</strong>: 거래 상대방의 법인 정보, 연락처, 거래 이력을 관리한다.</p>
+<p><strong>재무 리포트</strong>: 기간별 거래 요약, 자산 포지션 변화, 수익률 분석을 자동 생성한다.</p>
+<h3>9.7 AI 기반 거래 분석</h3>
+<p>AI가 거래 패턴을 분석하여 이상 징후를 감지하고 위험을 평가한다.</p>
+<p><strong>이상 거래 패턴 감지</strong>:</p>
+<ul>
+<li>평소와 다른 거래 규모</li>
+<li>비정상적인 거래 빈도 변화</li>
+<li>새로운 상대방과의 대규모 거래</li>
+</ul>
+<p><strong>위험도 자동 평가</strong>: 거래 특성에 따라 Low/Medium/High 위험 등급을 자동 부여한다.</p>
+<p><strong>컴플라이언스 자동 점검</strong>: AML 규정에 따른 자동 체크리스트 검증을 수행한다.</p>
+<hr>
+<h2>10. OnboardingHub — 고객 온보딩</h2>
+<h3>10.1 허브 개요 및 포지셔닝</h3>
+<p>OnboardingHub는 <strong>신규 고객 온보딩의 전 과정을 디지털화</strong>한 허브이다. 종이 서류 기반의 KYC/AML 프로세스를 OCR 자동 인식과 듀얼 승인 워크플로우로 전환하여, 정확성을 높이고 처리 시간을 단축한다.</p>
+<p><strong>역할 분담</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>역할</th>
+<th>담당 업무</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>운영팀</strong></td>
+<td>서류 수집, 초기 검토, 고객 소통</td>
+</tr>
+<tr>
+<td><strong>AML팀</strong></td>
+<td>자금세탁 위험 평가, AML 심사</td>
+</tr>
+<tr>
+<td><strong>준법감시인</strong></td>
+<td>최종 듀얼 승인 (승인자 1)</td>
+</tr>
+<tr>
+<td><strong>비즈니스본부장</strong></td>
+<td>최종 듀얼 승인 (승인자 2)</td>
+</tr>
+</tbody></table>
+<h3>10.2 온보딩 프로세스 전체 흐름</h3>
+<p><strong>고객 유형별 온보딩 경로</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>유형</th>
+<th>필요 서류</th>
+<th>예상 소요</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>개인</strong></td>
+<td>신분증, 주소 증명</td>
+<td>2-3일</td>
+</tr>
+<tr>
+<td><strong>법인</strong></td>
+<td>사업자등록증, 법인등기부, 대표 신분증, 주주명부</td>
+<td>5-7일</td>
+</tr>
+<tr>
+<td><strong>기관</strong></td>
+<td>법인 서류 + 투자 정책서, 이사회 결의서</td>
+<td>7-14일</td>
+</tr>
+</tbody></table>
+<p><strong>전체 프로세스 다이어그램</strong>:</p>
+<div class="mermaid">
+graph TB
+    C["고객"] --> Link["업로드 링크"] --> Submit["서류 제출"] --> OCR["OCR 자동 인식"]
+    OCR --> Ops["운영팀 초기 검토"]
+    Ops --> AML["AML팀 위험 평가"]
+    AML --> Dual["듀얼 승인<br/>(준법감시인 + 본부장)"]
+    Dual --> Done["온보딩 완료<br/>고객 활성화"]
+    style OCR fill:#dbeafe,stroke:#1a56db
+    style Dual fill:#fef3c7,stroke:#d97706
+    style Done fill:#d1fae5,stroke:#059669
+</div>
+
+<h3>10.3 6단계 서류 검토 워크플로우</h3>
+<p>OnboardingHub의 핵심은 서류 검토를 <strong>6단계로 체계화</strong>한 워크플로우이다.</p>
+<div class="mermaid">
+graph LR
+    D["1. Draft"] --> OC["2. Ops Confirmed"] --> AR["3. AML Reviewing"] --> AC["4. AML Completed"]
+    AC --> FC["5. Final Confirmed"] --> AP["6. Approved"]
+    style D fill:#e8edfa,stroke:#1a56db
+    style AP fill:#d1fae5,stroke:#059669
+</div>
+
+<table>
+<thead>
+<tr>
+<th>단계</th>
+<th>명칭</th>
+<th>담당자</th>
+<th>행위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Draft</strong></td>
+<td>시스템</td>
+<td>서류 제출 시 자동 생성</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Ops Confirmed</strong></td>
+<td>운영팀</td>
+<td>서류 완전성 확인, OCR 결과 검증</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>AML Reviewing</strong></td>
+<td>AML팀</td>
+<td>자금세탁 위험 평가 시작</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>AML Completed</strong></td>
+<td>AML팀</td>
+<td>AML 심사 완료, 위험 등급 부여</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Final Confirmed</strong></td>
+<td>운영팀/AML팀</td>
+<td>최종 확인, 듀얼 승인 요청 생성</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Approved</strong></td>
+<td>준법감시인+본부장</td>
+<td>듀얼 승인 완료, 온보딩 확정</td>
+</tr>
+</tbody></table>
+<p><strong>반려 처리</strong>: 각 단계에서 반려(Rejection)할 수 있으며, 반려 사유가 기록된다. 고객에게 재제출 요청이 전달되고, 재제출 시 해당 단계부터 재시작한다.</p>
+<h3>10.4 GCP Vision OCR 자동 인식</h3>
+<p>Google Cloud Vision API를 활용하여 한국어 서류를 자동으로 인식하고 핵심 필드를 추출한다.</p>
+<p><strong>지원 서류 유형</strong>:</p>
+<ul>
+<li>신분증 (주민등록증, 운전면허증, 여권)</li>
+<li>사업자등록증</li>
+<li>법인등기부등본</li>
+<li>주주명부</li>
+<li>재무제표</li>
+</ul>
+<p><strong>자동 인식 필드</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>서류</th>
+<th>추출 필드</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>신분증</td>
+<td>성명, 생년월일, 주소</td>
+</tr>
+<tr>
+<td>사업자등록증</td>
+<td>법인명, 사업자등록번호, 대표자명, 주소, 업종</td>
+</tr>
+<tr>
+<td>법인등기부</td>
+<td>법인명, 등기번호, 설립일, 대표이사, 본점 소재지</td>
+</tr>
+</tbody></table>
+<p><strong>신뢰도 스코어</strong>: 각 추출 필드에 신뢰도 스코어를 부여하며, 기준 미달(예: 70% 미만) 시 수동 검증 트리거가 활성화된다.</p>
+<p><strong>한국어 특화</strong>: 한국어 서류의 고유한 레이아웃과 표현을 학습한 패턴 인식 로직이 적용되어 있다.</p>
+<h3>10.5 듀얼 승인 프로세스</h3>
+<p>금융 규제 요건을 충족하기 위해 <strong>두 명의 승인자가 모두 승인해야</strong> 온보딩이 완료되는 구조이다.</p>
+<p><strong>승인자</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>승인자</th>
+<th>역할</th>
+<th>검토 관점</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>준법감시인</strong> (Compliance Officer)</td>
+<td>규제 적합성 확인</td>
+<td>KYC/AML 요건 충족 여부</td>
+</tr>
+<tr>
+<td><strong>비즈니스본부장</strong> (Business Head)</td>
+<td>비즈니스 적합성 확인</td>
+<td>고객 적합성, 리스크 수용 여부</td>
+</tr>
+</tbody></table>
+<p><strong>흐름</strong>:</p>
+<div class="mermaid">
+graph TB
+    Final["최종 확인 (5단계)"] --> Req["듀얼 승인 요청<br/>자동 생성"]
+    Req --> CO["준법감시인 승인"]
+    Req --> BH["비즈니스본부장 승인"]
+    CO & BH --> Done["양측 모두 승인 시<br/>온보딩 완료 (6단계)"]
+    style Done fill:#d1fae5,stroke:#059669
+    style Req fill:#fef3c7,stroke:#d97706
+</div>
+
+<p><strong>승인 기한</strong>: 승인 요청 후 3영업일 이내 미처리 시 에스컬레이션 알림이 발송된다.</p>
+<h3>10.6 KYC/AML 컴플라이언스</h3>
+<p><strong>KYC 체크리스트</strong>:</p>
+<ul>
+<li><input disabled="" type="checkbox"> 고객확인(CDD): 신원 확인, 실소유자 확인</li>
+<li><input disabled="" type="checkbox"> 강화 고객확인(EDD): 고위험 고객 대상 추가 조사</li>
+<li><input disabled="" type="checkbox"> PEP 검사: 정치적 주요인물 해당 여부</li>
+<li><input disabled="" type="checkbox"> 제재 리스트 대조: 국내외 제재 대상 여부</li>
+</ul>
+<p><strong>AML 위험 등급</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>등급</th>
+<th>기준</th>
+<th>조치</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Low</strong></td>
+<td>일반 개인, 소액 거래</td>
+<td>기본 CDD</td>
+</tr>
+<tr>
+<td><strong>Medium</strong></td>
+<td>법인, 중규모 거래</td>
+<td>강화 CDD</td>
+</tr>
+<tr>
+<td><strong>High</strong></td>
+<td>고위험 국적, 대규모 거래, PEP</td>
+<td>EDD + 지속 모니터링</td>
+</tr>
+</tbody></table>
+<p><strong>정기 재검토(Re-KYC)</strong>: 위험 등급에 따라 1년(High) / 2년(Medium) / 3년(Low) 주기로 재검토를 실시한다.</p>
+<h3>10.7 고객 포털</h3>
+<p>고객이 <strong>로그인 없이 서류를 제출</strong>할 수 있는 토큰 기반 업로드 시스템이다.</p>
+<p><strong>워크플로우</strong>:</p>
+<div class="mermaid">
+graph TB
+    Create["운영팀이 업로드 링크 생성"] --> Send["고객에게 링크 전달<br/>(이메일/메신저)"]
+    Send --> Access["고객이 링크 접속<br/>(로그인 불필요)"]
+    Access --> Upload["서류 드래그&드롭 업로드"]
+    Upload --> Notify["운영팀에 알림 → 검토 시작"]
+    style Access fill:#d1fae5,stroke:#059669
+</div>
+
+<p><strong>보안</strong>: 각 업로드 링크는 고유 토큰으로 보호되며, 유효기간(기본 7일)이 지나면 자동 만료된다.</p>
+<p><strong>진행 상태 조회</strong>: 고객은 동일 링크에서 자신의 온보딩 진행 상태를 확인할 수 있다.</p>
+<h3>10.8 감사 로그 및 보고</h3>
+<p><strong>감사 추적(Audit Trail)</strong>: 온보딩 프로세스의 모든 작업 — 서류 업로드, 상태 변경, 승인/반려, 코멘트 — 이 <code>ReviewAuditLog</code>에 자동 기록된다. 누가, 언제, 무엇을 했는지 완전한 이력을 보존한다.</p>
+<p><strong>규제 보고용 데이터 추출</strong>: 감독기관 요청 시 특정 고객의 온보딩 전체 이력을 즉시 추출하여 제공할 수 있다.</p>
+<p><strong>온보딩 통계 대시보드</strong>:</p>
+<ul>
+<li>진행 중 / 완료 / 반려 건수</li>
+<li>평균 처리 시간 (단계별)</li>
+<li>병목 단계 분석</li>
+</ul>
+<hr>
+<h2>11. StrategyHub — 전략 문서 + Context Pool</h2>
+<h3>11.1 허브 개요 및 포지셔닝</h3>
+<p>StrategyHub는 <strong>전략 문서 생성·협업 리뷰·산업/규제 정보 수집</strong>을 담당하는 허브이다. Collector 에이전트가 외부 정보를 자동 수집하고, AI 기반 문서 편집 환경에서 전략 문서를 생성·리뷰한다.</p>
+<p><strong>핵심 가치: &quot;흩어진 정보를 조직의 지식으로 전환&quot;</strong></p>
+<div class="mermaid">
+graph TB
+    subgraph STH["StrategyHub"]
+        Collector["Collector<br/>정보수집"]
+        DocAI["문서생성<br/>AI 협업"]
+        Collector & DocAI --> CP[("Context Pool<br/>(전사 지식 저수지)")]
+    end
+    CP --> Hubs["각 허브로 전달<br/>(산업 동향, 규제)"]
+    CP --> Exec["경영진 리뷰<br/>(전략 문서)"]
+    style STH fill:#f0f4ff,stroke:#1a56db
+    style CP fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<p><strong>다른 허브와의 관계</strong>:</p>
+<ul>
+<li><strong>SalesHub → StrategyHub</strong>: 고객 동향, 영업 인사이트가 전략 분석의 원재료</li>
+<li><strong>FinHub → StrategyHub</strong>: 거래 패턴, 시장 데이터가 재무 분석의 기반</li>
+<li><strong>OnboardingHub → StrategyHub</strong>: 고객 유형별 온보딩 트렌드가 사업 전략 수립에 활용</li>
+<li><strong>StrategyHub → 각 허브</strong>: 산업 동향, 규제 변화, 전략 문서가 현업 의사결정을 지원</li>
+</ul>
+<h3>11.2 Context Pool로서의 역할</h3>
+<p>각 허브가 업무 도메인별 데이터를 다루는 것과 마찬가지로, StrategyHub는 <strong>산업 동향·규제 정보·전략 문서</strong> 도메인을 담당한다. 동시에 허브간 공유가 필요한 전사적 지식을 Context Pool에 축적하여 다른 허브에서도 활용할 수 있게 한다.</p>
+<p><strong>정보의 흐름</strong>:</p>
+<div class="mermaid">
+graph TB
+    subgraph External["외부 정보"]
+        E1["규제 기관 발표"]
+        E2["산업 뉴스"]
+        E3["경쟁사 동향"]
+        E4["시장 리포트"]
+        E5["파트너사 소식"]
+    end
+    subgraph Internal["내부 정보"]
+        I1["SalesHub (고객 동향)"]
+        I2["FinHub (거래 패턴)"]
+        I3["OnboardingHub (온보딩 트렌드)"]
+        I4["미팅 녹취 요약"]
+    end
+    CP[("Context<br/>Pool")]
+    E1 & E2 & E3 & E4 & E5 --> CP
+    I1 & I2 & I3 & I4 --> CP
+    subgraph Output["전략적 산출물"]
+        O1["시장 분석 보고서"]
+        O2["전략 제안서"]
+        O3["규제 대응 문서"]
+        O4["경영진 브리핑"]
+    end
+    CP --> O1 & O2 & O3 & O4
+    style CP fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<p><strong>선순환 구조</strong>: Context Pool에 축적된 지식이 풍부할수록 AI 에이전트의 문서 생성 품질이 높아지고, 높은 품질의 문서는 더 많은 리뷰와 피드백을 유발하며, 이 피드백이 다시 Context Pool을 풍부하게 한다.</p>
+<h3>11.3 자동 정보 수집 에이전트 (Collector)</h3>
+<p>Collector는 외부 정보를 <strong>자동으로 수집·분류·저장</strong>하는 백그라운드 에이전트이다.</p>
+<p><strong>3가지 수집 플러그인</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>플러그인</th>
+<th>소스 유형</th>
+<th>수집 방법</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>RSS</strong></td>
+<td>뉴스, 블로그</td>
+<td>RSS 피드 파싱</td>
+</tr>
+<tr>
+<td><strong>Web Scrape</strong></td>
+<td>정부 사이트, 업계 포털</td>
+<td>HTML 크롤링</td>
+</tr>
+<tr>
+<td><strong>PDF Report</strong></td>
+<td>정책 문서, 리서치 리포트</td>
+<td>PDF 다운로드 + 텍스트 추출</td>
+</tr>
+</tbody></table>
+<p><strong>수집 카테고리</strong>:</p>
+<ul>
+<li><strong>Regulatory</strong> (규제): 금융위원회, 금감원, 국제 규제 기관 발표</li>
+<li><strong>Industry</strong> (산업): 디지털자산 시장 동향, 경쟁사 소식, 파트너 동향</li>
+</ul>
+<p><strong>자동 스케줄링</strong>: 매시간 자동 실행. 중복 제거 로직으로 동일 기사의 재수집을 방지하며, 수집 실패 시 3회 재시도(5초, 10초 백오프).</p>
+<p><strong>수집 관리 UI</strong>: 소스 등록/수정/비활성화, 수집 현황 대시보드, 실행 로그 조회.</p>
+<p><strong>향후 확장 계획</strong>:</p>
+<ul>
+<li>Notion 워크스페이스 데이터 수집</li>
+<li>Slack 채널 아카이브 연동</li>
+<li>이메일 수신함 자동 수집</li>
+</ul>
+<h3>11.4 AI 기반 문서 생성 워크플로우</h3>
+<p>StrategyHub에서 생성하는 문서는 <strong>6가지 유형</strong>으로 체계화되어 있다.</p>
+<table>
+<thead>
+<tr>
+<th>코드</th>
+<th>유형</th>
+<th>설명</th>
+<th>예시</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>RPT</strong></td>
+<td>보고서</td>
+<td>시장 분석, 데이터 보고</td>
+<td>&quot;2026 디지털자산 수탁시장 동향&quot;</td>
+</tr>
+<tr>
+<td><strong>PRP</strong></td>
+<td>제안서</td>
+<td>전략, 파일럿, 협의 건의</td>
+<td>&quot;코빗-웨이브릿지 LP 파일럿 테스트 승인 요청&quot;</td>
+</tr>
+<tr>
+<td><strong>ANL</strong></td>
+<td>분석</td>
+<td>깊이 있는 주제 분석</td>
+<td>&quot;전사 AWS 인프라 비용 분석&quot;</td>
+</tr>
+<tr>
+<td><strong>MTG</strong></td>
+<td>회의록</td>
+<td>미팅 내용 정리</td>
+<td>&quot;이사회 회의록&quot;</td>
+</tr>
+<tr>
+<td><strong>REG</strong></td>
+<td>규제 문서</td>
+<td>규제 대응 자료</td>
+<td>&quot;디지털자산기본법 대응 방안&quot;</td>
+</tr>
+<tr>
+<td><strong>DSH</strong></td>
+<td>대시보드</td>
+<td>시각화/대시보드</td>
+<td>&quot;월간 KPI 대시보드&quot;</td>
+</tr>
+</tbody></table>
+<p><strong>프로젝트 코드 체계</strong>: <code>{유형}-{YYYYMMDD}-{키워드}</code></p>
+<ul>
+<li>예: <code>RPT-20260227-da-custody-market</code></li>
+<li>예: <code>PRP-20260304-lp-pilot-test</code></li>
+</ul>
+<p><strong>이해관계자별 톤/스타일 가이드</strong>:</p>
+<table>
+<thead>
+<tr>
+<th>대상</th>
+<th>톤</th>
+<th>특징</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>경영진 (대표, CFO)</td>
+<td>간결, 의사결정 중심</td>
+<td>핵심 수치와 결론 우선, 배경 최소화</td>
+</tr>
+<tr>
+<td>규제기관 (금융위, 금감원)</td>
+<td>격식, 규제 용어 정확</td>
+<td>법적 요건 명시, 근거 자료 첨부</td>
+</tr>
+<tr>
+<td>투자자 (VC, PE)</td>
+<td>성장 잠재력 강조</td>
+<td>시장 기회, 경쟁 우위, 재무 전망</td>
+</tr>
+<tr>
+<td>파트너사</td>
+<td>상호 이익 강조</td>
+<td>협력 시너지, 구체적 제안</td>
+</tr>
+</tbody></table>
+<p><strong>용어집 기반 일관성</strong>: &quot;디지털자산&quot; vs &quot;가상자산&quot;, &quot;수탁&quot; vs &quot;커스터디&quot; 등 혼용되기 쉬운 용어를 통합 용어집으로 관리하여 문서 전체의 일관성을 유지한다.</p>
+<h3>11.5 협업 리뷰 및 AI 자동 반영</h3>
+<p>StrategyHub의 가장 혁신적인 기능은 <strong>리뷰어의 피드백을 AI가 자동으로 문서에 반영</strong>하여 새 버전을 생성하는 워크플로우이다.</p>
+<p><strong>블록 단위 인라인 코멘트</strong>:</p>
+<p>문서를 논리적 블록(단락, 표, 코드 블록 등)으로 나누어, 각 블록에 대해 개별적으로 코멘트를 달 수 있다. &quot;이 부분의 수치를 업데이트해주세요&quot;, &quot;톤을 좀 더 격식체로&quot;, &quot;출처를 추가해주세요&quot; 등의 구체적 피드백이 가능하다.</p>
+<p><strong>AI 자동 반영 워크플로우</strong>:</p>
+<div class="mermaid">
+graph TB
+    Comment["리뷰어가 블록별 코멘트 작성"]
+    Click["작성자가 'AI 리뷰 반영' 클릭"]
+    Select["반영할 코멘트 선택 (기본: 전체)<br/>+ 추가 지시사항 입력 (선택)"]
+    Claude["Claude API가 코멘트를<br/>문서에 반영"]
+    Version["새 버전 자동 생성<br/>(v1.0 → v1.1)"]
+    Result["· 반영된 코멘트 자동 '해결' 표시<br/>· AI 반영 요약 기록<br/>· Diff 뷰어로 변경사항 확인"]
+    Comment --> Click --> Select --> Claude --> Version --> Result
+    style Claude fill:#dbeafe,stroke:#1a56db
+    style Version fill:#d1fae5,stroke:#059669
+</div>
+
+<p><strong>버전 관리</strong>:</p>
+<ul>
+<li>Minor 버전 (v1.0 → v1.1): AI 반영 또는 소규모 수정</li>
+<li>Major 버전 (v1.x → v2.0): 구조적 변경, 수동 지정</li>
+</ul>
+<p><strong>리뷰 워크플로우</strong>: Draft → Review → Published</p>
+<ul>
+<li><strong>Draft</strong>: 작성자만 수정 가능</li>
+<li><strong>Review</strong>: 리뷰어가 코멘트 작성, AI 반영 반복</li>
+<li><strong>Published</strong>: Admin 승인 후 최종 공개</li>
+</ul>
+<h3>11.6 문서 뷰어 및 배포</h3>
+<p><strong>마크다운 기반 고품질 렌더링</strong>: 테이블, 코드 블록, 이미지, 인용문 등을 깔끔하게 렌더링하며, 자동 목차(TOC) 생성과 섹션 네비게이션을 지원한다.</p>
+<p><strong>Published 문서 열람</strong>: 역할 기반 접근 제어로, 권한에 따라 열람 가능한 문서가 결정된다.</p>
+<p><strong>향후 배포 채널</strong>:</p>
+<ul>
+<li>Notion 자동 내보내기</li>
+<li>PDF 변환 및 다운로드</li>
+<li>이메일 배포</li>
+</ul>
+<h3>11.7 규제/컴플라이언스 문서 관리</h3>
+<p>금융업의 핵심 리스크인 <strong>규제 변화에 체계적으로 대응</strong>하기 위한 전용 기능이다.</p>
+<p><strong>규제 정보 중앙화</strong>: 디지털자산기본법, 특금법, 각종 금융위/금감원 가이드라인을 StrategyHub에서 중앙 관리한다.</p>
+<p><strong>컴플라이언스 체크리스트</strong>: 문서 작성 시 자동으로 관련 규제 체크리스트를 검증하여, 규제 리스크를 사전에 방지한다.</p>
+<p><strong>규제 변화 모니터링</strong>: Collector가 규제 기관 RSS/웹사이트를 매시간 모니터링하여 새로운 규제 발표를 자동 수집한다.</p>
+<p><strong>규제기관 대응 문서 템플릿</strong>: 금융위원회, 금감원 등에 제출하는 문서의 표준 템플릿을 제공하여 대응 속도를 높인다.</p>
+<hr>
+<h1>Part 4. 사용자 경험</h1>
+<hr>
+<h2>12. 역할별 워크플로우</h2>
+<h3>대표/CFO</h3>
+<div class="mermaid">
+graph LR
+    Mon["월요일 아침<br/>주간 리포트<br/>Slack DM 수신"] --> Summary["요약 섹션 확인<br/>(2분)"]
+    Summary --> Detail["세일즈/BD/대관<br/>상세 확인"]
+    Detail --> Review["StrategyHub에서<br/>주요 문서 리뷰"]
+    Review --> Feedback["블록 코멘트로 피드백<br/>AI가 자동 반영"]
+    style Mon fill:#fef3c7,stroke:#d97706
+</div>
+
+<h3>세일즈 매니저</h3>
+<div class="mermaid">
+graph TB
+    subgraph Before["미팅 전"]
+        B1["Reno 미팅 브리핑 수신"] --> B2["고객 컨텍스트 확인"] --> B3["미팅 진행"]
+    end
+    subgraph After["미팅 후"]
+        A1["음성 녹취 자동 전사"] --> A2["미팅 요약 자동 생성"] --> A3["팔로업 메일 초안"]
+    end
+    subgraph Daily["일상"]
+        D1["Slack에서 @Reno 질의"] --> D2["건강도 알림 확인"] --> D3["위험 고객 대응"]
+    end
+    style Before fill:#d1fae5,stroke:#059669
+    style After fill:#dbeafe,stroke:#1a56db
+    style Daily fill:#fef3c7,stroke:#d97706
+</div>
+
+<h3>BD 매니저</h3>
+<div class="mermaid">
+graph TB
+    Track["파트너십 추적"] --> Monitor["딜 건강도 모니터링"] --> Alert["위험 신호 Slack 알림"]
+    Alert --> Analyze["고객 컨텍스트에서<br/>원인 분석"]
+    Analyze --> Strategy["대응 전략 수립"]
+    style Alert fill:#fee2e2,stroke:#dc2626
+</div>
+
+<h3>전략기획/사업기획</h3>
+<div class="mermaid">
+graph TB
+    Collect["StrategyHub Collector<br/>산업/규제 동향 자동 수집"] --> Bookmark["북마크 및 분류"]
+    Bookmark --> Write["AI와 문서 공동 작성<br/>(보고서, 제안서, 분석)"]
+    Write --> Review["리뷰어 피드백 수집"]
+    Review --> Publish["AI 자동 반영 → 최종 Published"]
+    style Collect fill:#dbeafe,stroke:#1a56db
+    style Publish fill:#d1fae5,stroke:#059669
+</div>
+
+<h3>재무 담당자</h3>
+<div class="mermaid">
+graph LR
+    Reg["딜 등록"] --> Cond["조건 기록"] --> Approve["승인 요청"] --> Exec["Fireblocks<br/>거래 실행"]
+    Exec --> Monitor["트랜잭션<br/>모니터링"]
+    Monitor --> Settle["정산 확인 +<br/>리포트 생성"]
+    style Exec fill:#fef3c7,stroke:#d97706
+</div>
+
+<h3>컴플라이언스 담당자</h3>
+<div class="mermaid">
+graph TB
+    OCR["OnboardingHub<br/>서류 OCR 결과 확인"] --> KYC["KYC 체크리스트 검증"]
+    KYC --> AML["AML 위험 등급 평가"]
+    AML --> Dual["듀얼 승인 처리"]
+    Dual --> Audit["감사 로그 확인 +<br/>규제 보고"]
+    style AML fill:#fef3c7,stroke:#d97706
+</div>
+
+<hr>
+<h2>13. PC &amp; 모바일 애플리케이션</h2>
+<h3>웹 앱 (Next.js PWA)</h3>
+<p>워크허브의 메인 인터페이스로, 모든 기능을 완전하게 지원한다.</p>
+<ul>
+<li><strong>기술</strong>: Next.js 15, React 19, Tailwind CSS</li>
+<li><strong>빌드 방식</strong>: Static Export (정적 내보내기) — 빠른 로딩</li>
+<li><strong>PWA 지원</strong>: 오프라인 캐싱, 홈 화면 추가, 푸시 알림</li>
+</ul>
+<h3>Android TWA (Google Play)</h3>
+<p>웹 앱을 네이티브 앱처럼 포장하는 Trusted Web Activity(TWA) 방식으로 Google Play에 배포한다.</p>
+<ul>
+<li><strong>기술</strong>: Bubblewrap CLI (Google 공식 도구)</li>
+<li><strong>특징</strong>: 네이티브 앱과 동일한 사용자 경험, URL 바 숨김</li>
+<li><strong>푸시 알림</strong>: Firebase Cloud Messaging</li>
+<li><strong>아이콘</strong>: Adaptive Icon (Android 8.0+)</li>
+<li><strong>배포 트랙</strong>: Closed Testing → Public</li>
+</ul>
+<h3>iOS 대응 계획</h3>
+<p>현재는 PWA로 iOS 사용자를 지원하며, 사용량 추이에 따라 네이티브 또는 React Native 앱 개발을 검토한다.</p>
+<h3>반응형 디자인 원칙</h3>
+<ul>
+<li><strong>모바일 우선</strong>: 핵심 정보를 작은 화면에서도 즉시 확인 가능하도록 설계</li>
+<li><strong>터치 최적화</strong>: 충분한 터치 타겟 크기, 스와이프 제스처 지원</li>
+<li><strong>컨텍스트 적응</strong>: 디바이스에 따라 레이아웃 자동 조정 (사이드바 → 하단 메뉴)</li>
+</ul>
+<hr>
+<h2>14. 외부 툴 연동</h2>
+<h3>Slack</h3>
+<p>워크허브에서 가장 깊이 연동된 외부 툴이다.</p>
+<table>
+<thead>
+<tr>
+<th>기능</th>
+<th>설명</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Reno 봇</strong></td>
+<td>@Reno 멘션으로 고객 정보 질의, 슬래시 명령어</td>
+</tr>
+<tr>
+<td><strong>채널 모니터링</strong></td>
+<td>정형/비정형 채널에서 고객 관련 대화 자동 추출</td>
+</tr>
+<tr>
+<td><strong>알림</strong></td>
+<td>미팅 브리핑, 위험 알림, 리포트 발행 알림</td>
+</tr>
+<tr>
+<td><strong>Context Pool 입력</strong></td>
+<td>Slack 대화가 자동으로 고객 컨텍스트에 반영</td>
+</tr>
+</tbody></table>
+<h3>Telegram (계획)</h3>
+<p>Slack을 사용하지 않는 외부 이해관계자나 모바일 중심 사용자를 위한 <strong>경량 인터페이스</strong>를 제공할 예정이다.</p>
+<ul>
+<li>핵심 알림 수신</li>
+<li>간단한 AI 질의</li>
+<li>승인 요청 처리</li>
+</ul>
+<h3>Notion</h3>
+<p>문서와 리포트의 <strong>자동 내보내기 채널</strong>로 활용한다.</p>
+<ul>
+<li>주간 리포트 → Notion 페이지 자동 생성</li>
+<li>StrategyHub Published 문서 → Notion 동기화</li>
+<li>위험평가 보고서 → Notion 자동 업로드</li>
+</ul>
+<h3>이메일/캘린더</h3>
+<ul>
+<li><strong>이메일</strong>: 주간 리포트 배포, 온보딩 업로드 링크 발송</li>
+<li><strong>캘린더</strong>: 미팅 일정 연동으로 Reno 브리핑 자동 트리거</li>
+</ul>
+<hr>
+<h1>Part 5. AI 활용 전략</h1>
+<hr>
+<h2>15. AI 에이전트 체계</h2>
+<h3>허브별 전문 에이전트</h3>
+<table>
+<thead>
+<tr>
+<th>에이전트</th>
+<th>소속</th>
+<th>주요 기능</th>
+<th>사용 LLM</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Reno</strong></td>
+<td>SalesHub</td>
+<td>고객 분석, 미팅 준비, 메시지 작성, 딜 헬스, 주간 리포트</td>
+<td>Claude (주)</td>
+</tr>
+<tr>
+<td><strong>문서 편집 AI</strong></td>
+<td>StrategyHub</td>
+<td>리뷰 반영, 톤 조정, 품질 검증, 문서 초안 생성</td>
+<td>Claude</td>
+</tr>
+<tr>
+<td><strong>위험평가 AI</strong></td>
+<td>HubManager</td>
+<td>가상자산 위험 설명서 자동 생성</td>
+<td>Claude</td>
+</tr>
+<tr>
+<td><strong>OCR AI</strong></td>
+<td>OnboardingHub</td>
+<td>서류 자동 인식, 필드 추출, 신뢰도 평가</td>
+<td>GCP Vision</td>
+</tr>
+<tr>
+<td><strong>거래 분석 AI</strong></td>
+<td>FinHub</td>
+<td>이상 거래 감지, 위험도 평가</td>
+<td>Claude</td>
+</tr>
+</tbody></table>
+<h3>내부용 vs 외부용 페르소나 전략</h3>
+<p>동일한 에이전트도 사용 맥락에 따라 <strong>다른 페르소나</strong>로 동작한다:</p>
+<table>
+<thead>
+<tr>
+<th>구분</th>
+<th>내부용</th>
+<th>외부용</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>톤</strong></td>
+<td>친근, 반말 허용</td>
+<td>격식, 경어체</td>
+</tr>
+<tr>
+<td><strong>이모지</strong></td>
+<td>허용</td>
+<td>금지</td>
+</tr>
+<tr>
+<td><strong>정보 범위</strong></td>
+<td>내부 데이터 전체 접근</td>
+<td>공개 가능 정보만</td>
+</tr>
+<tr>
+<td><strong>응답 스타일</strong></td>
+<td>간결, 직설적</td>
+<td>정중, 설명적</td>
+</tr>
+</tbody></table>
+<h3>대화 컨텍스트 관리 및 기억 구조</h3>
+<p>AI 에이전트는 대화의 맥락을 유지하기 위해 <strong>세션 기반 대화 관리</strong>를 사용한다.</p>
+<div class="mermaid">
+graph LR
+    Start["세션 시작"] --> Query["사용자 질의"] --> Search["Context Pool에서<br/>관련 정보 조회"]
+    Search --> Response["AI 응답 생성<br/>(컨텍스트 반영)"]
+    Response --> Log["대화 로그 저장<br/>(1년 보존)"]
+    style Search fill:#dbeafe,stroke:#1a56db
+</div>
+
+<h3>에이전트 성능 평가 및 개선 루프</h3>
+<ol>
+<li><strong>사용량 모니터링</strong>: 에이전트별 호출 횟수, 토큰 사용량, 응답 시간</li>
+<li><strong>품질 검토</strong>: 어드민이 대화 로그를 샘플링하여 품질 점검</li>
+<li><strong>피드백 반영</strong>: 사용자 피드백을 페르소나 정의에 반영</li>
+<li><strong>A/B 테스트</strong>: 프롬프트 변경 시 이전 버전과 품질 비교</li>
+</ol>
+<hr>
+<h2>16. Context Pool 운영</h2>
+<h3>8가지 입력 파이프라인 상세</h3>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>파이프라인</th>
+<th>수집 주기</th>
+<th>처리 방식</th>
+<th>Context Pool 반영</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td><strong>Slack 메시지</strong></td>
+<td>실시간</td>
+<td>채널 모니터링 → AI 분류 → 고객명 추출</td>
+<td>고객 컨텍스트</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>음성 녹취</strong></td>
+<td>미팅 직후</td>
+<td>Fireflies 전사 → AI 요약</td>
+<td>미팅 컨텍스트</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>문서 OCR</strong></td>
+<td>업로드 즉시</td>
+<td>GCP Vision → 필드 추출</td>
+<td>고객 온보딩 컨텍스트</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>수동 입력</strong></td>
+<td>즉시</td>
+<td>사용자 직접 입력 → 구조화</td>
+<td>해당 컨텍스트</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>이메일</strong> (계획)</td>
+<td>수신 시</td>
+<td>이메일 파싱 → AI 분류</td>
+<td>커뮤니케이션 컨텍스트</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>외부 API</strong></td>
+<td>일/주 배치</td>
+<td>API 호출 → 데이터 정규화</td>
+<td>시장/규제 컨텍스트</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>크론 배치</strong></td>
+<td>일/주/월</td>
+<td>자동 집계 → AI 요약</td>
+<td>통계 컨텍스트</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>Collector</strong></td>
+<td>매시간</td>
+<td>RSS/웹/PDF → AI 분류</td>
+<td>산업/규제 컨텍스트</td>
+</tr>
+</tbody></table>
+<h3>허브간 Context Pool 연동</h3>
+<div class="mermaid">
+graph LR
+    S1["StrategyHub Collector"] -->|산업/규제| CP[("크로스 허브<br/>활용")]
+    S2["SalesHub 고객 활동"] -->|고객| CP
+    S3["FinHub 거래 데이터"] -->|거래| CP
+    S4["OnboardingHub KYC"] -->|온보딩| CP
+    style CP fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+</div>
+
+<p>각 허브의 Context Pool은 다른 허브에서도 참조 가능하다. 예를 들어 SalesHub의 고객 브리핑에 StrategyHub의 산업 동향이 포함되고, FinHub의 거래 분석에 규제 변화가 반영된다.</p>
+<h3>컨텍스트 품질 관리</h3>
+<ul>
+<li><strong>자동 갱신</strong>: 새 정보 유입 시 즉시 반영, 크론으로 일 1회 전체 재요약</li>
+<li><strong>중복 제거</strong>: 동일 소스의 중복 정보 자동 필터링</li>
+<li><strong>관련성 감쇠</strong>: 오래된 정보의 가중치 자동 감소</li>
+</ul>
+<h3>개인정보 보호 및 접근 제어</h3>
+<ul>
+<li><strong>역할 기반 접근</strong>: 사용자 역할에 따라 접근 가능한 컨텍스트 범위 제한</li>
+<li><strong>데이터 마스킹</strong>: 민감 정보(주민번호, 계좌번호 등)는 자동 마스킹</li>
+<li><strong>보존 정책</strong>: 대화 로그 1년 보존 후 자동 삭제, 감사 로그는 법적 요건에 따라 장기 보존</li>
+</ul>
+<hr>
+<h2>17. 자동화 시나리오</h2>
+<h3>미팅 24시간 전 자동 브리핑</h3>
+<div class="mermaid">
+graph LR
+    Cron["매일 자정 크론"] --> Query["내일 미팅 조회"] --> Ctx["미팅별 고객<br/>컨텍스트 조회"]
+    Ctx --> AI["Reno AI<br/>브리핑 생성"]
+    AI --> DM["담당자 Slack DM<br/>'내일 10시 A사 미팅<br/>브리핑이 준비되었습니다'"]
+    style Cron fill:#fef3c7,stroke:#d97706
+    style AI fill:#dbeafe,stroke:#1a56db
+</div>
+
+<h3>위험 거래 즉시 Slack 알림</h3>
+<div class="mermaid">
+graph LR
+    Cron["매일 오전 9시 크론"] --> Calc["전체 고객<br/>건강도 산출"] --> Detect["Critical 등급 감지"]
+    Detect --> DM["담당자 Slack DM<br/>'⚠️ B사 건강도 Critical<br/>30일간 미응답, 즉시 확인 필요'"]
+    style Cron fill:#fef3c7,stroke:#d97706
+    style Detect fill:#fee2e2,stroke:#dc2626
+</div>
+
+<h3>주간 리포트 금요일 자동 생성</h3>
+<div class="mermaid">
+graph LR
+    Cron["매주 금요일 15시 크론"] --> Agg["주간 데이터 집계"] --> AI["AI 4섹션<br/>병렬 생성<br/>(15-30초)"]
+    AI --> Save["리포트 저장"]
+    Save --> Notify["담당자에게 알림<br/>'주간 리포트 초안 완성<br/>편집 후 발행하세요'"]
+    style Cron fill:#fef3c7,stroke:#d97706
+    style AI fill:#dbeafe,stroke:#1a56db
+</div>
+
+<h3>KYC 서류 자동 분류 및 필드 추출</h3>
+<div class="mermaid">
+graph LR
+    Upload["서류 업로드 시 즉시"] --> OCR["GCP Vision OCR"] --> Classify["서류 유형<br/>자동 분류"]
+    Classify --> Extract["필드 추출"]
+    Extract --> Score{"신뢰도 평가"}
+    Score -->|Low| Manual["수동 검증 요청"]
+    Score -->|High| Auto["자동 반영"]
+    style OCR fill:#dbeafe,stroke:#1a56db
+    style Manual fill:#fee2e2,stroke:#dc2626
+    style Auto fill:#d1fae5,stroke:#059669
+</div>
+
+<h3>고객 건강도 일일 모니터링</h3>
+<div class="mermaid">
+graph LR
+    Cron["매일 오전 크론"] --> Calc["전체 고객<br/>건강도 재산출"] --> Detect["변화 감지"]
+    Detect --> Alert["등급 변화 시<br/>담당자 알림"]
+    Alert --> Dash["대시보드 위젯<br/>자동 갱신"]
+    style Cron fill:#fef3c7,stroke:#d97706
+</div>
+
+<h3>규제/산업 동향 매시간 자동 수집</h3>
+<div class="mermaid">
+graph LR
+    Cron["매시간 크론"] --> Collect["Collector 실행<br/>등록된 소스별 수집"] --> Dedup["중복 제거"]
+    Dedup --> Save["DB 저장"]
+    Save --> Notify["북마크 알림<br/>(설정 시)"]
+    style Cron fill:#fef3c7,stroke:#d97706
+</div>
+
+<hr>
+<h1>Part 6. 로드맵과 실행 계획</h1>
+<hr>
+<h2>18. 현재 구현 현황</h2>
+<h3>허브별 완성도</h3>
+<table>
+<thead>
+<tr>
+<th>허브</th>
+<th>완성도</th>
+<th>주요 완성 기능</th>
+<th>미완성 기능</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>HubManager</strong></td>
+<td>85%</td>
+<td>SSO, 권한 관리, AI 페르소나, 푸시 알림, PWA/TWA</td>
+<td>통합 대시보드 고도화</td>
+</tr>
+<tr>
+<td><strong>SalesHub</strong></td>
+<td>70%</td>
+<td>고객 CRM, Reno AI 백엔드 (12개 도구), Slack 봇, 미팅 관리</td>
+<td>AI 프론트엔드 통합, 주간 리포트 자동화, 크론</td>
+</tr>
+<tr>
+<td><strong>FinHub</strong></td>
+<td>40%</td>
+<td>딜 CRUD, 쿠키 SSO 전환 완료</td>
+<td>Fireblocks 연동, 승인 워크플로우, CSV 임포트</td>
+</tr>
+<tr>
+<td><strong>OnboardingHub</strong></td>
+<td>60%</td>
+<td>6단계 워크플로우, OCR, 듀얼 승인, Prisma ORM</td>
+<td>프로덕션 배포, SalesHub 연동</td>
+</tr>
+<tr>
+<td><strong>StrategyHub</strong></td>
+<td>50%</td>
+<td>문서 생성/뷰어, AI 리뷰 반영, Collector 기본</td>
+<td>Collector 확장, 허브 연동, Notion 내보내기</td>
+</tr>
+</tbody></table>
+<h3>주요 기술 부채</h3>
+<table>
+<thead>
+<tr>
+<th>항목</th>
+<th>영향도</th>
+<th>상태</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Reno AI 프론트엔드 미연결</td>
+<td>높음</td>
+<td>백엔드 완성, UI 통합 필요</td>
+</tr>
+<tr>
+<td>Slack 프로덕션 환경 미설정</td>
+<td>중간</td>
+<td>스테이징만 작동</td>
+</tr>
+<tr>
+<td>Fireblocks SDK 미연동</td>
+<td>높음</td>
+<td>타입 정의만 존재</td>
+</tr>
+<tr>
+<td>OnboardingHub 프로덕션 미배포</td>
+<td>중간</td>
+<td>개발 환경만</td>
+</tr>
+<tr>
+<td>API 문서화 부재</td>
+<td>중간</td>
+<td>OpenAPI/Swagger 필요</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>19. 2026 로드맵</h2>
+<h3>Q1 (1~3월): AI 고도화 + 프론트엔드 통합</h3>
+<table>
+<thead>
+<tr>
+<th>작업</th>
+<th>상세</th>
+<th>우선순위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AI 에이전트 프론트엔드 통합</td>
+<td>Reno 4대 기능을 SalesHub UI에 연결</td>
+<td>최우선</td>
+</tr>
+<tr>
+<td>StrategyHub 리뷰 시스템 완성</td>
+<td>인라인 코멘트 + AI 반영 워크플로우</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>Context Pool v1</td>
+<td>고객 컨텍스트 자동 축적 시작</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>Android TWA 기반 구축</td>
+<td>PWA + Bubblewrap 빌드</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<h3>Q2 (4~6월): 자동화 + 확장</h3>
+<table>
+<thead>
+<tr>
+<th>작업</th>
+<th>상세</th>
+<th>우선순위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>주간 리포트 자동화</td>
+<td>크론 + AI 초안 + WYSIWYG + Notion</td>
+<td>최우선</td>
+</tr>
+<tr>
+<td>크론 자동화</td>
+<td>미팅 브리핑, 건강도 모니터링, 위험 알림</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>OnboardingHub 프로덕션</td>
+<td>Oracle Cloud 배포 + 운영 검증</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>Collector 확장</td>
+<td>Notion, Slack 아카이브 수집 추가</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<h3>Q3 (7~9월): 모바일 + FinHub</h3>
+<table>
+<thead>
+<tr>
+<th>작업</th>
+<th>상세</th>
+<th>우선순위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Android 앱 출시</td>
+<td>Closed Testing → Public</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>FinHub Fireblocks 연동</td>
+<td>실제 API 통합 + 거래 실행</td>
+<td>높음</td>
+</tr>
+<tr>
+<td>StrategyHub↔허브 지식 연동</td>
+<td>Context Pool 크로스 허브 공유</td>
+<td>중간</td>
+</tr>
+<tr>
+<td>거래 승인 워크플로우</td>
+<td>FinHub 내 체계적 승인 프로세스</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<h3>Q4 (10~12월): 안정화 + 전략</h3>
+<table>
+<thead>
+<tr>
+<th>작업</th>
+<th>상세</th>
+<th>우선순위</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>전체 안정화</td>
+<td>성능 최적화, 버그 수정, 보안 점검</td>
+<td>최우선</td>
+</tr>
+<tr>
+<td>크로스 허브 인사이트</td>
+<td>Context Pool 기반 전사 분석</td>
+<td>중간</td>
+</tr>
+<tr>
+<td>2027 전략 수립</td>
+<td>AI 자율 에이전트, 글로벌 확장 로드맵</td>
+<td>중간</td>
+</tr>
+</tbody></table>
+<hr>
+<h2>20. 2027 이후 비전</h2>
+<h3>AI 자율 에이전트</h3>
+<p>현재의 AI 에이전트는 사용자의 요청에 **반응(Reactive)**하는 수준이다. 2027년에는 에이전트가 **능동적(Proactive)**으로 행동하는 단계를 목표로 한다.</p>
+<ul>
+<li>사람의 개입 없이 정기 분석 실행 및 리포트 배포</li>
+<li>이상 징후 감지 시 자동으로 관련 담당자에게 브리핑 + 대응 제안</li>
+<li>크로스 허브 데이터를 종합한 전략적 인사이트 자동 도출</li>
+</ul>
+<h3>크로스 허브 인사이트 엔진</h3>
+<p>각 허브의 Context Pool을 기반으로, <strong>허브를 넘나드는 통합 분석</strong>이 가능해진다.</p>
+<div class="mermaid">
+graph LR
+    SH["SalesHub 데이터"]
+    FH["FinHub 데이터"]
+    OH["OnboardingHub 데이터"]
+    STH["StrategyHub 동향"]
+    Engine["크로스 허브<br/>인사이트 엔진"]
+    Dash["경영진 대시보드"]
+    Insight["'3분기 기관 고객 온보딩 증가 →<br/>Earn 상품 수요 40% 증가 예상 →<br/>유동성 확보 필요'"]
+    SH & FH & OH & STH --> Engine --> Dash --> Insight
+    style Engine fill:#dbeafe,stroke:#1a56db,stroke-width:2px
+    style Insight fill:#d1fae5,stroke:#059669
+</div>
+
+<h3>글로벌 확장</h3>
+<ul>
+<li>다국어 지원 (영어 우선)</li>
+<li>해외 규제 프레임워크 적용 (MiCA, MAS 등)</li>
+<li>글로벌 파트너사 허브 접근 지원</li>
+</ul>
+<hr>
+<p><em>본 문서는 2026. 03. 12. 기준으로 작성되었으며, 분기별로 업데이트될 예정입니다.</em></p>
+
+</body>
+</html>

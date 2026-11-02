@@ -1,0 +1,39 @@
+{
+  "name": "@workhub/probe",
+  "version": "1.0.0",
+  "description": "WorkHub Probe — 통합 QA 테스트 하네스 (쿠키 기반 SSO, Page Objects, 리포터)",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    },
+    "./reporters/probe-reporter": {
+      "import": "./dist/reporters/probe-reporter.js",
+      "types": "./dist/reporters/probe-reporter.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsc --watch",
+    "type-check": "tsc --noEmit",
+    "clean": "rm -rf dist"
+  },
+  "keywords": ["workhub", "probe", "testing", "playwright", "e2e"],
+  "author": "WB Team",
+  "license": "MIT",
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "peerDependencies": {
+    "@playwright/test": ">=1.40.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.50.0",
+    "@types/node": "^20.10.0",
+    "@types/pg": "^8.11.0",
+    "typescript": "^5.3.2"
+  }
+}
